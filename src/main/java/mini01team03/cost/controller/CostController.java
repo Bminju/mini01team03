@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import mini01team03.cost.model.CostVO;
@@ -26,6 +27,11 @@ public class CostController {
 		
 		return "cost/costList";
 	}
+	@GetMapping("address")
+	public String address() throws Exception {
+		return "cost/address";
+	}
+	
 	//안혜지 Msg
 	// 백민주 MSG
 	//허슬기 Msg

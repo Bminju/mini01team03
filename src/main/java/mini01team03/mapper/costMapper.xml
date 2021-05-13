@@ -16,5 +16,4 @@
 		select id, p_name, price, cate from cost
 	]]>
 	</select>
-
 </mapper>
