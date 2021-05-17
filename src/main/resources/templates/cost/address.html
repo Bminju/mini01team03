@@ -45,7 +45,38 @@
 #pagination a {display:inline-block;margin-right:10px;}
 #pagination .on {font-weight: bold; cursor: default;color:#777;}</style>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bde99f6e382853ee73bb86c84a7a2c06&libraries=services"></script>
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	function saveAddress(){
+		
+		let array = new Array();
+		
+		for (const [key, value] of markerMap) {
+			let markerAddress = new Object();
+			markerAddress.title = value.title;
+			markerAddress.address = value.address;
+			markerAddress.la = value.la;
+			markerAddress.ma = value.ma;
+			array.push(markerAddress);
+		}
+		
+		$.ajax({
+			url:'cost/save',
+			type:'post',
+			dataType:'json',
+			contentType:'application/json; charset=UTF-8',
+			data: JSON.stringify(array),
+			success: function(data){
+				console.log("success");
+			},
+			error: function(e){
+				console.log(e);
+			}
+		
+		});
+		
+	}
+</script>
 </head>
 <body>
 <div class="map_wrap">
@@ -71,7 +102,7 @@
     </div>
     <form action=index method=post>
        <div id="result"></div>
-       <input type="submit">
+       <input type="button" value="제출" onclick="saveAddress()">
     </form>
 </div>
 <script>
@@ -177,25 +208,26 @@ function displayPlaces(places) {
         (function(marker, title, address) {
            
             itemEl.onmouseover =  function () {
-            	let mla = marker.n.La;
-                let mMa = markerMap.get(mla);
+            	//let mla = marker.n.La;
+                //let mMa = markerMap.get(mla);
+                 let la_ma =  marker.n.La + ":" + marker.n.Ma;
            
-                   if(markerMap.get(mla) != undefined 
-                      && mMa == marker.n.Ma ){ 
+                displayInfowindow(marker, title);
+                 if(markerMap.get(la_ma) != undefined){ 
                     return;
                    }   
              marker.setMap(map); // 지도 위에 마커를 표출합니다
              //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
-                displayInfowindow(marker, title);
              console.log(markers.length)
             };
             
             itemEl.onmouseout =  function () {
-               let mla = marker.n.La;
-               let mMa = markerMap.get(mla);
+               //let mla = marker.n.La;
+               //let mMa = markerMap.get(mla);
+               let la_ma =  marker.n.La + ":" + marker.n.Ma;
                
-                  if(markerMap.get(mla) != undefined 
-                     && mMa == marker.n.Ma ){ 
+               
+                  if(markerMap.get(la_ma) != undefined){ 
                    return;
                   }
                      marker.setMap(null)
@@ -203,47 +235,26 @@ function displayPlaces(places) {
                };
                
               itemEl.onclick = function () {
-               marker.setMap(map);
+           	                  
                //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
                console.log(marker.n.La);
                console.log(marker.n.Ma);
-               markerMap.set(marker.n.La,marker.n.Ma);
                
-                displayInfowindow(marker, title);
+               displayInfowindow(marker, title);
+               
+               let la_ma =  marker.n.La + ":" + marker.n.Ma;
+               if(markerMap.get(la_ma) == undefined) {
+            	   marker.setMap(map);
+                   markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma});
+              
+              }else {
+            	  marker.setMap(null);
+                 markerMap.delete(la_ma);
+                 infowindow.close(); 
+              }               
+                               
             };  
-            
-            itemEl.ondblclick = function() {
-                marker.setMap(null);
-                 
-                let mla = marker.n.La;
-                let mMa = markerMap.get(mla);
-                
-                if(markerMap.get(mla) == undefined) {
-                 markerMap.set(marker.n.La,marker.n.Ma);
-                }else {
-                   markerMap.delete(marker.n.La);
-                }
-                 
-                  infowindow.close(marker, title);
-                  console.log()
-                 
-             
-             };  
-
-            
-            
-             /*  //마커 클릭해서 없애기 
-                 kakao.maps.event.addListener(marker, 'click', function() {
-               marker.setMap(null);
-               //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
-               console.log(marker.n.La);
-               console.log(marker.n.Ma);
-               markerMap.set(marker.n.La,marker.n.Ma);
-               
-                displayInfowindow(marker, title);
-            });  */   
-            
-                 kakao.maps.event.addListener(marker, 'click', function(mouseEvent) { 
+           kakao.maps.event.addListener(marker, 'click', function(mouseEvent) { 
                     
                     
                 var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';

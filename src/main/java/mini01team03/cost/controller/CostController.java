@@ -7,9 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import mini01team03.cost.model.CostVO;
+import mini01team03.cost.model.MarkerVO;
 
 @Controller
 @RequestMapping("cost")
@@ -35,4 +38,17 @@ public class CostController {
 	//안혜지 Msg
 	// 백민주 MSG
 	//허슬기 Msg
+	
+	@ResponseBody
+	@PostMapping("cost/save")
+	public String costSave(@RequestBody MarkerVO markerVO[]) {
+		for(int i = 0; i < markerVO.length; i++) {
+			System.out.println(markerVO[i].getTitle());
+			System.out.println(markerVO[i].getAddress());
+			System.out.println(markerVO[i].getLa());
+			System.out.println(markerVO[i].getMa());
+		}
+		return "";
+	}
+	
 }
