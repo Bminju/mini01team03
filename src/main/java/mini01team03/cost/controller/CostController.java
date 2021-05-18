@@ -40,7 +40,7 @@ public class CostController {
 	//안혜지 Msg
 	// 백민주 MSG
 	//허슬기 Msg
-	
+	// min add2
 	@ResponseBody
 	@PostMapping("cost/save")
 	public Map costSave(@RequestBody MarkerVO markerVO[]) {
