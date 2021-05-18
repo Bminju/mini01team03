@@ -5,15 +5,15 @@
 	<!--  resultMap database의 column 과 resultType에 해당하는 VO의 필드명이 
 	다를 경우 매핑 시켜준다. primary key에 대한 필드는 id로 나머지는 result 로 지정한다.-->
 	<resultMap type="CostVO" id="costMap">
-		<id property="id" column="id"/>
-		<result property="pName" column="p_name"/>
-		<result property="price" column="price"/>
-		<result property="cate" column="cate"/>		
+		<id property="id" column="Id"/>
+		<result property="pName" column="P_name"/>
+		<result property="price" column="Price"/>
+		<result property="cate" column="Cate"/>		
 	</resultMap>
 	
 	<select id="getCostList" resultMap="costMap">
 	<![CDATA[
-		select id, p_name, price, cate from cost
+		select Id, P_name, Price, Cate from cost
 	]]>
 	</select>
 </mapper>

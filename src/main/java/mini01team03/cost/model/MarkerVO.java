@@ -6,6 +6,7 @@ public class MarkerVO {
 	private String ma;
 	private String address;
 	private String title;
+	
 	public String getLa() {
 		return la;
 	}

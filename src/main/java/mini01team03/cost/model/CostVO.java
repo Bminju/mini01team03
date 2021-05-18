@@ -6,6 +6,7 @@ public class CostVO {
 	private String pName;
 	private Integer price;
 	private String cate;
+	
 	public Integer getId() {
 		return id;
 	}
