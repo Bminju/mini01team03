@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mini01team03.spot.model.SpotDAO">
+   <resultMap type="MarkerVO" id="spotMap">
+      <id property="id" column="Id"/>
+      <result property="title" column="LO_name"/>
+      <result property="address" column="Address"/>
+      <result property="la" column="Lat"/>
+      <result property="ma" column="Lon"/>      
+   </resultMap>
+   
+	<insert id="insertSpot" parameterType="MarkerVO">
+		insert into spot(Lo_name, Address, Lat, Lon) values (#{title}, #{address}, #{la}, #{ma})
+	</insert>
+	
+</mapper>
