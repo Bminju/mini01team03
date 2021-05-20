@@ -16,7 +16,7 @@ public class SpotServiceImpl implements SpotService {
 
 	@Override
 	public int insertSpot(MarkerVO markerVO) throws SQLException {
-		int cnt = spotDAO.insertSpot(markerVO);
+		int cnt = spotDAO.insertSpot(markerVO);   //다시 보기
 		return cnt;
 	}
 	

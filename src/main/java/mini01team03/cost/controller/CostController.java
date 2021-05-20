@@ -26,24 +26,5 @@ public class CostController {
 		
 		return "cost/costList";
 	}
-	@GetMapping("address")
-	public String address() throws Exception {
-		return "cost/address";
-	}
-	
-	//안혜지 Msg
-	// 백민주 MSG
-	//허슬기 Msg
-	/*
-	 * @ResponseBody
-	 * 
-	 * @PostMapping("cost/save") public Map costSave(@RequestBody MarkerVO
-	 * markerVO[]) { for(int i = 0; i < markerVO.length; i++) {
-	 * System.out.println(markerVO[i].getTitle());
-	 * System.out.println(markerVO[i].getAddress());
-	 * System.out.println(markerVO[i].getLa());
-	 * System.out.println(markerVO[i].getMa()); } Map map = new HashMap();
-	 * map.put("msg", "success"); return map; }
-	 */
 	
 }

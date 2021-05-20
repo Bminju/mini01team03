@@ -50,6 +50,7 @@
 	function saveAddress(){
 		
 		let array = new Array();
+
 		
 		for (const [key, value] of markerMap) {
 			let markerAddress = new Object();
@@ -57,7 +58,11 @@
 			markerAddress.address = value.address;
 			markerAddress.la = value.la;
 			markerAddress.ma = value.ma;
+			var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
+			alert("금액이 저장되었습니다");
+			markerAddress.price = test;
 			array.push(markerAddress);
+			 
 		}
 		
 		$.ajax({
@@ -244,7 +249,7 @@ function displayPlaces(places) {
                let la_ma =  marker.n.La + ":" + marker.n.Ma;
                if(markerMap.get(la_ma) == undefined) {
             	   marker.setMap(map);
-                   markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma});
+                   markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma, price:0});
               
               }else {
             	  marker.setMap(null);
