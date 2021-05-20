@@ -38,7 +38,7 @@ public class SpotController {
 			System.out.println(markerVO[i].getAddress());
 			System.out.println(markerVO[i].getLa());
 			System.out.println(markerVO[i].getMa());
-			//System.out.println(markerVO[i].getCost());			
+			//System.out.println(markerVO[i].getPrice());			
 			spotService.insertSpot(markerVO[i]);
 		}
 		Map map = new HashMap();

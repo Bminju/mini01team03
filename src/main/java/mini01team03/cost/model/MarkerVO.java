@@ -7,6 +7,7 @@ public class MarkerVO {
 	private String address;
 	private String title;
 	private String price;
+	private String cate;
 	
 	public String getLa() {
 		return la;
@@ -38,6 +39,12 @@ public class MarkerVO {
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public String getCate() {
+		return cate;
+	}
+	public void setCate(String cate) {
+		this.cate = cate;
 	}
 
 	

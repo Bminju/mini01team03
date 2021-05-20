@@ -58,8 +58,9 @@
 			markerAddress.address = value.address;
 			markerAddress.la = value.la;
 			markerAddress.ma = value.ma;
+			markerAddress.cate = value.category;
 			var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
-			alert("금액이 저장되었습니다");
+			alert("금액이 저장되었습니다"); //confirm으로 취소할 수도 있게하기
 			markerAddress.price = test;
 			array.push(markerAddress);
 			 
@@ -130,13 +131,6 @@ var ps = new kakao.maps.services.Places();
 // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
 
-var geocoder = new kakao.maps.services.Geocoder();
-
-
-//현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
-searchAddrFromCoords(map.getCenter(), displayCenterInfo);
-
-
 // 키워드로 장소를 검색합니다
 searchPlaces();
 
@@ -180,7 +174,7 @@ function placesSearchCB(data, status, pagination) {
 
 // 검색 결과 목록과 마커를 표출하는 함수입니다
 function displayPlaces(places) {
-
+	
     var listEl = document.getElementById('placesList'), 
     menuEl = document.getElementById('menu_wrap'),
     fragment = document.createDocumentFragment(), 
@@ -209,11 +203,68 @@ function displayPlaces(places) {
         // 마커와 검색결과 항목에 mouseover 했을때
         // 해당 장소에 인포윈도우에 장소명을 표시합니다
         // mouseout 했을 때는 인포윈도우를 닫습니다
-        (function(marker, title, address) {
+        (function(marker, title, address, category) {
            
+        	 switch(category){
+             case 'MT1':
+             	category = '대형마트';
+             	break;
+             case 'CS2':
+             	category = '편의점';
+             	break;
+             case 'PS3':
+             	category = '어린이집,유치원';
+             	break;
+             case 'SC4':
+             	category = '학교';
+             	break;
+             case 'AC5':
+             	category = '학원';
+             	break;
+             case 'PK6':
+             	category = '주차장';
+             	break;
+             case 'OL7':
+             	category = '주유소,충전소';
+             	break;
+             case 'SW8':
+             	category = '지하철역';
+             	break;
+             case 'BK9':
+             	category = '은행';
+             	break;
+             case 'CT1':
+             	category = '문화시설';
+             	break;
+             case 'AG2':
+             	category = '중개업소';
+             	break;
+             case 'PO3':
+             	category = '공공기관';
+             	break;
+             case 'AT4':
+             	category = '관광명소';
+             	break;
+             case 'AD5':
+             	category = '숙박';
+             	break;
+             case 'FD6':
+             	category = '음식점';
+             	break;
+             case 'CE7':
+             	category = '카페';
+             	break;
+             case 'HP8':
+             	category = '병원';
+             	break;
+             case 'PM9':
+             	category = '약국';
+             	break;
+             	
+             }
+        	
+        	
             itemEl.onmouseover =  function () {
-            	//let mla = marker.n.La;
-                //let mMa = markerMap.get(mla);
                  let la_ma =  marker.n.La + ":" + marker.n.Ma;
            
                 displayInfowindow(marker, title);
@@ -226,8 +277,6 @@ function displayPlaces(places) {
             };
             
             itemEl.onmouseout =  function () {
-               //let mla = marker.n.La;
-               //let mMa = markerMap.get(mla);
                let la_ma =  marker.n.La + ":" + marker.n.Ma;
                
                
@@ -243,13 +292,13 @@ function displayPlaces(places) {
                //markers.push(marker);  // 배열에 생성된 마커를 추가합니다
                console.log(marker.n.La);
                console.log(marker.n.Ma);
-               
+
                displayInfowindow(marker, title);
                
                let la_ma =  marker.n.La + ":" + marker.n.Ma;
                if(markerMap.get(la_ma) == undefined) {
             	   marker.setMap(map);
-                   markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma, price:0});
+                   markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma, price:0, category:category});
               
               }else {
             	  marker.setMap(null);
@@ -259,27 +308,22 @@ function displayPlaces(places) {
                                
             };  
            kakao.maps.event.addListener(marker, 'click', function(mouseEvent) { 
-                    
-                    
+               
                 var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';
                 message += '경도는 ' + marker.getPosition().getLng() + ' 입니다.<br>';
                 message +=  title + '<br>';
-                message += address;
-                //message += result[0].road_address.address_name;
+                message += address + '<br>';
+                message += category;
               
                 var resultDiv = document.getElementById('result'); 
                 resultDiv.innerHTML = message; 
             }); //kakao.map 끝  
-        })(marker, places[i].place_name, places[i].address_name);  //fuction(marker,title) 끝
+        })(marker, places[i].place_name, places[i].address_name, places[i].category_group_code);  //fuction(marker,title) 끝
         
 
         fragment.appendChild(itemEl);
     }  //for문 끝
-
-
     
- 
-   
     // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
     listEl.appendChild(fragment);
     menuEl.scrollTop = 0;
@@ -384,17 +428,6 @@ function removeAllChildNods(el) {
     }
 }
  
-function searchAddrFromCoords(coords, callback) {
-    // 좌표로 행정동 주소 정보를 요청합니다
-    geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);         
-}
-
-function searchDetailAddrFromCoords(coords, callback) {
-    // 좌표로 법정동 상세 주소 정보를 요청합니다
-    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-}
-
-
 </script>
 </body>
 </html>

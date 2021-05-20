@@ -10,11 +10,12 @@
       <result property="address" column="Address"/>
       <result property="la" column="Lat"/>
       <result property="ma" column="Lon"/>
-      <result property="price" column="price"/>
+      <result property="price" column="Price"/>
+      <result property="cate" column="Cate"/>
    </resultMap>
    
    <insert id="insertSpot" parameterType="MarkerVO">
-      insert into spot(Lo_name, Address, Lat, Lon, price) values (#{title}, #{address}, #{la}, #{ma}, #{price})
+      insert into spot(Lo_name, Address, Lat, Lon, Price, Cate) values (#{title}, #{address}, #{la}, #{ma}, #{price}, #{cate})
    </insert>
 
    
