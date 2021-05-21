@@ -59,13 +59,21 @@
 			markerAddress.la = value.la;
 			markerAddress.ma = value.ma;
 			markerAddress.cate = value.category;
-			var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
-			alert("금액이 저장되었습니다"); //confirm으로 취소할 수도 있게하기
-			markerAddress.price = test;
-			array.push(markerAddress);
-			 
-		}
-		
+			/*var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
+	         var con = confirm("Are you sure?"); //confirm으로 취소할 수도 있게하기
+	         while(con == false) {
+	            var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
+	               if (test != null) {
+	                 // markerAddress.price = test;
+	                  //array.push(markerAddress);   
+	                  break;
+	                  
+	               }
+	               
+	         }*/
+	         markerAddress.price = value.price;
+	         array.push(markerAddress);   
+	      }
 		$.ajax({
 			url:'cost/save',
 			type:'post',
@@ -260,7 +268,10 @@ function displayPlaces(places) {
              case 'PM9':
              	category = '약국';
              	break;
-             	
+             default :
+            	category = '기타';
+             	break;
+            	 
              }
         	
         	
@@ -307,9 +318,25 @@ function displayPlaces(places) {
               }               
                                
             };  
+            
            kakao.maps.event.addListener(marker, 'click', function(mouseEvent) { 
-               
-                var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';
+ 					/*let arr = [];
+        		   arr.push(prompt(title + "에서 사용한 금액을 입력하세요"));
+        		   for (let i  = 0; i < arr.length; i++) {
+        		  	 price = arr[i];
+        		   }*/
+        	    //markerMap.price = test;
+        	    //price =markerMap.price; 
+        	    //price = test;
+        		let la_ma =  marker.n.La + ":" + marker.n.Ma;
+                if(markerMap.get(la_ma) == undefined){ 
+                    return;
+                }
+                let inPrice = prompt(title + "에서 사용한 금액을 입력하세요");
+                let markerObj = markerMap.get(la_ma);
+                markerObj.price = inPrice;
+                
+        	    var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';
                 message += '경도는 ' + marker.getPosition().getLng() + ' 입니다.<br>';
                 message +=  title + '<br>';
                 message += address + '<br>';
@@ -322,8 +349,8 @@ function displayPlaces(places) {
         
 
         fragment.appendChild(itemEl);
+        
     }  //for문 끝
-    
     // 검색결과 항목들을 검색결과 목록 Elemnet에 추가합니다
     listEl.appendChild(fragment);
     menuEl.scrollTop = 0;
