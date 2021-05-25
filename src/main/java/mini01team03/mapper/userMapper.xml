@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mini01team03.cost.model.UserDAO">
+	<!--  resultMap database의 column 과 resultType에 해당하는 VO의 필드명이 
+	다를 경우 매핑 시켜준다. primary key에 대한 필드는 id로 나머지는 result 로 지정한다.-->
+	
+	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
+	SELECT Userid, Userpwd
+	FROM user
+	WHERE Userid = #{Userid}
+	</select>
+	
+</mapper>
