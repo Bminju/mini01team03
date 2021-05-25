@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport"  content="width=device-width, user-scalable=no,  initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--화면 랜더링 엔진을 최신으로 써라-->
     <title>키워드로 장소검색하고 목록으로 표출하기</title>
     <style>
 .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
@@ -180,6 +182,8 @@ function placesSearchCB(data, status, pagination) {
     }
 }
 
+markerMap = new Map();
+
 // 검색 결과 목록과 마커를 표출하는 함수입니다
 function displayPlaces(places) {
 	
@@ -195,7 +199,7 @@ function displayPlaces(places) {
     // 지도에 표시되고 있는 마커를 제거합니다
     removeMarker();
     
-    markerMap = new Map();
+    
     
     for ( var i=0; i<places.length; i++ ) {
         // 마커를 생성하고 지도에 표시합니다

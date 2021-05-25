@@ -1,10 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
+	<meta charset="utf-8">
+	<meta name="viewport"  content="width=device-width, user-scalable=no,  initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--화면 랜더링 엔진을 최신으로 써라-->
+	<link rel="icon" href="" > <!--파비콘 넣는 곳 .ico파일(.png랑은 다른 사이즈?) -->
+   
+	<title>여행가계부 룰루</title>
+	<style>
+		footer{ position:fixed; 
+ 				left:0px; 
+  				bottom:0px; 
+  				height:30px; 
+  				width:100%; 
+ 				background:grey; 
+ 				color: white; }
+		#footerid {
+			margin:5px;
+			text-align: center;
+			font-size: 7px;
+		}
+	</style>
 </head>
 <body>
-
+	<header>
+	<a id="kakao-login-btn" ></a>
+	<a href="http://developers.kakao.com/logout"></a>
+	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+    <script type='text/javascript'>
+        //<![CDATA[
+        // 사용할 앱의 JavaScript 키를 설정해 주세요.
+        Kakao.init('399e4000af048bcb17a2fe290f61f0ea');
+        // 카카오 로그인 버튼을 생성합니다.
+        Kakao.Auth.createLoginButton({
+			scope:'profile, account_email, gender',
+            container: '#kakao-login-btn',
+            success: function (authObj) {
+				console.log(authObj);
+				Kakao.API.request({
+					url:'/v2/user/me',
+					success: res => {
+						const kakao_account = res.kakao_account;
+						console.log(kakao_account); 
+					}
+				})
+                alert(JSON.stringify(authObj));
+            },
+            fail: function (err) {
+                alert(JSON.stringify(err));
+            }
+        });
+      //]]>
+    </script>
+</header>
+<a href="http://localhost:8080/address">address</a>
+<footer>
+<div id=footerid>Copyright 민주,혜지,슬기. All rights reserved.</div> 
+</footer>
 </body>
 </html>
