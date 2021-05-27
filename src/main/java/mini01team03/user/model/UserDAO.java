@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface UserDAO {
-	public UserVO getLoginInfo(String userid) throws SQLException;
+	public UserVO getLoginInfo(String email) throws SQLException;
+
+	
+	public int insertKaProfile(UserVO kakaoUser) throws SQLException;
 
 }

@@ -15,11 +15,17 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserDAO userDAO;
-	
+
 	@Override
-	public UserVO getLoginInfo(String userid) throws SQLException {
-		UserVO userVO = userDAO.getLoginInfo(userid);
+	public UserVO getLoginInfo(String email) throws SQLException {
+		UserVO userVO = userDAO.getLoginInfo(email);
 		return userVO;
 	}
+	
+	@Override
+	   public int insertKaProfile(UserVO kakaoUser) throws SQLException {
+	      int cnt = userDAO.insertKaProfile(kakaoUser);
+	      return cnt;
+	   }
 
 }

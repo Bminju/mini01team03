@@ -1,10 +1,14 @@
 package mini01team03.user.model;
 
+import lombok.Builder;
+
+@Builder
 public class UserVO {
 	private String userid;
 	private String userpwd;
 	private String username;
 	private String email;
+	
 	
 	public String getUserid() {
 		return userid;
@@ -29,7 +33,7 @@ public class UserVO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
+	} 
+
 	
 }
