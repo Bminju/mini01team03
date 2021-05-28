@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mini01team03.user.model.KakaoProfile;
+import mini01team03.user.model.KuserVO;
 import mini01team03.user.model.OAuthToken;
 import mini01team03.user.model.UserVO;
 
@@ -49,7 +50,7 @@ public class LoginController {
 	  @ResponseBody
 	  @PostMapping("login")
 	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
-		  System.out.println(userVO.getEmail());
+		  //System.out.println(userVO.getEmail());
 		  String email = userVO.getEmail();
 		  UserVO dbUserVO = userService.getLoginInfo(email);
 		  if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
@@ -60,30 +61,37 @@ public class LoginController {
 		  }else {
 			  return "fail";
 		  }
-		   
 	  }
 	  
-	  @GetMapping("logout")
+	  //회원가입 ajax
+	  @ResponseBody
+	  @PostMapping("join")
+	  public String joinUser(@RequestBody UserVO userVO) throws SQLException {
+		   userService.insertUser(userVO);
+		   return "joinok";
+	  }
+	  
+	  /*@GetMapping("logout")
 		 public String logout(HttpSession session) {
 			 //session.removeAttribute("userVO"); 하나의 값만 삭제
 			 session.invalidate();
 			 return "redirect:login";
-		 }
+		 }*/
 	  
 	  
-	  //public String loginPost(HttpServletRequest request, HttpSession session, Model model) throws Exception {
-	 //public String loginPost(@RequestParam("Email") String email,
-		//	 				@RequestParam("Userpwd") String userpwd) throws Exception {
-		// String email= request.getParameter("Email");
-		// String userpwd = request.getParameter("Userpwd");
+	  /*public String loginPost(HttpServletRequest request, HttpSession session, Model model) throws Exception {
+	 public String loginPost(@RequestParam("Email") String email,
+		 				@RequestParam("Userpwd") String userpwd) throws Exception {
+		String email= request.getParameter("Email");
+		String userpwd = request.getParameter("Userpwd");
 		 
-	   //  logger.info("loginId:"+email);
-		//logger.info("loginpwd:"+userpwd);
+	   logger.info("loginId:"+email);
+		logger.info("loginpwd:"+userpwd);
 	
-		//UserVO userVO = userService.getLoginInfo(email);
+		UserVO userVO = userService.getLoginInfo(email);
 		
 		
-		/*if(userVO.getUser().equals(user)) {
+		if(userVO.getUser().equals(user)) {
 			session.setAttribute("userVO", userVO);
 		return " ";
 		} 
@@ -100,6 +108,7 @@ public class LoginController {
 			return " ";
 		} */
 	  
+	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
 	   public @ResponseBody String kakaoCallback(String code) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
 	      
@@ -187,7 +196,7 @@ public class LoginController {
 	      System.out.println("블로그 유저id:"+kakaoProfile.getKakao_account().getEmail()+"_"+kakaoProfile.getId());
 	      System.out.println("블로그 이메일:"+kakaoProfile.getKakao_account().getEmail());
 	      
-	      UserVO kakaoUser = UserVO.builder()
+	      KuserVO kakaoUser = KuserVO.builder()
 	            .userid(kakaoProfile.getKakao_account().getEmail()+"_"+kakaoProfile.getId())
 	            .userpwd("123")  //비밀번호 임시로 하기
 	            .email(kakaoProfile.getKakao_account().getEmail())

@@ -1,8 +1,6 @@
 package mini01team03.user.model;
 
-import lombok.Builder;
 
-@Builder
 public class UserVO {
 	private String userid;
 	private String userpwd;

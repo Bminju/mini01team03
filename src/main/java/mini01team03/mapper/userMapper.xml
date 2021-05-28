@@ -4,15 +4,28 @@
 <mapper namespace="mini01team03.user.model.UserDAO">
 	<!--  resultMap database의 column 과 resultType에 해당하는 VO의 필드명이 
 	다를 경우 매핑 시켜준다. primary key에 대한 필드는 id로 나머지는 result 로 지정한다.-->
-	
+ <!-- <resultMap type="UserVO" id="userMap">
+      <result property="userid" column="Userid"/>
+      <result property="userpwd" column="Userpwd"/>
+      <result property="username" column="Username"/>
+      <result property="email" column="Email"/>
+   </resultMap>  -->
+   
+	<!-- 기본 로그인 -->
 	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
 	SELECT Userid,Userpwd,Email,Username
 	FROM user
 	WHERE Email = #{email}
 	</select>
 	
-	<insert id="insertKaProfile" parameterType="UserVO">
+	<!-- 카카오 로그인 -->
+	<insert id="insertKaProfile" parameterType="KuserVO">
    insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
    </insert>
 	
+	<!-- 회원가입 -->
+	<insert id="insertUser" parameterType="UserVO">
+   insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
+   </insert>
+   
 </mapper>

@@ -44,7 +44,6 @@ public class SpotController {
 		Map map = new HashMap();
 		map.put("msg", "success");
 		return map; 
- 	
 }
 
 }
