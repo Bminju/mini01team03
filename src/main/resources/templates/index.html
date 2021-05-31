@@ -69,12 +69,8 @@
 	<script>
 		function fnLoginsubmit() {
 		//$(document).ready(function() {
-<<<<<<< HEAD
 
 				
-=======
-			
->>>>>>> refs/remotes/origin/master
 				var email = $("#email").val();
 				var userpwd = $("#userpwd").val();
 				//alert('성공'+email);
@@ -94,17 +90,12 @@
 						$("#logoutbtn").show();
 				  }else {
 				  	(data == 'false')
-<<<<<<< HEAD
 					 alert("너 비번 틀렸어") };  //새로고침
-=======
-					  };  //새로고침
->>>>>>> refs/remotes/origin/master
 				}
                 })
 		};
         function fnjoinsubmit() {
 		
-<<<<<<< HEAD
 				if (!document.joinform.userid.value) {
 					alert("아이디를 입력하세요!");
 					document.joinform.userid.focus();
@@ -179,31 +170,6 @@
 
 
 
-=======
-			
-			    var userid = $("#joinuserid").val();
-				var userpwd = $("#joinuserpwd").val();
-				var username = $("#joinusername").val();
-				var email = $("#joinemail").val();
-				alert('성공'+ userid);
-				var joinObj = new Object();
-				joinObj.userid = userid;
-				joinObj.username = username;
-				joinObj.userpwd = userpwd;
-				joinObj.email = email;
-				
-	
-				$.ajax({
-				type:"POST",
-				url:"join",
-				data:JSON.stringify(joinObj),
-				contentType:'application/json; charset=UTF-8',
-				success:function(data) {
-					console.log("join")
-				   }  //빈칸 그대로 입력되는 문제 해결하기 
-				})
-		};
->>>>>>> refs/remotes/origin/master
 
 	</script>
 	<!--로그인 모달-->
@@ -261,7 +227,6 @@
   </div>
 
   </div>
-<<<<<<< HEAD
   <!--회원가입 모달-->
    <div class="modal fade" id="joinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -293,35 +258,6 @@
 			<div class="form-group">
               <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name" required/>
 			</div>
-=======
-   <div class="modal fade" id="joinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header border-bottom-0">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-title text-center">
-          <h4>Sign Up</h4>
-        </div>
-        <div class="d-flex flex-column text-center">
-          <form method="post" action="index">
-            <div class="form-group">
-              <input type="id" class="form-control" id="joinuserid" name="userid" placeholder="Enter your id" required/>
-			</div>
-            <div class="form-group">
-              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name" required/>
-			</div>
-			<hr>
-			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password" required/>
-			</div>
-			<!-- <div class="form-group" 비밀번호 확인 로직 만들기>
-              <input type="password" class="form-control" id="userpwd" name="userpwd2" placeholder="Confirm your password" required/>
-			</div>-->
->>>>>>> refs/remotes/origin/master
 			<div class="form-group">
               <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email" required/>
 			</div>
