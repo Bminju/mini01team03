@@ -29,7 +29,7 @@
    </insert>
    
    <!-- 아이디 중복체크 -->
-   <select id="userIdchk" resultType="int">
+   <select id="userIdchk" parameterType="UserVO" resultType="int">
 	SELECT count(*)
 	FROM user
 	WHERE Userid = #{userid}

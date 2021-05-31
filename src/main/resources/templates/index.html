@@ -53,11 +53,7 @@
 		.delimiter {
 		padding: 1rem;
 		}
-		
-		.social-buttons .btn {
-		margin: 0 0.5rem 1rem;
-		}
-		
+	
 		.signup-section {
 		padding: 0.3rem 0rem;
 		}
@@ -174,15 +170,13 @@
 		//$(document).ready(function() {
 
 				
-				var userid = $("#joinuserid").val();
-				console.log("userid")
-
+				var chkid = $("#joinuserid").val();
+				
 				$.ajax({
 				type:"POST",
 				url:"/chkid",
-				data:JSON.stringify(userid),
+				data:JSON.stringify({userid : chkid}),
 				contentType:'application/json; charset=UTF-8',
-				dataType:"json",
 				success:function(data){
 				    if (data == 1) { //db에 id값이 있을 때 
 						alert("중복된 아이디입니다.");

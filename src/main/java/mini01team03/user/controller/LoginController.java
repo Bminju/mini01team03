@@ -42,11 +42,6 @@ public class LoginController {
 	@Autowired
 	UserService userService;
 	
-	/*@GetMapping("index")
-	public String login() throws Exception {
-		return "index";
-	}*/
-	
 	  @ResponseBody
 	  @PostMapping("login")
 	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
@@ -74,9 +69,8 @@ public class LoginController {
 	  //아이디 중복체크 
 	  @ResponseBody
 	  @PostMapping("chkid")
-	  public int userIdchk(@RequestBody int userVO) throws SQLException {
-		   int result = userService.userIdchk(userVO);
-		   logger.info("받았다.");
+	  public int userIdchk(@RequestBody UserVO userid) throws SQLException {
+		   int result = userService.userIdchk(userid);
 		   return result;
 	  }
 	  

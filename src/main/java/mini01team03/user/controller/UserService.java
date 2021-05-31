@@ -12,5 +12,5 @@ public interface UserService {
 	
 	public int insertUser(UserVO userVO) throws SQLException;
 	//아이디 중복체크 
-	public int userIdchk(int userVO) throws SQLException;
+	public int userIdchk(UserVO userid) throws SQLException;
 }
