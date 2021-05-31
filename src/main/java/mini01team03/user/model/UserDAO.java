@@ -15,4 +15,6 @@ public interface UserDAO {
 	public int insertKaProfile(KuserVO kakaoUser) throws SQLException;
 	//회원가입
 	public int insertUser(UserVO userVO) throws SQLException;
+	//아이디 중복체크 
+	public int userIdchk(int userVO) throws SQLException;
 }

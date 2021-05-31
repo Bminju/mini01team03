@@ -67,46 +67,18 @@ public class LoginController {
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO) throws SQLException {
-		   userService.insertUser(userVO);
-		   return "joinok";
+		  userService.insertUser(userVO);
+		  return "joinok";
 	  }
 	  
-	  /*@GetMapping("logout")
-		 public String logout(HttpSession session) {
-			 //session.removeAttribute("userVO"); 하나의 값만 삭제
-			 session.invalidate();
-			 return "redirect:login";
-		 }*/
-	  
-	  
-	  /*public String loginPost(HttpServletRequest request, HttpSession session, Model model) throws Exception {
-	 public String loginPost(@RequestParam("Email") String email,
-		 				@RequestParam("Userpwd") String userpwd) throws Exception {
-		String email= request.getParameter("Email");
-		String userpwd = request.getParameter("Userpwd");
-		 
-	   logger.info("loginId:"+email);
-		logger.info("loginpwd:"+userpwd);
-	
-		UserVO userVO = userService.getLoginInfo(email);
-		
-		
-		if(userVO.getUser().equals(user)) {
-			session.setAttribute("userVO", userVO);
-		return " ";
-		} 
-		 if(userVO == null) {
-			model.addAttribute("errMsg", "아이디가 없습니다.");
-			return " ";
-		}
-		
-		if(userVO.getUserpwd().equals(userpwd)) {
-			session.setAttribute("userVO", userVO);
-			return " ";
-		}else {
-			model.addAttribute("errMsg", "암호가 틀립니다.");
-			return " ";
-		} */
+	  //아이디 중복체크 
+	  @ResponseBody
+	  @PostMapping("chkid")
+	  public int userIdchk(@RequestBody int userVO) throws SQLException {
+		   int result = userService.userIdchk(userVO);
+		   logger.info("받았다.");
+		   return result;
+	  }
 	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")

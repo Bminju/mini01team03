@@ -34,4 +34,10 @@ public class UserServiceImpl implements UserService {
 		int cnt = userDAO.insertUser(userVO);
 		return cnt;
 	}
+
+	@Override
+	public int userIdchk(int userVO) throws SQLException {
+		int result = userDAO.userIdchk(userVO);
+		return result;
+	}
 }

@@ -28,4 +28,12 @@
    insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
    </insert>
    
+   <!-- 아이디 중복체크 -->
+   <select id="userIdchk" resultType="int">
+	SELECT count(*)
+	FROM user
+	WHERE Userid = #{userid}
+	</select>
+	
+   <!-- 이메일 중복체크 -->
 </mapper>
