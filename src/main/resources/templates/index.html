@@ -4,17 +4,16 @@
 	<meta charset="utf-8">
 	<meta name="viewport"  content="width=device-width, user-scalable=no,  initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--화면 랜더링 엔진을 최신으로 써라-->
-	<link rel="icon" href="" > <!--파비콘 넣는 곳 .ico파일(.png랑은 다른 사이즈?) -->
 	<!-- jQuery -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>   
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<!-- Bootstrap CSS -->
-	<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
 	<!-- Font Awesome CSS -->
-	<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.3.1/css/all.css'>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
 	
 	<title>여행가계부 룰루</title>
 	<style>
-		/* footer{ position:fixed; 
+		 footer{ position:fixed; 
  				left:0px; 
   				bottom:0px; 
   				height:30px; 
@@ -25,7 +24,7 @@
 			margin:5px;
 			text-align: center;
 			font-size: 7px;
-		} */
+		} 
 
 		.container {
   		padding: 2rem 0rem;
@@ -64,22 +63,14 @@
 		}
 
 	</style>
-	
 </head>
 <body>
 	<header>
-	    
 	<script>
-
-		// 로그인 버튼 클릭시
-		$(function(){
-			$('#logoutbtn').hide();
-		})
-
 		function fnLoginsubmit() {
 		//$(document).ready(function() {
-		//$('#loginsubmit').click = function(){ 
-			
+
+				
 				var email = $("#email").val();
 				var userpwd = $("#userpwd").val();
 				//alert('성공'+email);
@@ -97,38 +88,107 @@
 						$("#loginModal").modal("hide");
 						$("#loginbtn").hide();
 						$("#logoutbtn").show();
-						
-					
-						
-						
 				  }else {
 				  	(data == 'false')
-						
-					  };  //새로고침
+					 alert("너 비번 틀렸어") };  //새로고침
 				}
-			})
+                })
 		};
-			
-			
-			
-			
+        function fnjoinsubmit() {
+		
+				if (!document.joinform.userid.value) {
+					alert("아이디를 입력하세요!");
+					document.joinform.userid.focus();
+					return;
+					}
+				if (!document.joinform.userpwd.value) {
+					alert("비밀번호를 입력하세요!");
+					document.joinform.userpwd.focus();
+					return;
+					}
+				if (!document.joinform.userpwd2.value) {
+					alert("비밀번호를 확인하세요!");
+					document.joinform.userpwd2.focus();
+					return;
+					}
+				if (!document.joinform.username.value) {
+					alert("이름을 입력하세요!");
+					document.joinform.username.focus();
+					return;
+					}
+				if (!document.joinform.email.value) {
+					alert("이메일을 입력하세요!");
+					document.joinform.email.focus();
+					return;
+					}
+				if (document.getElementsByName('userpwd').value !="&&document.getElementsByName('userpwd2').value!=") {
+					
+					document.getElementsByName('check').innerHTML ='비밀번호가 일치하지 않습니다.';
+				}
+				
+
+			    var userid = $("#joinuserid").val();
+				var userpwd = $("#joinuserpwd").val();
+				var username = $("#joinusername").val();
+				var email = $("#joinemail").val();
+				alert('성공'+ userid);
+				var joinObj = new Object();
+				joinObj.userid = userid;
+				joinObj.username = username;
+				joinObj.userpwd = userpwd;
+				joinObj.email = email;
+				
+	
+				$.ajax({
+				type:"POST",
+				url:"join",
+				data:JSON.stringify(joinObj),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data) {
+					console.log("join")
+				   }  //빈칸 그대로 입력되는 문제 해결하기 
+				})
+		};
+
+		$(function(){
+  			$('#joinuserpwd').keyup(function(){
+    		$('#chkNotice').html('');
+    		});
+
+    		$('#joinuserpwd2').keyup(function(){
+
+        		if($('#joinuserpwd').val() != $('#joinuserpwd2').val()){
+          		$('#chkNotice').html('비밀번호 일치하지 않음<br><br>');
+          		$('#chkNotice').attr('color', '#f82a2aa3');
+        		} else{
+          		$('#chkNotice').html('비밀번호 일치함<br><br>');
+          		$('#chkNotice').attr('color', '#199894b3');
+        		}
+
+    		});
+		});
+
+
+
+
 	</script>
+	<!--로그인 모달-->
 	<div class="container">
 	<span id="joinbtn">
-    <button type="button" class="btn btn-info btn-round float-right" >
+    <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
   	</button> 
   	</span>
 	<span id="loginbtn">
-  <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
+    <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
     Login
-  </button>  
-	  </span>
-	  <span id="logoutbtn">
+    </button>  
+	</span>
+    <span id="logoutbtn" style="display: none;">
     <button type="button" class="btn btn-info btn-round float-right" >
     Logout
-  </button> 
-	  </span> 
+    </button> 
+	</span> 
 	  
   <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -143,7 +203,7 @@
           <h4>Login</h4>
         </div>
         <div class="d-flex flex-column text-center">
-          <form method="post" action="index">
+          <form method="post" action="index" name="loginform">
             <div class="form-group">
               <input type="id" class="form-control" id="email" name="email" placeholder="Email">
             </div>
@@ -159,40 +219,74 @@
 		  <a href="https://kauth.kakao.com/oauth/authorize?client_id=f4756aac75cb4481cb7c932449df2447&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code">
 			<img src="https://k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg" width="80%"/></a>
 		  </div>
-		 
-		  <!-- <div class="d-flex justify-content-center social-buttons">
-            <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Twitter">
-              <i class="fab fa-twitter"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Facebook">
-              <i class="fab fa-facebook"></i>
-            </button>
-            <button type="button" class="btn btn-secondary btn-round" data-toggle="tooltip" data-placement="top" title="Linkedin">
-              <i class="fab fa-linkedin"></i>
-            </button>
-          </div>-->
+		
         </div>
       </div>
     </div>
-      <!--<div class="modal-footer d-flex justify-content-center">
-        <div class="signup-section">Not a member yet? <a href="#a" class="text-info"> Sign Up</a>.</div>
-      </div>-->
+     
   </div>
+
+  </div>
+  <!--회원가입 모달-->
+   <div class="modal fade" id="joinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+          <h4>Sign Up</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <form method="post" action="index" name="joinform">
+            <div class="form-group">
+			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id" required/>
+			  <button type="button" class="btn btn-info btn-round" onclick="id_check()">check!</button>
+			  <img id="id_check_sucess" style="display: none;">
+			</div>
+			<div class="form-group">
+              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password" required/>
+			</div>
+			<div class="form-group">
+              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password" required/>
+			</div><br>
+			<font id="chkNotice" size="2"></font>
+			<hr>
+			<div class="form-group">
+              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name" required/>
+			</div>
+			<div class="form-group">
+              <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email" required/>
+			</div>
+            <button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
+		  </form>
+		</div>
+	</div>
+	</div>
+</div>
 </div>
 </div>
 </header>
-<a href="http://localhost:8080/address">address</a>
+<div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+	  <a class="navbar-brand" href="http://localhost:8080/address">Before</a>
+	  <a class="navbar-brand" href="http://localhost:8080/address">After</a>
+    </div>
+  </nav>
+</div>
+
 <footer>
-<div id=footerid>Copyright 민주,혜지,슬기. All rights reserved.</div> 
+<div id="footerid"> Copyright 민주,혜지,슬기. All rights reserved.</div> 
 </footer>
 <!-- jQuery -->
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <!-- Popper JS -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
-<script src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js'></script>
-
-
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 </body>
 </html>

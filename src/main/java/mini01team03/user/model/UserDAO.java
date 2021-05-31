@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface UserDAO {
-	public UserVO getLoginInfo(String email) throws SQLException;
-
 	
-	public int insertKaProfile(UserVO kakaoUser) throws SQLException;
-
+	//기본로그인
+	public UserVO getLoginInfo(String email) throws SQLException;
+	//카카오로그인
+	public int insertKaProfile(KuserVO kakaoUser) throws SQLException;
+	//회원가입
+	public int insertUser(UserVO userVO) throws SQLException;
 }
