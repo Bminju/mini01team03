@@ -63,10 +63,11 @@
 <body>
 	<header>
 	<script>
-		function fnLoginsubmit() {
-		//$(document).ready(function() {
 
-				
+		//로그인
+		//로그인시 세션 유지하게 하기
+		function fnLoginsubmit() {	
+		
 				var email = $("#email").val();
 				var userpwd = $("#userpwd").val();
 				//alert('성공'+email);
@@ -82,14 +83,32 @@
 				success:function(data){
 				    if (data == 'ok') { // 로그인 성공시 
 						$("#loginModal").modal("hide");
-						$("#loginbtn").hide();
-						$("#logoutbtn").show();
+					location.reload(); //윈도우 내에서 자동으로 새로고침 
+					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
 				  }else {
 				  	(data == 'false')
 					 alert("너 비번 틀렸어") };  //새로고침
-				}
-                })
+					 
+					}
+					
+				})
+				
 		};
+
+		//로그아웃
+		function fn_logout() {
+			$.ajax({
+				type:"GET",
+				url:"/logout",
+				success:function(data){
+					console.log('ajax logout');
+				}
+			});
+			location.reload();
+		}
+
+		//회원가입 빈 칸 입력 금지
+		//회원가입 
         function fnjoinsubmit() {
 		
 				if (!document.joinform.userid.value) {
@@ -146,8 +165,7 @@
 				})
 		};
 
-
-
+		//비밀번호 일치 확인
 		$(function(){
   			$('#joinuserpwd').keyup(function(){
     		$('#chkNotice').html('');
@@ -166,6 +184,7 @@
     		});
 		});
 
+		//아이디 중복 확인
 		function id_check() {
 		//$(document).ready(function() {
 
@@ -188,21 +207,23 @@
 		};
 
 
+
 	</script>
 	<!--로그인 모달-->
 	<div class="container">
-	<span id="joinbtn">
+	<span th:text="${session.email}"></span><!--로그인시, id 보여줌-->
+	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
   	</button> 
   	</span>
-	<span id="loginbtn">
+	<span id="loginbtn" th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
     Login
     </button>  
 	</span>
-    <span id="logoutbtn" style="display: none;">
-    <button type="button" class="btn btn-info btn-round float-right" >
+    <span id="logoutbtn" th:style="${session.email == null ? 'display:none':''}">
+    <button type="button" class="btn btn-info btn-round float-right" onclick="fn_logout()">
     Logout
     </button> 
 	</span> 
@@ -300,7 +321,7 @@
 <div id="footerid"> Copyright 민주,혜지,슬기. All rights reserved.</div> 
 </footer>
 <!-- jQuery -->
-<script src="https://.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!--<script src="https://googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
 <!-- Popper JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->

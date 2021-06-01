@@ -40,8 +40,9 @@ public class LoginController {
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
-	UserService userService;
-	
+	UserService userService; 
+	  
+	  //로그인 ajax
 	  @ResponseBody
 	  @PostMapping("login")
 	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
@@ -49,9 +50,9 @@ public class LoginController {
 		  String email = userVO.getEmail();
 		  UserVO dbUserVO = userService.getLoginInfo(email);
 		  if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
-			 session = request.getSession();
-			 session.setAttribute("email", dbUserVO.getUserid());
-			 System.out.print(session.getAttribute("email"));
+			 session = request.getSession();  //세션을 얻는다.
+			 session.setAttribute("email", dbUserVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
+			 System.out.print(session.getAttribute("email"));//email을 키값으로 밸류인 getUserid를 불러옴
 		   return "ok";  //session 추가
 		  }else {
 			  return "fail";
@@ -74,10 +75,18 @@ public class LoginController {
 		   return result;
 	  }
 	  
+	  //로그아웃시 세션 해제
+	  @GetMapping("logout")
+	  @ResponseBody
+	  public String logout(HttpSession session) throws Exception {
+		  session.invalidate();
+		  return "logout";
+	  }
+	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
 	   public @ResponseBody String kakaoCallback(String code) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
-	      
+	    
 	      //post 방식으로 key=value 데이터를 요청(카카오톡으로)
 	      //예전에는 HttpsURLConnection, Retrofit2(안드로이드에서 자주 사용), OkHttp 이런 라이브러리도 있음 
 	      RestTemplate rt = new RestTemplate(); //이 라이브러리 사용하면 http 요청을 편하게 할 수 있음

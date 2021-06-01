@@ -9,4 +9,12 @@
 		<welcome-file>default.htm</welcome-file>
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
+	
+<!-- 세션 유지시간을 30분으로 세팅한다. -->	
+<session-config>
+	<session-timeout>30</session-timeout>
+</session-config>
+
 </web-app>
+
+
