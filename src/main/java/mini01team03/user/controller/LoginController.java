@@ -85,7 +85,7 @@ public class LoginController {
 	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
-	   public @ResponseBody String kakaoCallback(String code) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
+	   public String kakaoCallback(String code, HttpServletRequest request, HttpSession session) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
 	    
 	      //post 방식으로 key=value 데이터를 요청(카카오톡으로)
 	      //예전에는 HttpsURLConnection, Retrofit2(안드로이드에서 자주 사용), OkHttp 이런 라이브러리도 있음 
@@ -178,12 +178,21 @@ public class LoginController {
 	            .username(kakaoProfile.getProperties().getNickname())
 	            //.oauth("kakao")
 	            .build();
-	      System.out.println("포스트 매핑 : ");
 	      
-	      userService.insertKaProfile(kakaoUser);
+	      String email = kakaoUser.getEmail();
+	      UserVO originUser = userService.getLoginInfo(email);
+	      if(originUser == null || originUser.getEmail() == null) {
+	    	  System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다");
+	    	  userService.insertKaProfile(kakaoUser);
+	      }
 	      
+	      System.out.println("자동 로그인을 진행합니다.");
+			// 로그인 처리 코드 작성하기
+	      	session = request.getSession();
+			session.setAttribute("email", kakaoUser.getEmail());//setAttribute는 name, value쌍으로 객체를 저장
+					
+			return "redirect:/index";
 	      
-	      return response2.getBody();
 	      
 	   }
 	}
