@@ -10,55 +10,9 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
 	<!-- Font Awesome CSS -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-	
+	<link rel="stylesheet" href="/css/style.css"/>
 	<title>여행가계부 룰루</title>
-	<style>
-		 footer{ position:fixed; 
- 				left:0px; 
-  				bottom:0px; 
-  				height:30px; 
-  				width:100%; 
- 				background:grey; 
- 				color: white; }
-		#footerid {
-			margin:5px;
-			text-align: center;
-			font-size: 7px;
-		} 
-
-		.container {
-  		padding: 2rem 0rem;
-		}
- 
-		@media (min-width: 576px) {
-		.modal-dialog {
-			max-width: 400px;
-		}
-		.modal-dialog .modal-content {
-			padding: 1rem;
-		}
-		}
-		.modal-header .close {
-		margin-top: -1.5rem;
-		}
-		
-		.form-title {
-		margin: -2rem 0rem 2rem;
-		}
-		
-		.btn-round {
-		border-radius: 3rem;
-		}
-		
-		.delimiter {
-		padding: 1rem;
-		}
 	
-		.signup-section {
-		padding: 0.3rem 0rem;
-		}
-
-	</style>
 </head>
 <body>
 	<header>
@@ -136,11 +90,22 @@
 					document.joinform.email.focus();
 					return;
 					}
-				if (document.getElementsByName('userpwd').value !="&&document.getElementsByName('userpwd2').value!=") {
-					
-					document.getElementsByName('check').innerHTML ='비밀번호가 일치하지 않습니다.';
+
+				var pwd1 = document.getElementById("joinuserpwd").value
+				var pwd2 = document.getElementById("joinuserpwd2").value
+				if (pwd1 != pwd2) {
+					alert("비밀번호가 일치하지 않아요.");
+					document.joinform.userpwd2.focus();
+					return;
 				}
+			
+				//if ((document.getElementsByName("userpwd").value) != (document.getElementsByName('userpwd2').value)){
+				//	alert('비밀번호가 일치하지 않습니다.');
+				//	return;
+				//}
 				
+ 			//비밀번호 불일치일시 회원가입 불가하게 로직 짜기
+
 
 			    var userid = $("#joinuserid").val();
 				var userpwd = $("#joinuserpwd").val();
@@ -161,7 +126,7 @@
 				contentType:'application/json; charset=UTF-8',
 				success:function(data) {
 					console.log("join")
-				   }  //빈칸 그대로 입력되는 문제 해결하기 
+				   }  
 				})
 		};
 
@@ -174,14 +139,15 @@
     		$('#joinuserpwd2').keyup(function(){
 
         		if($('#joinuserpwd').val() != $('#joinuserpwd2').val()){
-          		$('#chkNotice').html('비밀번호 일치하지 않음<br><br>');
+          		$('#chkNotice').html('비밀번호 일치하지 않음<br>');
           		$('#chkNotice').attr('color', '#f82a2aa3');
         		} else{
-          		$('#chkNotice').html('비밀번호 일치함<br><br>');
+          		$('#chkNotice').html('비밀번호 일치함<br>');
           		$('#chkNotice').attr('color', '#199894b3');
         		}
 
-    		});
+			});
+			
 		});
 
 		//아이디 중복 확인
@@ -198,14 +164,18 @@
 				contentType:'application/json; charset=UTF-8',
 				success:function(data){
 				    if (data == 1) { //db에 id값이 있을 때 
-						alert("중복된 아이디입니다.");
+						//alert("중복된 아이디입니다.");
+						$('#chkid').html('중복된 아이디 입니다.<br>');
+          				$('#chkid').attr('color', '#f82a2aa3');
 				  }else if(data == 0){
-					  $("#idChk").attr("value", "Y")
-					  alert("사용가능한 아이디입니다.") };  
+					  //$("#idChk").attr("value", "Y")
+					  //alert("사용가능한 아이디입니다.") }; 
+					    $('#chkid').html('사용가능한 아이디에요.<br>');
+          				$('#chkid').attr('color', '#199894b3'); 
 				}
-            })
-		};
-
+            }
+		});
+	}
 
 
 	</script>
@@ -254,7 +224,7 @@
           <div class="text-center text-muted delimiter">SNS Login</div>
 		  <!--카카오로그인-->
 		  <div class="kakaologin">
-		  <a href="https://kauth.kakao.com/oauth/authorize?client_id=f4756aac75cb4481cb7c932449df2447&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code">
+		  <a href="https://kauth.kakao.com/oauth/authorize?client_id=f4756aac75cb4481cb7c932449df2447&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code&scope=account_email">
 			<img src="https://k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg" width="80%"/></a>
 		  </div>
 		
@@ -281,23 +251,23 @@
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="joinform">
             <div class="form-group">
-			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id" required/>
+			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
 			  <button type="button" class="btn btn-info btn-round" onclick="id_check()">check!</button>
-			  <img id="id_check_sucess" style="display: none;">
+			  <font id="chkid" size="2"></font>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password" required/>
+              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password" required/>
-			</div><br>
+              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password"/>
+			</div>
 			<font id="chkNotice" size="2"></font>
 			<hr>
 			<div class="form-group">
-              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name" required/>
+              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
 			</div>
 			<div class="form-group">
-              <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email" required/>
+              <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
 			</div>
             <button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
 		  </form>
@@ -317,6 +287,10 @@
   </nav>
 </div>
 
+
+<!--<footer th:replace="fragments/footer.html"></footer>
+</body>
+</html> -->
 <footer>
 <div id="footerid"> Copyright 민주,혜지,슬기. All rights reserved.</div> 
 </footer>
