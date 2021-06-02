@@ -8,64 +8,20 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
 	<!-- Font Awesome CSS -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-	
+	<link rel="stylesheet" href="/css/style.css"/>
 	<title>여행가계부 룰루</title>
-	<style>
-		 footer{ position:fixed; 
- 				left:0px; 
-  				bottom:0px; 
-  				height:30px; 
-  				width:100%; 
- 				background:grey; 
- 				color: white; }
-		#footerid {
-			margin:5px;
-			text-align: center;
-			font-size: 7px;
-		} 
-
-		.container {
-  		padding: 2rem 0rem;
-		}
- 
-		@media (min-width: 576px) {
-		.modal-dialog {
-			max-width: 400px;
-		}
-		.modal-dialog .modal-content {
-			padding: 1rem;
-		}
-		}
-		.modal-header .close {
-		margin-top: -1.5rem;
-		}
-		
-		.form-title {
-		margin: -2rem 0rem 2rem;
-		}
-		
-		.btn-round {
-		border-radius: 3rem;
-		}
-		
-		.delimiter {
-		padding: 1rem;
-		}
 	
-		.signup-section {
-		padding: 0.3rem 0rem;
-		}
-
-	</style>
 </head>
 <body>
 	<header>
 	<script>
 
 		//로그인
-		//로그인시 세션 유지하게 하기
+		//로그인시 세션유지하기
 		function fnLoginsubmit() {	
 		
 				var email = $("#email").val();
@@ -87,8 +43,7 @@
 					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
 				  }else {
 				  	(data == 'false')
-					 alert("너 비번 틀렸어") };  //새로고침
-					 
+					 alert("너 비번 틀렸어") }; 
 					}
 					
 				})
@@ -136,17 +91,28 @@
 					document.joinform.email.focus();
 					return;
 					}
-				if (document.getElementsByName('userpwd').value !="&&document.getElementsByName('userpwd2').value!=") {
-					
-					document.getElementsByName('check').innerHTML ='비밀번호가 일치하지 않습니다.';
+
+				var pwd1 = document.getElementById("joinuserpwd").value
+				var pwd2 = document.getElementById("joinuserpwd2").value
+				if (pwd1 != pwd2) {
+					alert("비밀번호가 일치하지 않아요.");
+					document.joinform.userpwd2.focus();
+					return;
 				}
+			
+				//if ((document.getElementsByName("userpwd").value) != (document.getElementsByName('userpwd2').value)){
+				//	alert('비밀번호가 일치하지 않습니다.');
+				//	return;
+				//}
 				
+ 			//비밀번호 불일치일시 회원가입 불가하게 로직 짜기
+
 
 			    var userid = $("#joinuserid").val();
 				var userpwd = $("#joinuserpwd").val();
 				var username = $("#joinusername").val();
 				var email = $("#joinemail").val();
-				alert('성공'+ userid);
+				//alert('성공'+ userid);
 				var joinObj = new Object();
 				joinObj.userid = userid;
 				joinObj.username = username;
@@ -161,7 +127,7 @@
 				contentType:'application/json; charset=UTF-8',
 				success:function(data) {
 					console.log("join")
-				   }  //빈칸 그대로 입력되는 문제 해결하기 
+				   }  
 				})
 		};
 
@@ -174,14 +140,15 @@
     		$('#joinuserpwd2').keyup(function(){
 
         		if($('#joinuserpwd').val() != $('#joinuserpwd2').val()){
-          		$('#chkNotice').html('비밀번호 일치하지 않음<br><br>');
+          		$('#chkNotice').html('비밀번호 일치하지 않음<br>');
           		$('#chkNotice').attr('color', '#f82a2aa3');
         		} else{
-          		$('#chkNotice').html('비밀번호 일치함<br><br>');
+          		$('#chkNotice').html('비밀번호 일치함<br>');
           		$('#chkNotice').attr('color', '#199894b3');
         		}
 
-    		});
+			});
+			
 		});
 
 		//아이디 중복 확인
@@ -198,34 +165,44 @@
 				contentType:'application/json; charset=UTF-8',
 				success:function(data){
 				    if (data == 1) { //db에 id값이 있을 때 
-						alert("중복된 아이디입니다.");
+						//alert("중복된 아이디입니다.");
+						$('#chkid').html('중복된 아이디 입니다.<br>');
+          				$('#chkid').attr('color', '#f82a2aa3');
 				  }else if(data == 0){
-					  $("#idChk").attr("value", "Y")
-					  alert("사용가능한 아이디입니다.") };  
+					  //$("#idChk").attr("value", "Y")
+					  //alert("사용가능한 아이디입니다.") }; 
+					    $('#chkid').html('사용가능한 아이디에요.<br>');
+          				$('#chkid').attr('color', '#199894b3'); 
 				}
-            })
-		};
-
+            }
+		});
+	}
 
 
 	</script>
+	
 	<!--로그인 모달-->
 	<div class="container">
-	<span th:text="${session.email}"></span><!--로그인시, id 보여줌-->
+		<div>
+	<span th:text="${session.email}">
+		<i class="fa fa-user" aria-hidden="true"></i>
+	</span></div><!--로그인시, id 보여줌-->
 	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
   	</button> 
   	</span>
 	<span id="loginbtn" th:style="${session.email == null ? '':'display:none'}">
-    <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
-    Login
-    </button>  
+		<i class="fa fa-cloud float-right fa-3x" style="color:skyblue;" aria-hidden="false" data-toggle="modal" data-target="#loginModal"></i>
+    <!-- <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
+		Login
+	</button>  -->
 	</span>
     <span id="logoutbtn" th:style="${session.email == null ? 'display:none':''}">
-    <button type="button" class="btn btn-info btn-round float-right" onclick="fn_logout()">
+		<i class="fa fa-user float-right fa-3x" aria-hidden="true" onclick="fn_logout()"></i>
+   <!--<button type="button" class="btn btn-info btn-round float-right" onclick="fn_logout()">
     Logout
-    </button> 
+    </button> -->
 	</span> 
 	  
   <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -276,30 +253,34 @@
       </div>
       <div class="modal-body">
         <div class="form-title text-center">
-          <h4>Sign Up</h4>
+		  <h4>Sign Up</h4>
         </div>
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="joinform">
             <div class="form-group">
-			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id" required/>
-			  <button type="button" class="btn btn-info btn-round" onclick="id_check()">check!</button>
-			  <img id="id_check_sucess" style="display: none;">
+			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
+			  <font id="chkid" size="2"></font>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password" required/>
+              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password" required/>
-			</div><br>
+              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password"/>
+			</div>
 			<font id="chkNotice" size="2"></font>
 			<hr>
 			<div class="form-group">
-              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name" required/>
+              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
 			</div>
 			<div class="form-group">
-              <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email" required/>
+			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
 			</div>
-            <button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
+  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+  			I accept the Terms of Use & Privacy Policy. 
+			<hr>
+			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
 		  </form>
 		</div>
 	</div>
@@ -313,10 +294,15 @@
     <div class="container-fluid">
 	  <a class="navbar-brand" href="http://localhost:8080/address">Before</a>
 	  <a class="navbar-brand" href="http://localhost:8080/address">After</a>
+	  <a class="navbar-brand" href="#">Community</a>
     </div>
   </nav>
 </div>
 
+
+<!--<footer th:replace="fragments/footer.html"></footer>
+</body>
+</html> -->
 <footer>
 <div id="footerid"> Copyright 민주,혜지,슬기. All rights reserved.</div> 
 </footer>
