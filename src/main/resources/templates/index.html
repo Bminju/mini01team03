@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"><!--//th를 사용한다는 의미-->
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport"  content="width=device-width, user-scalable=no,  initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
@@ -8,6 +8,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
 	<!-- Font Awesome CSS -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
 	<link rel="stylesheet" href="/css/style.css"/>
@@ -19,14 +21,14 @@
 	<script>
 
 		//로그인
-		//로그인시 세션 유지하게 하기
+		//로그인시 세션유지하기
 		function fnLoginsubmit() {	
 		
-				var email = $("#email").val();
+				var userid = $("#userid").val();
 				var userpwd = $("#userpwd").val();
-				//alert('성공'+email);
+				//alert('성공'+id);
 				var dataObj = new Object();
-				dataObj.email = email;
+				dataObj.userid = userid;
 				dataObj.userpwd = userpwd;
 	
 				$.ajax({
@@ -41,8 +43,7 @@
 					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
 				  }else {
 				  	(data == 'false')
-					 alert("너 비번 틀렸어") };  //새로고침
-					 
+					 alert("너 비번 틀렸어") }; 
 					}
 					
 				})
@@ -111,7 +112,7 @@
 				var userpwd = $("#joinuserpwd").val();
 				var username = $("#joinusername").val();
 				var email = $("#joinemail").val();
-				alert('성공'+ userid);
+				//alert('성공'+ userid);
 				var joinObj = new Object();
 				joinObj.userid = userid;
 				joinObj.username = username;
@@ -179,23 +180,29 @@
 
 
 	</script>
+	
 	<!--로그인 모달-->
 	<div class="container">
-	<span th:text="${session.email}"></span><!--로그인시, id 보여줌-->
+		<div>
+	<span th:text="${session.email}">
+		<i class="fa fa-user" aria-hidden="true"></i>
+	</span></div><!--로그인시, id 보여줌-->
 	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
   	</button> 
   	</span>
 	<span id="loginbtn" th:style="${session.email == null ? '':'display:none'}">
-    <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
-    Login
-    </button>  
+		<i class="fa fa-cloud float-right fa-3x" style="color:skyblue;" aria-hidden="false" data-toggle="modal" data-target="#loginModal"></i>
+    <!-- <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal">
+		Login
+	</button>  -->
 	</span>
     <span id="logoutbtn" th:style="${session.email == null ? 'display:none':''}">
-    <button type="button" class="btn btn-info btn-round float-right" onclick="fn_logout()">
+		<i class="fa fa-user float-right fa-3x" aria-hidden="true" onclick="fn_logout()"></i>
+   <!--<button type="button" class="btn btn-info btn-round float-right" onclick="fn_logout()">
     Logout
-    </button> 
+    </button> -->
 	</span> 
 	  
   <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -213,7 +220,7 @@
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="loginform">
             <div class="form-group">
-              <input type="id" class="form-control" id="email" name="email" placeholder="Email">
+              <input type="id" class="form-control" id="userid" name="userid" placeholder="ID">
             </div>
             <div class="form-group">
               <input type="password" class="form-control" id="userpwd" name="userpwd" placeholder="password">
@@ -246,13 +253,13 @@
       </div>
       <div class="modal-body">
         <div class="form-title text-center">
-          <h4>Sign Up</h4>
+		  <h4>Sign Up</h4>
         </div>
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="joinform">
             <div class="form-group">
 			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <button type="button" class="btn btn-info btn-round" onclick="id_check()">check!</button>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
 			  <font id="chkid" size="2"></font>
 			</div>
 			<div class="form-group">
@@ -267,9 +274,13 @@
               <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
 			</div>
 			<div class="form-group">
-              <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
+			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
 			</div>
-            <button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
+  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+  			I accept the Terms of Use & Privacy Policy. 
+			<hr>
+			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
 		  </form>
 		</div>
 	</div>
@@ -283,14 +294,14 @@
     <div class="container-fluid">
 	  <a class="navbar-brand" href="http://localhost:8080/address">Before</a>
 	  <a class="navbar-brand" href="http://localhost:8080/address">After</a>
+	  <a class="navbar-brand" href="#">Community</a>
     </div>
   </nav>
 </div>
 
 
-<!--<footer th:replace="fragments/footer.html"></footer>
-</body>
-</html> -->
+
+
 <footer>
 <div id="footerid"> Copyright 민주,혜지,슬기. All rights reserved.</div> 
 </footer>
