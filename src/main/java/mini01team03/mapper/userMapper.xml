@@ -15,7 +15,7 @@
 	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
 	SELECT Userid,Userpwd,Email,Username
 	FROM user
-	WHERE Email = #{email}
+	WHERE Userid = #{userid}
 	</select>
 	
 	<!-- 카카오 로그인 -->

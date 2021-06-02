@@ -47,8 +47,8 @@ public class LoginController {
 	  @PostMapping("login")
 	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
 		  //System.out.println(userVO.getEmail());
-		  String email = userVO.getEmail();
-		  UserVO dbUserVO = userService.getLoginInfo(email);
+		  String userid = userVO.getUserid();
+		  UserVO dbUserVO = userService.getLoginInfo(userid);
 		  if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
 			 session = request.getSession();  //세션을 얻는다.
 			 session.setAttribute("email", dbUserVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
@@ -62,9 +62,11 @@ public class LoginController {
 	  //회원가입 ajax
 	  @ResponseBody
 	  @PostMapping("join")
-	  public String joinUser(@RequestBody UserVO userVO) throws SQLException {
+	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
 		  userService.insertUser(userVO);
-		  return "joinok";
+		  session = request.getSession();
+	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
+	      return "redirect:/index";
 	  }
 	  
 	  //아이디 중복체크 
