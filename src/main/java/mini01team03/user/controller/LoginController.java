@@ -189,7 +189,7 @@ public class LoginController {
 	      System.out.println("자동 로그인을 진행합니다.");
 			// 로그인 처리 코드 작성하기
 	      	session = request.getSession();
-			session.setAttribute("email", kakaoUser.getEmail());//setAttribute는 name, value쌍으로 객체를 저장
+			session.setAttribute("email", originUser.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 					
 			return "redirect:/index";
 	      
