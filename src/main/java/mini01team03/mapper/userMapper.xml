@@ -35,5 +35,15 @@
 	WHERE Userid = #{userid}
 	</select>
 	
+	<!-- 아이디 찾기 --> 
+	<select id="findid" parameterType="UserVO" resultType="String">
+	SELECT Userid FROM user
+	<where> 
+	<if test="username != null">AND Username = #{username}</if>
+	<if test="email != null">AND Email = #{email}</if>
+	</where>
+	</select>
+	
+	
    <!-- 이메일 중복체크 -->
 </mapper>

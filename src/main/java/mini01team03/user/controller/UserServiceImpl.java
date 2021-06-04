@@ -40,4 +40,12 @@ public class UserServiceImpl implements UserService {
 		int result = userDAO.userIdchk(userid);
 		return result;
 	}
+
+	@Override
+	public String findid(UserVO userVO) throws SQLException {
+		String result = userDAO.findid(userVO);
+		return result;
+	}
+	
+	
 }

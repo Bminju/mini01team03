@@ -48,7 +48,7 @@ public class LoginController {
 	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
 		  //System.out.println(userVO.getEmail());
 		  String userid = userVO.getUserid();
-		  UserVO dbUserVO = userService.getLoginInfo(userid);
+		  UserVO dbUserVO = userService.getLoginInfo(userid); //이렇게 해버리면 아이디가 맞는지 틀리는지 체크가 안되지 않나?
 		  if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
 			 session = request.getSession();  //세션을 얻는다.
 			 session.setAttribute("email", dbUserVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
@@ -58,6 +58,17 @@ public class LoginController {
 			  return "fail";
 		  }
 	  }
+	  //아이디 찾기 ajax
+	  @ResponseBody
+	  @PostMapping("findid")
+	  public String findid (@RequestBody UserVO userVO) throws SQLException {
+		 // System.out.println(userVO.getUsername());
+		  String result = userService.findid(userVO); 
+		  return result; //result에 담긴 값은 조건에 맞는 userid임
+	  }
+	  
+	  	  
+	  
 	  
 	  //회원가입 ajax
 	  @ResponseBody

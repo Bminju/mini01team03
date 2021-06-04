@@ -17,4 +17,8 @@ public interface UserDAO {
 	public int insertUser(UserVO userVO) throws SQLException;
 	//아이디 중복체크 
 	public int userIdchk(UserVO userid) throws SQLException;
+	//아이디 찾기
+	public String findid(UserVO userVO) throws SQLException;
+	
 }
+
