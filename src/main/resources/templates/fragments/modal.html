@@ -76,6 +76,38 @@
 				 
 		};	
 
+		//비밀번호 찾기 
+		function fnFindpwd() {
+				var username = $("#pwdname").val();
+				var email = $("#pwdemail").val();
+				//alert("값 들어감?");
+				var findIdObj = new Object();
+				findIdObj.username = username;
+				findIdObj.email = email;
+
+
+				$.ajax({
+				type:"POST",
+				url:"/findpwd",
+				data:JSON.stringify(findIdObj),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data) {
+					if (data) {
+						$("#findid").modal("hide");
+						alert("찾았습니다! 야호");
+						//$('#chkid').html("당신의 아이디는 "+data+" 입니다.");
+						$('input[id=userid]').attr('value',data);
+						//input value 값에 data(유저의 아이디값)을 추가한다.
+						
+					}else {
+						alert("없는 정보인데? 회원이 확실하시나요?");
+					}		
+					} 	
+				})
+				 
+		};	
+
+
 
 
 		//회원가입 빈 칸 입력 금지
@@ -195,14 +227,14 @@
 		});
 	}
 
-
 	</script>
 	<a href="http://localhost:8080">Home</a>
-	<!--로그인 모달-->
+	
 	  <div class="container">
 		  <!--로그인시, id 보여줌-->
-		  <span th:text="${session.email}" style="color: cadetblue;"> </span>
-		<!--<i class="fa fa-user-circle float-left" aria-hidden="true" style="color: cadetblue;" ></i>-->
+		  <span th:text="${session.email}" style="color: cadetblue;"> 
+			</span>
+	<!--상단 로그인/ 로그아웃 버튼-->
 	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
@@ -218,6 +250,12 @@
 			Logout
   	</button> 
 	</span> 
+	<span id="mypagebtn" th:style="${session.email == null ? 'display:none':''}">
+		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#mypageModal">
+			Mypage
+  	</button> 
+	</span> 
+	<!--로그인 모달-->
   <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -243,9 +281,11 @@
 		  </form> <br>
 		  <div>
           <button type="button" data-toggle="modal" data-target="#findid"><i class="far fa-address-book"> I can't remember my ID</i></button>
-		  </div> 
-		  <font id="chkid" size="2"></font>
-
+		  <br>
+		  <i class="fa fa-key text-muted" aria-hidden="true" data-toggle="modal" data-target="#pwdModal">I Forgot Password</i>
+			<hr>
+		</div> 
+		  
 		  <div class="text-center text-muted delimiter">SNS Login</div>
 		  <!--카카오로그인-->
 		  <div class="kakaologin">
@@ -297,11 +337,35 @@
   </div>
   </div>
 
-
-
-
-
-
+  <!--비밀번호 찾기 모달 -->
+<div class="modal fade" id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+		  <h4>Forgot your password?</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비번이 전송~ </p>
+          <form>
+            <div class="form-group">
+              <input type="id" class="form-control" id="pwdname" name="pwdname" placeholder="Enter your Name">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="pwdemail" name="pwdemail" placeholder="Enter your Email">
+            </div>
+            <button type="button" class="btn btn-info btn-block btn-round" id="findpwd" name="findpwd" onclick="fnFindpwd()">Send Mail</button>
+			</form>
+			</div>
+		  </div>
+		</div>
+	</div>
+	</div>
 
   <!--회원가입 모달-->
    <div class="modal fade" id="joinModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -317,11 +381,11 @@
 		  <h4>Sign Up</h4>
         </div>
         <div class="d-flex flex-column text-center">
-          <form method="post" action="index" name="joinform">
+          <form method="post" action="index" name="checkform">
             <div class="form-group">
 			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
 			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
-			 <!-- <font id="chkid" size="2"></font> -->
+			  <font id="chkid" size="2"></font>
 			</div>
 			<div class="form-group">
               <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
@@ -347,7 +411,53 @@
 	</div>
 	</div>
 </div>
+</div> <!--회원가입 모달 끝-->
+
+<!--회원정보 수정 모달-->
+   <div class="modal fade" id="mypageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+		  <h4>Sign Up</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <form method="post" action="index" name="checkform">
+            <div class="form-group">
+			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
+			  <font id="chkid" size="2"></font>
+			</div>
+			<div class="form-group">
+              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
+			</div>
+			<div class="form-group">
+              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password"/>
+			</div>
+			<font id="chkNotice" size="2"></font>
+			<hr>
+			<div class="form-group">
+              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
+			</div>
+			<div class="form-group">
+			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
+			</div>
+  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+  			I accept the Terms of Use & Privacy Policy. 
+			<hr>
+			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
+		  </form>
+		</div>
+	</div>
+	</div>
 </div>
+</div> <!--회원 정보 수정 모달 끝-->
  </div>
 </div>
 </html>
