@@ -19,6 +19,10 @@ public interface UserDAO {
 	public int userIdchk(UserVO userid) throws SQLException;
 	//아이디 찾기
 	public String findid(UserVO userVO) throws SQLException;
-	
+	//비밀번호 변경 
+	public UserVO findPwd(UserVO userVO) throws SQLException;
+	public UserVO findUserByUserId(String email) throws SQLException;
+	public void updateUserpwd(UserVO uptUserVO) throws SQLException;
+
 }
 

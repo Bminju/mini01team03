@@ -14,14 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,17 +28,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mini01team03.user.model.KakaoProfile;
 import mini01team03.user.model.KuserVO;
+import mini01team03.user.model.MailVO;
 import mini01team03.user.model.OAuthToken;
 import mini01team03.user.model.UserVO;
 
 @Controller
 public class LoginController {
-	
+	//private final SendEmailService sendEmailService = new SendEmailService();
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
 	UserService userService; 
-	  
+	@Autowired
+	SendEmailService sendEmailService;
 	  //로그인 ajax
 	  @ResponseBody
 	  @PostMapping("login")
@@ -67,14 +66,28 @@ public class LoginController {
 		  return result; //result에 담긴 값은 조건에 맞는 userid임
 	  }
 	  
-	  	  
-	  
+	  //비밀번호 찾기 ajax
+	  @ResponseBody
+	  @PostMapping("findPwd")
+	  public String findPwd(@RequestBody UserVO userVO) throws SQLException {
+		 //System.out.println(userVO);
+		  String result = userService.findPwd(userVO); 
+		  return result;
+	  }
+	  //등록된 이메일로 임시비밀번호를 발송, 발송된 임시비번으로 사용자 pw 변경 
+	  @ResponseBody
+	  @PostMapping("findPwd/sendEmail")
+	  public void sendEmail(@RequestBody UserVO userVO) throws SQLException {
+		  System.out.println("cont Email :" + userVO.getEmail());
+		  MailVO dto = sendEmailService.createMailAndChangePassword(userVO);
+	      sendEmailService.mailSend(dto);
+	  }
 	  
 	  //회원가입 ajax
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
-		  userService.insertUser(userVO);
+		  //userService.insertUser(userVO);
 		  session = request.getSession();
 	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 	      return "redirect:/index";

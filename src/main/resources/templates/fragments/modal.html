@@ -81,26 +81,30 @@
 				var username = $("#pwdname").val();
 				var email = $("#pwdemail").val();
 				//alert("값 들어감?");
-				var findIdObj = new Object();
-				findIdObj.username = username;
-				findIdObj.email = email;
+				var pwdObj = new Object();
+				pwdObj.username = username;
+				pwdObj.email = email;
 
 
 				$.ajax({
 				type:"POST",
-				url:"/findpwd",
-				data:JSON.stringify(findIdObj),
+				url:"/findPwd",
+				data:JSON.stringify(pwdObj),
 				contentType:'application/json; charset=UTF-8',
 				success:function(data) {
-					if (data) {
-						$("#findid").modal("hide");
-						alert("찾았습니다! 야호");
-						//$('#chkid').html("당신의 아이디는 "+data+" 입니다.");
-						$('input[id=userid]').attr('value',data);
-						//input value 값에 data(유저의 아이디값)을 추가한다.
-						
-					}else {
-						alert("없는 정보인데? 회원이 확실하시나요?");
+					if(data) {
+						alert("전송완료"); 
+						$.ajax({
+							type:"POST",
+							url:"/findPwd/sendEmail",
+							data: JSON.stringify(pwdObj),
+							contentType:'application/json; charset=UTF-8',
+								})
+								console.log(email)
+						alert("보냈다");
+						$("#findPwd").modal("hide")					
+					}	else{
+						alert("일치 정보 없");
 					}		
 					} 	
 				})
@@ -280,9 +284,9 @@
             <button type="button" class="btn btn-info btn-block btn-round" id="loginsubmit" name="loginsubmit" onclick="fnLoginsubmit()">Login</button>
 		  </form> <br>
 		  <div>
-          <button type="button" data-toggle="modal" data-target="#findid"><i class="far fa-address-book"> I can't remember my ID</i></button>
+          <button type="button" data-toggle="modal" data-target="#findid"><i class="far fa-address-book" > I can't remember my ID</i></button>
 		  <br>
-		  <i class="fa fa-key text-muted" aria-hidden="true" data-toggle="modal" data-target="#pwdModal">I Forgot Password</i>
+		  <button type="button" data-toggle="modal" data-target="#pwdModal"><i class="fa fa-key text-muted" aria-hidden="true" >I Forgot Password</i></button>
 			<hr>
 		</div> 
 		  
@@ -352,12 +356,12 @@
         </div>
         <div class="d-flex flex-column text-center">
 			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비번이 전송~ </p>
-          <form>
+          <form method="post" action="index" name="findPwd">
             <div class="form-group">
-              <input type="id" class="form-control" id="pwdname" name="pwdname" placeholder="Enter your Name">
+              <input type="id" class="form-control" id="pwdname" name="username" placeholder="Enter your Name">
             </div>
             <div class="form-group">
-              <input type="text" class="form-control" id="pwdemail" name="pwdemail" placeholder="Enter your Email">
+              <input type="text" class="form-control" id="pwdemail" name="email" placeholder="Enter your Email">
             </div>
             <button type="button" class="btn btn-info btn-block btn-round" id="findpwd" name="findpwd" onclick="fnFindpwd()">Send Mail</button>
 			</form>
@@ -381,7 +385,7 @@
 		  <h4>Sign Up</h4>
         </div>
         <div class="d-flex flex-column text-center">
-          <form method="post" action="index" name="checkform">
+          <form method="post" action="index" name="joinform">
             <div class="form-group">
 			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
 			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
@@ -427,31 +431,23 @@
 		  <h4>Sign Up</h4>
         </div>
         <div class="d-flex flex-column text-center">
-          <form method="post" action="index" name="checkform">
+          <form>
             <div class="form-group">
-			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
-			  <font id="chkid" size="2"></font>
+			  <input type="id" class="form-control" id="mypageid" name="userid" check_result="fail" placeholder="Enter your id"/>
+			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button> -->
+			  <!-- <font id="chkid" size="2"></font> -->
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
+              <input type="password" class="form-control" id="mypagepwd" name="mypagepwd" placeholder="Enter your password"/>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="joinuserpwd2" name="userpwd2" placeholder="Confirm your password"/>
-			</div>
-			<font id="chkNotice" size="2"></font>
-			<hr>
-			<div class="form-group">
-              <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
+              <input type="text" class="form-control" id="mypagename" name="mypagename" placeholder="Enter your name"/>
 			</div>
 			<div class="form-group">
-			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
+			  <input type="text" class="form-control" id="mypageemail" name="mypageemail" placeholder="Enter your email"/>
+			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button> -->
 			</div>
-  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-  			I accept the Terms of Use & Privacy Policy. 
-			<hr>
-			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
+			<!-- <button type="button" class="btn btn-info btn-block btn-round" id="" name="" onclick="fnupdate()">Sign Up</button> -->
 		  </form>
 		</div>
 	</div>
