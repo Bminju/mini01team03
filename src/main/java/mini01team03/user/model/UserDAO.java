@@ -17,6 +17,7 @@ public interface UserDAO {
 	public int insertUser(UserVO userVO) throws SQLException;
 	//아이디 중복체크 
 	public int userIdchk(UserVO userid) throws SQLException;
+<<<<<<< HEAD
 	//아이디 찾기
 	public String findid(UserVO userVO) throws SQLException;
 	//비밀번호 변경 
@@ -24,6 +25,8 @@ public interface UserDAO {
 	public UserVO findUserByUserId(String email) throws SQLException;
 	public void updateUserpwd(UserVO uptUserVO) throws SQLException;
 
+=======
+>>>>>>> 찐혜찌
 	
 	public int insertGaProfile(GuserVO googleUser) throws SQLException;
 	

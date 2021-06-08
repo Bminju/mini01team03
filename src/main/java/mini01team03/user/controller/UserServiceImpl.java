@@ -41,6 +41,7 @@ public class UserServiceImpl implements UserService {
 		int result = userDAO.userIdchk(userid);
 		return result;
 	}
+<<<<<<< HEAD
 
 	@Override
 	public String findid(UserVO userVO) throws SQLException {
@@ -56,6 +57,8 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+=======
+>>>>>>> 찐혜찌
 	
 	@Override
 	public int insertGaProfile(GuserVO googleUser) throws SQLException {
