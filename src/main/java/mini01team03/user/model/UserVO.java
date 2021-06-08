@@ -1,12 +1,17 @@
 package mini01team03.user.model;
 
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@Builder
+//@NoArgsConstructor
 public class UserVO {
 	private int id;
 	private String userid;
 	private String userpwd;
 	private String username;
 	private String email;
+	private String role;
 	
 	public int getId() {
 		return id;
@@ -38,6 +43,12 @@ public class UserVO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	} 
 
 	

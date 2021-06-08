@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-modal">
 	<script>
 
@@ -20,7 +21,8 @@
 				data:JSON.stringify(dataObj),
 				contentType:'application/json; charset=UTF-8',
 				success:function(data){
-				    if (data == 'ok') { // 로그인 성공시 
+				    if (
+						data == 'ok') { // 로그인 성공시 
 						$("#loginModal").modal("hide");
 					location.reload(); //윈도우 내에서 자동으로 새로고침 
 					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
@@ -239,6 +241,8 @@
 		  <span th:text="${session.email}" style="color: cadetblue;"> 
 			</span>
 	<!--상단 로그인/ 로그아웃 버튼-->
+		  <span th:text="${session.email}" style="color: cadetblue;" > </span>
+		<!--<i class="fa fa-user-circle float-left" aria-hidden="true" style="color: cadetblue;" ></i>-->
 	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
@@ -295,6 +299,10 @@
 		  <div class="kakaologin">
 		  <a href="https://kauth.kakao.com/oauth/authorize?client_id=f4756aac75cb4481cb7c932449df2447&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code&scope=account_email">
 			<img src="https://k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg" width="80%"/></a>
+		  </div>
+		  <div class="googlelogin">
+		  <a href="/oauth2/authorization/google">
+			<img src="https://pngimage.net/wp-content/uploads/2018/06/google-login-button-png-1.png" width="95%"/></a>
 		  </div>
 		
         </div>

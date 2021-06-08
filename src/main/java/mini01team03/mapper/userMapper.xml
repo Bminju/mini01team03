@@ -13,19 +13,19 @@
    
 	<!-- 기본 로그인 -->
 	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
-	SELECT Userid,Userpwd,Email,Username
+	SELECT Userid,Userpwd,Email,Username,Role
 	FROM user
-	WHERE Userid = #{userid}
+	WHERE Email = #{email}
 	</select>
 	
 	<!-- 카카오 로그인 -->
 	<insert id="insertKaProfile" parameterType="KuserVO">
-   insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>
 	
 	<!-- 회원가입 -->
 	<insert id="insertUser" parameterType="UserVO">
-   insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>
    
    <!-- 아이디 중복체크 -->
@@ -66,4 +66,8 @@
 	</update>
 	
    <!-- 이메일 중복체크 -->
+   
+   <insert id="insertGaProfile" parameterType="GuserVO">
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
+   </insert>
 </mapper>

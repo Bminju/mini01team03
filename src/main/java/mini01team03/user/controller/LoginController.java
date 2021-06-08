@@ -14,11 +14,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,7 +37,7 @@ import mini01team03.user.model.UserVO;
 
 @Controller
 public class LoginController {
-	//private final SendEmailService sendEmailService = new SendEmailService();
+	
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
@@ -111,7 +114,8 @@ public class LoginController {
 	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
-	   public String kakaoCallback(String code, HttpServletRequest request, HttpSession session) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
+	   public String kakaoCallback(String code, HttpServletRequest request, HttpSession session) throws SQLException { 
+		  // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
 	    
 	      //post 방식으로 key=value 데이터를 요청(카카오톡으로)
 	      //예전에는 HttpsURLConnection, Retrofit2(안드로이드에서 자주 사용), OkHttp 이런 라이브러리도 있음 
@@ -119,7 +123,8 @@ public class LoginController {
 	      
 	      //HttpHeader 오브젝트 생성
 	      HttpHeaders headers = new HttpHeaders();
-	      headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8"); //내가 전송할 body http 데이터가 key value 형태의 데이터라고 알려주는 것임
+	      headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8"); 
+	      //내가 전송할 body http 데이터가 key value 형태의 데이터라고 알려주는 것임
 	      
 	      //HttpBody 오브젝트 생성
 	      MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -202,12 +207,13 @@ public class LoginController {
 	            .userpwd("123")  //비밀번호 임시로 하기
 	            .email(kakaoProfile.getKakao_account().getEmail())
 	            .username(kakaoProfile.getProperties().getNickname())
-	            //.oauth("kakao")
+	            .role("kakao")
 	            .build();
+	      //System.out.println(kakaoUser.getEmail());
 	      
-	      String email = kakaoUser.getEmail();
-	      UserVO originUser = userService.getLoginInfo(email);
-	      if(originUser == null || originUser.getEmail() == null) {
+	      String userid = kakaoUser.getUserid();
+	      UserVO originUser = userService.getLoginInfo(userid);
+	      if(originUser == null || originUser.getUserid() == null) {
 	    	  System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다");
 	    	  userService.insertKaProfile(kakaoUser);
 	      }
@@ -215,7 +221,7 @@ public class LoginController {
 	      System.out.println("자동 로그인을 진행합니다.");
 			// 로그인 처리 코드 작성하기
 	      	session = request.getSession();
-			session.setAttribute("email", kakaoUser.getEmail());//setAttribute는 name, value쌍으로 객체를 저장
+			session.setAttribute("email", kakaoUser.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 					
 			return "redirect:/index";
 	      

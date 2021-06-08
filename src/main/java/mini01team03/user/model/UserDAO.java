@@ -24,5 +24,10 @@ public interface UserDAO {
 	public UserVO findUserByUserId(String email) throws SQLException;
 	public void updateUserpwd(UserVO uptUserVO) throws SQLException;
 
+	
+	public int insertGaProfile(GuserVO googleUser) throws SQLException;
+	
+	public UserVO findByUsername(String username);
+
 }
 
