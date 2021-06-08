@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mini01team03.user.model.GuserVO;
 import mini01team03.user.model.KuserVO;
 import mini01team03.user.model.UserDAO;
 import mini01team03.user.model.UserVO;
@@ -39,5 +40,11 @@ public class UserServiceImpl implements UserService {
 	public int userIdchk(UserVO userid) throws SQLException {
 		int result = userDAO.userIdchk(userid);
 		return result;
+	}
+	
+	@Override
+	public int insertGaProfile(GuserVO googleUser) throws SQLException {
+		int cnt = userDAO.insertGaProfile(googleUser);
+		return cnt;
 	}
 }

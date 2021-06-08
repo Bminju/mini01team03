@@ -17,4 +17,9 @@ public interface UserDAO {
 	public int insertUser(UserVO userVO) throws SQLException;
 	//아이디 중복체크 
 	public int userIdchk(UserVO userid) throws SQLException;
+	
+	public int insertGaProfile(GuserVO googleUser) throws SQLException;
+	
+	public UserVO findByUsername(String username);
+
 }
