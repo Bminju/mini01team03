@@ -102,7 +102,7 @@
 								})
 								console.log(email)
 						alert("보냈다");
-						$("#findPwd").modal("hide")					
+						$("#pwdModal").modal("hide");	
 					}	else{
 						alert("일치 정보 없");
 					}		
@@ -284,9 +284,8 @@
             <button type="button" class="btn btn-info btn-block btn-round" id="loginsubmit" name="loginsubmit" onclick="fnLoginsubmit()">Login</button>
 		  </form> <br>
 		  <div>
-          <button type="button" data-toggle="modal" data-target="#findid"><i class="far fa-address-book" > I can't remember my ID</i></button>
-		  <br>
-		  <button type="button" data-toggle="modal" data-target="#pwdModal"><i class="fa fa-key text-muted" aria-hidden="true" >I Forgot Password</i></button>
+          <button type="button" class="btn btn-light" data-toggle="modal" data-target="#findid"><i class="fas fa-address-book text-muted" aria-hidden="true"> Find ID</i></button>
+		  <button type="button" class="btn btn-light" data-toggle="modal" data-target="#pwdModal"><i class="fas fa-key text-muted" aria-hidden="true" > Find Password</i></button>
 			<hr>
 		</div> 
 		  

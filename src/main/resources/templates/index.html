@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"><!--//th를 사용한다는 의미-->
 <head>
-	<div th:replace="/fragments/header.html :: fragment-header"></div>
+	<div th:replace="/fragments/header.html :: fragment-header(title = '여행가계부')"></div>
 	<div th:replace="/fragments/modal.html :: fragment-modal"></div>
 </head>
 <body>
-	<div th:replace="/fragments/nav.html :: fragment-nav"></div>
+	<div th:replace="/fragments/nav.html :: fragment-nav(current='home')"></div>
 	<div th:replace="/fragments/footer.html :: fragment-footer"></div>
 
 </body>

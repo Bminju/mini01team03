@@ -29,6 +29,11 @@ public class SpotController {
 		return "cost/address";
 	}
 	
+	@GetMapping("address2")
+	public String address2() throws Exception {
+		return "cost/address2";
+	}
+	
 	@ResponseBody
 	@PostMapping("cost/save")
 	public Map costSave(@RequestBody MarkerVO markerVO[]) throws SQLException {

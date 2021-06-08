@@ -13,7 +13,7 @@
    
 	<!-- 기본 로그인 -->
 	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
-	SELECT Userid,Userpwd,Email,Username
+	SELECT Userid,Userpwd,Email,Username,Id
 	FROM user
 	WHERE Userid = #{userid}
 	</select>
