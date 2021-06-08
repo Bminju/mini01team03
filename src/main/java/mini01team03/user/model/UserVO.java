@@ -1,10 +1,6 @@
 package mini01team03.user.model;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 
-@Builder
-//@NoArgsConstructor
 public class UserVO {
 	private int id;
 	private String userid;

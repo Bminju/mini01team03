@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import mini01team03.user.model.GuserVO;
 import mini01team03.user.model.UserDAO;
 import mini01team03.user.model.UserVO;
 
@@ -17,11 +18,11 @@ public class PrincipalDetailsService implements UserDetailsService{
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserVO userVO = userDAO.findByUsername(username);
-		if(userVO == null) {
+		GuserVO guserVO = userDAO.findByUsername(username);
+		if(guserVO == null) {
 			return null;
 		}else {
-			return new PrincipalDetails(userVO);
+			return new PrincipalDetails(guserVO);
 		}
 		
 	}

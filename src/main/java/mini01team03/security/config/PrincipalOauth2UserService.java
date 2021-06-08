@@ -53,7 +53,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 		String username=oauth2User.getAttribute("name");
 		String userpwd=bCryptPasswordEncoder.encode("겟인데어"); //크게 의미 없음
 		
-		UserVO googleUser = UserVO.builder()
+		GuserVO googleUser = GuserVO.builder()
 	            .userid(userid)
 	            .userpwd(userpwd)  //비밀번호 임시로 하기
 	            .email(email)
@@ -68,7 +68,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 				originUser = userService.getLoginInfo(email1);
 				if(originUser == null) {
 					System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다");
-					userService.insertUser(googleUser);	
+					userService.insertGaProfile(googleUser);	
 				}
 				System.out.println("자동 로그인을 진행합니다.");
 			} catch (SQLException e) {

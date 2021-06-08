@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 
 import lombok.Data;
-
+import mini01team03.user.model.GuserVO;
 import mini01team03.user.model.UserVO;
 
 // Authentication 객체에 저장할 수 있는 유일한 타입
@@ -18,27 +18,27 @@ import mini01team03.user.model.UserVO;
 public class PrincipalDetails implements UserDetails, OAuth2User{
 
 	private static final long serialVersionUID = 1L;
-	private UserVO userVO;
+	private GuserVO guserVO;
 	private Map<String, Object> attributes; //PrincipalOauth2UserService에 있는 getAttributes 형태가 Map<string, object>임
 
 	// 일반 시큐리티 로그인시 사용 //이거 제대로 구현해야함 !! 
-	public PrincipalDetails(UserVO userVO) {
-		this.userVO = userVO;
+	public PrincipalDetails(GuserVO guserVO) {
+		this.guserVO = guserVO;
 	}
 	
 	// OAuth2.0 로그인시 사용
-	public PrincipalDetails(UserVO userVO, Map<String, Object> attributes) {
-		this.userVO = userVO;
+	public PrincipalDetails(GuserVO guserVO, Map<String, Object> attributes) {
+		this.guserVO = guserVO;
 		this.attributes = attributes;
 	}
 	
-	public UserVO getUserVO() {
-		return userVO;
+	public GuserVO getGuserVO() {
+		return guserVO;
 	}
 
 	@Override
 	public String getUsername() {
-		return userVO.getUsername();
+		return guserVO.getUsername();
 	}
 
 	@Override
@@ -70,19 +70,19 @@ public class PrincipalDetails implements UserDetails, OAuth2User{
 	// User의 PrimaryKey
 	@Override
 	public String getName() {
-		return userVO.getUserid()+"";
+		return guserVO.getUserid()+"";
 	}
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Collection<GrantedAuthority> collet = new ArrayList<GrantedAuthority>();
-		collet.add(()->{ return userVO.getEmail();});
+		collet.add(()->{ return guserVO.getEmail();});
 		return collet;  //아무렇게나 쓴거임
 	}
 
 	@Override
 	public String getPassword() {
-		return userVO.getUserpwd();
+		return guserVO.getUserpwd();
 	}
 	
 }
