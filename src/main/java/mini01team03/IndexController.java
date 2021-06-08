@@ -45,6 +45,7 @@ public class IndexController {
 		return "index";
 	}
 	
+	
 	@GetMapping("/user")
 	public @ResponseBody String user() throws Exception {
 		return "user";
