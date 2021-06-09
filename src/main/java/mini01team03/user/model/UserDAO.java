@@ -22,11 +22,16 @@ public interface UserDAO {
 	//비밀번호 변경 
 	public UserVO findPwd(UserVO userVO) throws SQLException;
 	public UserVO findUserByUserId(String email) throws SQLException;
+
 	public void updateUserpwd(UserVO uptUserVO) throws SQLException;
 
 	public int insertGaProfile(GuserVO googleUser) throws SQLException;
 	
 	public GuserVO findByUsername(String username);
+
+	public void updateUserpwd(UserVO uptUservo) throws SQLException;
+	//마이페이지 회원정보 삭제
+	public int userinfoDelete(UserVO userVO) throws SQLException; 
 
 }
 

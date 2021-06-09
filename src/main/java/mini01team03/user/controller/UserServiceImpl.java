@@ -57,7 +57,18 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
-	
+	@Override
+	public void updateUserpwd(UserVO uptUserVO) throws SQLException {
+		userDAO.updateUserpwd(uptUserVO);
+		
+	}
+
+	@Override
+	public int userinfoDelete(UserVO userVO) throws SQLException {
+		int cnt = userDAO.userinfoDelete(userVO);
+		return cnt;
+	}
+
 	@Override
 	public int insertGaProfile(GuserVO googleUser) throws SQLException {
 		int cnt = userDAO.insertGaProfile(googleUser);
