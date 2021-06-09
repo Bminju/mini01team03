@@ -102,7 +102,7 @@
 								})
 								console.log(email)
 						alert("보냈다");
-						$("#findPwd").modal("hide")					
+						$("#pwdModal").modal("hide")					
 					}	else{
 						alert("일치 정보 없");
 					}		
@@ -151,13 +151,6 @@
 					document.joinform.userpwd2.focus();
 					return;
 				}
-			
-				//if ((document.getElementsByName("userpwd").value) != (document.getElementsByName('userpwd2').value)){
-				//	alert('비밀번호가 일치하지 않습니다.');
-				//	return;
-				//}
-				
- 			//비밀번호 불일치일시 회원가입 불가하게 로직 짜기
 
 
 			    var userid = $("#joinuserid").val();
@@ -184,8 +177,9 @@
 				})
 		};
 
-		//비밀번호 일치 확인
+		
 		$(function(){
+			//회원가입 시 비밀번호 일치 확인
   			$('#joinuserpwd').keyup(function(){
     		$('#chkNotice').html('');
     		});
@@ -202,11 +196,31 @@
 
 			});
 			
+			//회원정보 수정 시 비밀번호 일치 확인
+			$('#mypagepwd').keyup(function(){
+    		$('#chkmopwd').html('');
+    		});
+
+    		$('#mypagepwd2').keyup(function(){
+
+        		if($('#mypagepwd').val() != $('#mypagepwd2').val()){
+          		$('#chkmopwd').html('비밀번호 일치하지 않음<br>');
+          		$('#chkmopwd').attr('color', '#f82a2aa3');
+        		} else{
+          		$('#chkmopwd').html('비밀번호 일치함<br>');
+          		$('#chkmopwd').attr('color', '#199894b3');
+        		}
+
+			});
+			
+
+
+
+
 		});
 
 		//아이디 중복 확인
 		function id_check() {
-		//$(document).ready(function() {
 
 				
 				var chkid = $("#joinuserid").val();
@@ -222,7 +236,6 @@
 						$('#chkid').html('중복된 아이디 입니다.<br>');
           				$('#chkid').attr('color', '#f82a2aa3');
 				  }else if(data == 0){
-					  //$("#idChk").attr("value", "Y")
 					  //alert("사용가능한 아이디입니다.") }; 
 					    $('#chkid').html('사용가능한 아이디에요.<br>');
           				$('#chkid').attr('color', '#199894b3'); 
@@ -230,6 +243,110 @@
             }
 		});
 	}
+		//슬기 로직 추가
+		//마이페이지로 개인 정보 불러오기
+		function fn_my() {
+			$.ajax({
+			type:"GET",
+			url:"/modify",
+			contentType:'application/json; charset=UTF-8',
+			success:function(data){
+				if (data) {
+					//var strdata = JSON.stringify(data);//object타입을 string타입으로 변환
+					//형 변환을 할 필요가 없었다. 왜냐면 어차피 오브젝트에서 .이거로 각각의 정보를 뽑아오기 때문 ! 
+					$('input[id=mypageid]').attr('value',data.userid);
+					//$('input[id=mypagepwd').attr('value',data.userpwd);
+					$('input[id=mypagename]').attr('value',data.username);
+					$('input[id=mypageemail]').attr('value',data.email);
+				}
+			}
+
+
+			});
+		}
+		//슬기 로직추가 
+		//마이페이지 기존 비밀번호 체크
+		function fn_oripwd() {
+			let oripwd= $("#oripwd").val();
+				//alert(oripwd);
+
+				$.ajax({
+				type:"POST",
+				url:"/chkoriPwd",
+				data:JSON.stringify({userpwd : oripwd}),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data){
+					if (data == 'ok') { 
+						//alert("일치");
+						$('input[id=mypagepwd]').removeAttr('readonly');
+						$('input[id=mypagepwd2]').removeAttr('readonly');
+						$('input[id=mypagename]').removeAttr('readonly');
+						$('input[id=oripwd]').attr('readonly','');
+					
+				  	}else
+					  alert("비밀번호를 다시 확인하세요");
+					
+				
+           		}
+			});
+
+
+		}
+		//마이페이지 회원정보 수정
+		function fn_modify() {
+			let mypagepwd =$('#mypagepwd2').val();
+			let mypagename =$('#mypagename').val();
+			let mypageObj = new Object();
+				mypageObj.userpwd = mypagepwd;
+				mypageObj.username = mypagename;
+			//alert(mypageObj.username); //확인
+
+			$.ajax({
+				type:"POST",
+				url:"/modify/update",
+				data:JSON.stringify(mypageObj),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data) {
+					if (data == "ok"){
+						alert("수정되었습니다.");
+						$("#mypageModal").modal("hide");
+						location.reload();
+					}else 
+					   alert("실패했어요.");
+					
+				   }  
+				})
+		};
+		//마이페이지 정보 삭제
+		function fn_delete(){
+
+		if(confirm("정말로 탈퇴하실 건가요?")) {		
+			$.ajax({
+				type:"GET",
+				url:"/delete",
+				success:function(data){
+					console.log("성공");
+					if (data == 1) {
+						alert("삭제완료");
+						location.reload();
+					}else {
+						alert("뭔가 이상함");
+					}
+				}
+			});
+		  }
+		else 
+		  return false;
+		
+		}
+
+
+
+
+
+
+
+	
 
 	</script>
 	<a href="http://localhost:8080">Home</a>
@@ -255,7 +372,7 @@
   	</button> 
 	</span> 
 	<span id="mypagebtn" th:style="${session.email == null ? 'display:none':''}">
-		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#mypageModal">
+		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#mypageModal" onclick="fn_my()">
 			Mypage
   	</button> 
 	</span> 
@@ -428,32 +545,41 @@
       </div>
       <div class="modal-body">
         <div class="form-title text-center">
-		  <h4>Sign Up</h4>
+		  <h4>My Page</h4>
         </div>
         <div class="d-flex flex-column text-center">
           <form>
             <div class="form-group">
-			  <input type="id" class="form-control" id="mypageid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button> -->
-			  <!-- <font id="chkid" size="2"></font> -->
+			 ID <input type="id" class="form-control" id="mypageid" name="mypageid" readonly/>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="mypagepwd" name="mypagepwd" placeholder="Enter your password"/>
+             원래의 비밀번호를 입력하세요. <input type="password" class="form-control" id="oripwd" name="oripwd"/>
+			</div>
+			<button type="button" id="oripwdChk" onclick="fn_oripwd()">check!</button>
+			<div class="form-group">
+             PASSWORD <input type="password" class="form-control" id="mypagepwd" name="mypagepwd" readonly/>
 			</div>
 			<div class="form-group">
-              <input type="text" class="form-control" id="mypagename" name="mypagename" placeholder="Enter your name"/>
+             PASSWORD Check <input type="password" class="form-control" id="mypagepwd2" name="mypagepwd2" readonly/>
+			</div> 
+			<font id="chkmopwd" size="2"></font><br>
+			<div class="form-group">
+             NAME <input type="text" class="form-control" id="mypagename" name="mypagename" readonly/>
 			</div>
 			<div class="form-group">
-			  <input type="text" class="form-control" id="mypageemail" name="mypageemail" placeholder="Enter your email"/>
-			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button> -->
-			</div>
-			<!-- <button type="button" class="btn btn-info btn-block btn-round" id="" name="" onclick="fnupdate()">Sign Up</button> -->
+			 E-MAIL <input type="text" class="form-control" id="mypageemail" name="mypageemail" readonly/>
+			</div>  
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" id="modifybtn" onclick="fn_modify()">Modify</button>
+			<hr>  
+			  <button type="button" size="3" class="btn btn-dark btn-block btn-round" id="deletebtn" onclick="fn_delete()">delete</button> 
 		  </form>
 		</div>
 	</div>
 	</div>
 </div>
 </div> <!--회원 정보 수정 모달 끝-->
+
+
  </div>
 </div>
 </html>

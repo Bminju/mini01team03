@@ -19,4 +19,9 @@ public interface UserService {
 	//비밀번호 찾기 
 	public String findPwd(UserVO userVO)  throws SQLException;
 
+	//마이페이지 회원정보 수정
+	public void updateUserpwd(UserVO uptUserVO) throws SQLException;
+
+	//마이페이지 회원정보 삭제
+	public int userinfoDelete(UserVO userVO) throws SQLException; 
 }

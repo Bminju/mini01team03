@@ -87,7 +87,7 @@ public class LoginController {
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
-		  //userService.insertUser(userVO);
+		  userService.insertUser(userVO);
 		  session = request.getSession();
 	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 	      return "redirect:/index";
@@ -108,6 +108,73 @@ public class LoginController {
 		  session.invalidate();
 		  return "logout";
 	  }
+	  
+	  //마이페이지에 회원정보 뿌리기
+	  @ResponseBody
+	  @GetMapping("modify")
+	  public UserVO modify(HttpServletRequest request,HttpSession session,UserVO userVO)throws Exception  {
+		  Object my_info = session.getAttribute("email"); //세션에 저장 된 값을 얻기 위함
+		  String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
+		  //System.out.println(ma_info); //세션에 존재하는 아이디 값을 불러왔음
+		 	  
+		  UserVO modiVO = userService.getLoginInfo(ma_info);
+		  
+		 // System.out.println(modiVO.getUserid());
+		 // System.out.println(modiVO.getUserpwd());
+		 //System.out.println(modiVO.getUsername());
+		 // System.out.println(modiVO.getEmail());
+		  
+		  return modiVO;
+	  }
+	  //회원정보 수정 시 비밀번호 확인
+	  @ResponseBody
+	  @PostMapping("chkoriPwd")
+	  public String oriPwdchk(@RequestBody UserVO userVO, HttpServletRequest request,HttpSession session) throws SQLException {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  System.out.println(userinfo2); //세션에 존재하는 아이디 값을 불러왔음
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  System.out.println(passVO.getUserpwd());
+		  
+		  //세션에 존재하는 아이디 값의 비번과 입력받은 비번이 일치하면 리턴 OK
+		  if(userVO.getUserpwd().equals(passVO.getUserpwd())) {
+			  
+			  return "ok";  
+		  }else {
+			  return "fail";
+		  }  
+	  }
+	  //마이페이지에서 회원정보 수정하기
+	  @ResponseBody
+	  @PostMapping("modify/update")
+	   public String modiUpdate(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  int id = passVO.getId(); //세션의 id값을 따로 뽑아
+		  userVO.setId(id); //그 id값을 userVO(입력받은 값)에 넣어
+		  userService.updateUserpwd(userVO); //update쿼리 실행
+		  System.out.println(userVO.getUserpwd());
+		  return "ok";
+	  }
+	  //마이페이지 회원정보 삭제
+	  @GetMapping("delete")
+	  @ResponseBody
+	  public int infoDelete(HttpSession session) throws Exception {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  //passVO.getId(); //세션의 id값을 따로 뽑아
+		  int cnt = userService.userinfoDelete(passVO);
+		  System.out.println(cnt);
+		  session.invalidate();
+		  return cnt;
+	  }
+	  
+	  
+	  
+	  
+	  
 	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
@@ -221,6 +288,8 @@ public class LoginController {
 	      
 	      
 	   }
+	  
+	  
 	}
 
 		
