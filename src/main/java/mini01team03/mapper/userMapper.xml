@@ -63,15 +63,14 @@
 		UPDATE user
 		<set>
 		 <if test="userpwd != null">
-		 	Userpwd = #{userpwd}
+		 	Userpwd = #{userpwd},
 		 </if>
 		 <if test="username != null">
-		 	Userame = #{username}
+		 	Username = #{username}
 		 </if>
 		</set>
-		<where> 
-			<if test="id != null">AND Id = #{id}</if>
-		</where>
+		Where
+		Id = #{id}
 	</update>
 	<!-- 회원정보 삭제 -->
 	<delete id="userinfoDelete" parameterType="UserVO">
