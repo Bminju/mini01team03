@@ -61,8 +61,7 @@ public class LoginController {
 	UserService userService; 
 	@Autowired
 	SendEmailService sendEmailService;
-	@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+
 //	  //로그인 ajax
 //	  @ResponseBody
 //	  @GetMapping("/login")
