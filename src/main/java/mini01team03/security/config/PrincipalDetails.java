@@ -14,12 +14,18 @@ import mini01team03.user.model.GuserVO;
 import mini01team03.user.model.UserVO;
 
 // Authentication 객체에 저장할 수 있는 유일한 타입
+//시큐리티가 /login 주소 요청이 오면 낚아채서 로그인을 진행시킨다.
+//로그인을 진행이 완료가 되면 시큐리티가 가지고 있는 session을 만들어줍니다. (Security contextHolder 키 값에 세션을 저장한다)
+//시큐리티가 가지고 있는 session에 들어갈 수 있는 오브젝트는 authentication이여야 함. 
+//Authentication 안에 user 정보가 있어야 함. User 오브젝트타입 => UserDetails 타입 객체. 
 @Data
 public class PrincipalDetails implements UserDetails, OAuth2User{
 
 	private static final long serialVersionUID = 1L;
-	private GuserVO guserVO;
+	private UserVO userVO;
+	private GuserVO guserVO;  //GuserVO 로 바꾸고 ajax 해보기
 	private Map<String, Object> attributes; //PrincipalOauth2UserService에 있는 getAttributes 형태가 Map<string, object>임
+
 
 	// 일반 시큐리티 로그인시 사용 //이거 제대로 구현해야함 !! 
 	public PrincipalDetails(GuserVO guserVO) {

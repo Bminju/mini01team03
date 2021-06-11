@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import mini01team03.user.controller.UserService;
 import mini01team03.user.model.GuserVO;
-import mini01team03.user.model.KuserVO;
 import mini01team03.user.model.UserDAO;
 import mini01team03.user.model.UserVO;
 
@@ -34,7 +33,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 	// HttpServletRequest request, HttpSession session 이것을 추가하면 override 어노테이션을 제거하라고 뜸. 근데 제거하면 로그인 자체가 진행이 안됨. 
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-		
+		System.out.println("------------------------------------------------------------");
 		//code를 통해 구성한 정보
 		System.out.println("getClientRegistration:" +userRequest.getClientRegistration()); //registrationid로 어떤 OAuth로 로그인 했는지 확인가능
 		System.out.println("getAccessToken:" +userRequest.getAccessToken().getTokenValue()); //토큰은 여기서 그닥 중요하지 않음!
@@ -54,7 +53,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 		String userpwd=bCryptPasswordEncoder.encode("겟인데어"); //크게 의미 없음
 		
 		GuserVO googleUser = GuserVO.builder()
-	            .userid(userid)
+				.userid(userid)
 	            .userpwd(userpwd)  //비밀번호 임시로 하기
 	            .email(email)
 	            .username(username)

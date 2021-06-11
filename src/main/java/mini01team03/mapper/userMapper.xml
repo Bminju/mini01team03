@@ -70,11 +70,16 @@
 		WHERE Id = #{id}
 	</delete>
 	
-	
-	
    <!-- 이메일 중복체크 -->
    
    <insert id="insertGaProfile" parameterType="GuserVO">
    insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>
+   
+   <!-- 구글 로그인 -->
+	<select id="findByUserid" parameterType="string" resultType="GuserVO">
+	SELECT Userid,Userpwd,Email,Username,Id,Role
+	FROM user
+	WHERE Userid = #{userid}
+	</select>
 </mapper>

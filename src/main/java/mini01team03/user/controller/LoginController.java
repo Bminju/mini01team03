@@ -4,6 +4,7 @@ package mini01team03.user.controller;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -13,6 +14,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -46,8 +50,39 @@ public class LoginController {
 	SendEmailService sendEmailService;
 	  //로그인 ajax
 	  @ResponseBody
-	  @PostMapping("login")
-	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+	  @GetMapping("/login")
+		public String Login(HttpServletRequest request, HttpServletResponse response) {
+			RequestCache requestCache = new HttpSessionRequestCache();
+			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+			
+			try {
+				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+			} catch(NullPointerException e) {
+				request.getSession().setAttribute("prevPage", "/");
+			}
+			return "login";
+		}
+	  /*@PostMapping("/login1")
+	  public String Login(@RequestBody UserVO userVO, HttpServletRequest request, HttpServletResponse response) throws SQLException {
+			RequestCache requestCache = new HttpSessionRequestCache();
+			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+			System.out.println(userVO.getUserid());
+			String userid = userVO.getUserid();
+			UserVO dbUserVO = userService.getLoginInfo(userid);
+			try {
+				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+				if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
+				request.getSession().setAttribute("email", dbUserVO.getUserid());
+				}
+			} catch(NullPointerException e) {
+				request.getSession().setAttribute("prevPage", "/");
+			}
+			return "login";
+		}*/
+	  /*public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
 		  //System.out.println(userVO.getEmail());
 		  String userid = userVO.getUserid();
 		  UserVO dbUserVO = userService.getLoginInfo(userid); //이렇게 해버리면 아이디가 맞는지 틀리는지 체크가 안되지 않나?
@@ -59,7 +94,7 @@ public class LoginController {
 		  }else {
 			  return "fail";
 		  }
-	  }
+	  }*/
 	  //아이디 찾기 ajax
 	  @ResponseBody
 	  @PostMapping("findid")

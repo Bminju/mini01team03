@@ -3,6 +3,7 @@ package mini01team03.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -16,10 +17,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Autowired
 	PrincipalOauth2UserService principalOauth2UserService;
 	
+	@Autowired
+	PrincipalDetailsService principalDetailsService;  
+	
+	@Autowired
+	private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+	@Autowired
+	private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+	
 	// Bean을 적으면 해당 메서드의 리턴되는 오브젝트를 IoC로 등록해준다.
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(principalDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
 	
 	@Override
@@ -35,6 +50,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.and()
 			.formLogin()
 			.loginPage("/login") //위에 특정 3개 주소에 들어갈 때 인증을 거치지 않으면 자동적으로 login 페이지로 매핑된다.
+			.successHandler(customAuthenticationSuccessHandler)
+			.failureHandler(customAuthenticationFailureHandler)
+			.usernameParameter("userid") //로그인 html에서 쓰는 name이 username이 아닐 시 적어줘야지 principalDetailsService에서 값이 잘 매칭됨.
+			.passwordParameter("userpwd")
+			.loginProcessingUrl("/login") //login주소가 호출이 되면 시큐리티가 낚아채서 대신 로그인을 진행해준다.
 			.defaultSuccessUrl("/")
 			.and()
 			.oauth2Login()
@@ -43,5 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			.userInfoEndpoint()
 			.userService(principalOauth2UserService);
 			
+		
+			
+			
 	}
+	
 }
