@@ -33,7 +33,7 @@ public class PrincipalDetailsService implements UserDetailsService{
     	  System.out.println("origin_userpwd:"+guserVO.getUserpwd());
     	  
          return new PrincipalDetails(guserVO);
-      }
+      } 
       
    }
 

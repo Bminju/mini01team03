@@ -10,15 +10,20 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,8 +44,20 @@ import mini01team03.user.model.MailVO;
 import mini01team03.user.model.OAuthToken;
 import mini01team03.user.model.UserVO;
 
+
+
+
+
 @Controller
 public class LoginController {
+	
+	/*@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}*/
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -49,7 +66,7 @@ public class LoginController {
 	@Autowired
 	SendEmailService sendEmailService;
 	  //로그인 ajax
-	  @ResponseBody
+	 /* @ResponseBody
 	  @GetMapping("/login")
 		public String Login(HttpServletRequest request, HttpServletResponse response) {
 			RequestCache requestCache = new HttpSessionRequestCache();
@@ -63,7 +80,7 @@ public class LoginController {
 			} catch(NullPointerException e) {
 				request.getSession().setAttribute("prevPage", "/");
 			}
-			return "login";
+			return "login"; 
 		}
 	  /*@PostMapping("/login1")
 	  public String Login(@RequestBody UserVO userVO, HttpServletRequest request, HttpServletResponse response) throws SQLException {
@@ -96,7 +113,7 @@ public class LoginController {
 			  return "fail";
 		  }
 	  }*/
-	  //아이디 찾기 ajax
+	  //아이디 찾기 ajax    ok
 	  @ResponseBody
 	  @PostMapping("findid")
 	  public String findid (@RequestBody UserVO userVO) throws SQLException {
@@ -122,17 +139,19 @@ public class LoginController {
 	      sendEmailService.mailSend(dto);
 	  }
 	  
-	  //회원가입 ajax
+	  //회원가입 ajax    ok
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+		  String userpwd=bCryptPasswordEncoder.encode(userVO.getUserpwd());
+		  userVO.setUserpwd(userpwd);
 		  userService.insertUser(userVO);
 		  session = request.getSession();
 	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 	      return "redirect:/index";
 	  }
 	  
-	  //아이디 중복체크 
+	  //아이디 중복체크   ok
 	  @ResponseBody
 	  @PostMapping("chkid")
 	  public int userIdchk(@RequestBody UserVO userid) throws SQLException {
@@ -140,7 +159,7 @@ public class LoginController {
 		   return result;
 	  }
 	  
-	  //로그아웃시 세션 해제
+	  //로그아웃시 세션 해제   ok
 	  @GetMapping("logout")
 	  @ResponseBody
 	  public String logout(HttpSession session) throws Exception {
@@ -148,40 +167,42 @@ public class LoginController {
 		  return "logout";
 	  }
 	  
-	  //마이페이지에 회원정보 뿌리기
+	  //마이페이지에 회원정보 뿌리기  ok
 	  @ResponseBody
 	  @GetMapping("modify")
-	  public UserVO modify(HttpServletRequest request,HttpSession session,UserVO userVO)throws Exception  {
-		  Object my_info = session.getAttribute("email"); //세션에 저장 된 값을 얻기 위함
+	  public UserVO modify(UserVO userVO,HttpServletRequest request,HttpSession session)throws Exception  {
+		  //System.out.println("되니?");
+		  Object my_info = session.getAttribute("email"); //세션에 저장 된 이메일 값을 얻기 위함
+		 // System.out.println(my_info);
 		  String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
-		  //System.out.println(ma_info); //세션에 존재하는 아이디 값을 불러왔음
-		 	  
-		  UserVO modiVO = userService.getLoginInfo(ma_info);
-		  
-		 // System.out.println(modiVO.getUserid());
+		  UserVO modiVO = userService.getLoginInfo(ma_info); 	 
 		 // System.out.println(modiVO.getUserpwd());
-		 //System.out.println(modiVO.getUsername());
-		 // System.out.println(modiVO.getEmail());
-		  
 		  return modiVO;
 	  }
-	  //회원정보 수정 시 비밀번호 확인
+	  
+	  //회원정보 수정 시 비밀번호 확인  ok
 	  @ResponseBody
 	  @PostMapping("chkoriPwd")
 	  public String oriPwdchk(@RequestBody UserVO userVO, HttpServletRequest request,HttpSession session) throws SQLException {
 		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
 		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
 		  System.out.println(userinfo2); //세션에 존재하는 아이디 값을 불러왔음
-		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
-		  System.out.println(passVO.getUserpwd());
 		  
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  String inputpwd = userVO.getUserpwd();
+		  String dbpwd = passVO.getUserpwd();
+		  System.out.println(inputpwd); 
+		  System.out.println(dbpwd); 
+		 
 		  //세션에 존재하는 아이디 값의 비번과 입력받은 비번이 일치하면 리턴 OK
-		  if(userVO.getUserpwd().equals(passVO.getUserpwd())) {
-			  
-			  return "ok";  
-		  }else {
-			  return "fail";
-		  }  
+		  //Assert.assertTrue(passwordEncoder.matches(inputpwd, dbpwd));
+		 // boolean matches(CharSequence inputpwd, String dbpwd);
+		if(!bCryptPasswordEncoder.matches(inputpwd, passVO.getUserpwd())) {
+			return "false";
+		}else {
+			return "true";
+		}
+		    
 	  }
 	  //마이페이지에서 회원정보 수정하기
 	  @ResponseBody
@@ -190,13 +211,18 @@ public class LoginController {
 		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
 		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
 		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
-		  int id = passVO.getId(); //세션의 id값을 따로 뽑아
+		  int id = passVO.getId(); //세션에 맞는 DB의 id값을 따로 뽑아
+		  String pwd = bCryptPasswordEncoder.encode(userVO.getUserpwd());
+		  userVO.setUserpwd(pwd);
 		  userVO.setId(id); //그 id값을 userVO(입력받은 값)에 넣어
 		  userService.updateUserpwd(userVO); //update쿼리 실행
 		  System.out.println(userVO.getUserpwd());
 		  return "ok";
 	  }
-	  //마이페이지 회원정보 삭제
+	  
+	  
+	  
+	  //마이페이지 회원정보 삭제 ok
 	  @GetMapping("delete")
 	  @ResponseBody
 	  public int infoDelete(HttpSession session) throws Exception {

@@ -299,7 +299,8 @@
 				data:JSON.stringify({userpwd : oripwd}),
 				contentType:'application/json; charset=UTF-8',
 				success:function(data){
-					if (data == 'ok') { 
+					alert(data);
+					if (data == 'true') { 
 						//alert("일치");
 						$('input[id=mypagepwd]').removeAttr('readonly');
 						$('input[id=mypagepwd2]').removeAttr('readonly');
