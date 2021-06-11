@@ -32,28 +32,31 @@ public class IndexController {
 	@GetMapping({"","/","index"})
 	public String index(Authentication authentication, @AuthenticationPrincipal OAuth2User oauth,@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpSession session) throws Exception {
 		if(authentication != null) {
-			System.out.println("authentication:"+authentication);
-			System.out.println(authentication.getPrincipal());
-			
-			PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-			System.out.println(principalDetails.getUsername());
-			
-			OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-			
-			System.out.println(oauth2User.getAttribute("email").toString());
-			System.out.println(principalDetails.getUsername());
-			
-			session = request.getSession();
-			
-			if(session.getAttribute("email") == null) {
-				System.out.println(session.getAttribute("email"));
-				if(oauth2User.getAttribute("email").toString() != null) {
-					session.setAttribute("email", oauth2User.getAttribute("email").toString());
-				}
-			}
-		}
-		return "index";
-	}
+	         System.out.println("authentication:"+authentication);
+	         System.out.println(authentication.getPrincipal());
+	         
+	         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+	         System.out.println(principalDetails.getUsername());
+	         
+	         session = request.getSession();
+	         session.setAttribute("email", principalDetails.getUsername().toString());
+
+	         
+	         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+	         if(oauth2User.getAttributes() != null) {
+	            System.out.println(oauth2User.getAttribute("email").toString());
+	           
+	            
+	            if(session.getAttribute("email") == null) {
+	               System.out.println(session.getAttribute("email"));
+	               if(oauth2User.getAttribute("email").toString() != null) {
+	                  session.setAttribute("email", oauth2User.getAttribute("email").toString());
+	               }
+	            }
+	         }
+	      }
+	      return "index";
+	   }
 	
 	
 	@GetMapping("/user")

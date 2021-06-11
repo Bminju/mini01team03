@@ -28,18 +28,24 @@
 				contentType:'application/x-www-form-urlencoded; charset=utf-8',
 				
 				success:function(response){
-				    if (
+					alert(response);
+					$("#loginModal").modal("hide");
+					location.reload(); //윈도우 내에서 자동으로 새로고침
+					/*if (
 						response.code == "200") { // 로그인 성공시 
 						$("#loginModal").modal("hide");
 					location.reload(); //윈도우 내에서 자동으로 새로고침 
 					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
 				  }else {
 					 alert(response);
-					console.log("아이디"+userid)  };
+					console.log("아이디--------"+userid)  };
 					
-					}
+					}*/
 					
-				})
+				}
+				
+			})
+			//location.reload();
 				
 		};
 

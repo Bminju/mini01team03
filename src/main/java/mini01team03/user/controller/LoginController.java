@@ -59,6 +59,7 @@ public class LoginController {
 				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
 				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
 				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+				System.out.println("찍혀라");
 			} catch(NullPointerException e) {
 				request.getSession().setAttribute("prevPage", "/");
 			}
