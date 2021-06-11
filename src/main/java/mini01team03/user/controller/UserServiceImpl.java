@@ -50,10 +50,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String findPwd(UserVO userVO) throws SQLException {
+	public UserVO findPwd(UserVO userVO) throws SQLException {
 		UserVO dbUserVO = userDAO.findPwd(userVO);
-		String result = userVO.getEmail();
-		return result;
+		return dbUserVO;
 		
 	}
 

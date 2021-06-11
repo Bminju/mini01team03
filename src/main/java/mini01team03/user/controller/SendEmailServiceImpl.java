@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +24,15 @@ public class SendEmailServiceImpl implements SendEmailService{
 	private JavaMailSender mailSender;
 	private static final String FROM_ADDRESS = "03.team.travle@gmail.com";
 
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	//전송할 메일 내용
 	@Override
 	public MailVO createMailAndChangePassword(UserVO userVO) throws SQLException {
-		 String str = getTempPassword();
+		 String str = getTempPassword();  
 	     MailVO dto = new MailVO();
-	     dto.setAddress(userVO.getEmail());
+	     dto.setAddress(userVO.getEmail()); //userEmail 받아옴.
 	     dto.setTitle(userVO.getUsername()+"님의 임시비밀번호 안내 이메일 입니다.");
 	     dto.setMessage("안녕하세요. 임시비밀번호 안내 관련 이메일 입니다." + "[" + userVO.getUsername() + "]" +"님의 임시 비밀번호는 "
 	        + str + " 입니다.");
@@ -35,14 +40,17 @@ public class SendEmailServiceImpl implements SendEmailService{
 		return dto;
 	}
 
+    //생성한 임시비밀번호 복호화 및 회원정보 수정 
 	@Override
 	public void updatePassword(String str, String email) throws SQLException {
-		 String userpwd = str;
+		 String userpwd = bCryptPasswordEncoder.encode(str);
 	     UserVO userVO  = userDAO.findUserByUserId(email);
+	     System.out.println("userpwd : " + userpwd);
 	        if(userVO == null) {
 	        	System.out.println("email:"+email +"없음");
 	        		
 	        }else {
+	        	System.out.println("여기");
 	        	int id = userVO.getId();
 	        	UserVO uptUserVO = new UserVO();
 	        	uptUserVO.setId(id);
@@ -53,6 +61,7 @@ public class SendEmailServiceImpl implements SendEmailService{
 		
 	}
 
+	//random으로 임시 비밀번호 생성 
 	@Override
 	public String getTempPassword() throws SQLException {
 		char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
@@ -67,9 +76,9 @@ public class SendEmailServiceImpl implements SendEmailService{
         }
 		return str;
 	}
-
-	@Override
 	
+	//이메일 전송 
+	@Override
 	public void mailSend(MailVO mailVO) throws SQLException {
 		System.out.println("이멜 전송 완료!");
         SimpleMailMessage message = new SimpleMailMessage();

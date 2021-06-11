@@ -46,23 +46,32 @@
 	
 	<!-- 비밀번호 변경 >  -->
 	<select id="findPwd" parameterType="UserVO" resultType="UserVO">
-		SELECT Userid,Userpwd,Email,Username FROM user
+		SELECT Email,Username,Id FROM user
 		<where> 
 			<if test="username != null">AND Username = #{username}</if>
 			<if test="email != null">AND Email = #{email}</if>
 		</where>
 	</select>
 	
-	<select id="findUserByUserId" parameterType="string" resultType="UserVO">
-	SELECT Userid,Userpwd,Email,Username,Id
+	<select id="findUserByUserId" parameterType="String" resultType="UserVO">
+	SELECT Userpwd,Username,Id
 	FROM user
 	WHERE Email = #{email}
 	</select>
 	<!-- 회원정보 수정 -->
 	<update id="updateUserpwd" parameterType="UserVO">
 		UPDATE user
-		SET Userpwd = #{userpwd}, Username =#{username}
-		WHERE Id = #{id}
+		<set>
+		 <if test="userpwd != null">
+		 	Userpwd = #{userpwd}
+		 </if>
+		 <if test="username != null">
+		 	Userame = #{username}
+		 </if>
+		</set>
+		<where> 
+			<if test="id != null">AND Id = #{id}</if>
+		</where>
 	</update>
 	<!-- 회원정보 삭제 -->
 	<delete id="userinfoDelete" parameterType="UserVO">

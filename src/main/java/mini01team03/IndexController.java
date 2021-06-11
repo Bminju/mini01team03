@@ -1,5 +1,7 @@
 package mini01team03;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -26,8 +28,6 @@ public class IndexController {
 	@Autowired
 	UserDAO userDAO;
 	
-	/*@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;*/
 	
 	@GetMapping({"","/","index"})
 	public String index(Authentication authentication, @AuthenticationPrincipal OAuth2User oauth,@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpSession session) throws Exception {
@@ -39,7 +39,7 @@ public class IndexController {
 	         System.out.println(principalDetails.getUsername());
 	         
 	         session = request.getSession();
-	         session.setAttribute("email", principalDetails.getUsername().toString());
+	         session.setAttribute("email", principalDetails.getGuserVO().getEmail().toString());
 
 	         
 	         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
@@ -69,14 +69,14 @@ public class IndexController {
 		return "login";
 	}
 	
-	@PostMapping("/joinProc")
-	public String joinProc(UserVO userVO) {
+	@PostMapping("/join")
+	public String joinUser(UserVO userVO, BCryptPasswordEncoder bCryptPasswordEncoder) throws SQLException {
 		System.out.println("회원가입 진행 : " + userVO);
-		String rawPassword = userVO.getPassword();
+		String rawPassword = userVO.getUserpwd();
 		String encPassword = bCryptPasswordEncoder.encode(rawPassword);
-		userVO.setPassword(encPassword);
-		user.setRole("ROLE_USER");
-		userDAO.save(userVO);
+		userVO.setUserpwd(encPassword);
+		userVO.setRole("ROLE_USER");
+		userDAO.insertUser(userVO);
 		return "redirect:/";
 	}*/
 	

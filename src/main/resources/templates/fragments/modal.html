@@ -96,7 +96,6 @@
 		function fnFindpwd() {
 				var username = $("#pwdname").val();
 				var email = $("#pwdemail").val();
-				//alert("값 들어감?");
 				var pwdObj = new Object();
 				pwdObj.username = username;
 				pwdObj.email = email;
@@ -108,8 +107,11 @@
 				data:JSON.stringify(pwdObj),
 				contentType:'application/json; charset=UTF-8',
 				success:function(data) {
-					if(data) {
-						alert("전송완료"); 
+					console.log(data);
+					if(data == "") {
+					alert("일치 정보 없");
+					}else{
+							alert("전송완료"); 
 						$.ajax({
 							type:"POST",
 							url:"/findPwd/sendEmail",
@@ -119,8 +121,6 @@
 								console.log(email)
 						alert("보냈다");
 						$("#pwdModal").modal("hide");	
-					}	else{
-						alert("일치 정보 없");
 					}		
 					} 	
 				})

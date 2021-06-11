@@ -14,6 +14,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -48,23 +49,25 @@ public class LoginController {
 	UserService userService; 
 	@Autowired
 	SendEmailService sendEmailService;
-	  //로그인 ajax
-	  @ResponseBody
-	  @GetMapping("/login")
-		public String Login(HttpServletRequest request, HttpServletResponse response) {
-			RequestCache requestCache = new HttpSessionRequestCache();
-			SavedRequest savedRequest = requestCache.getRequest(request, response); 
-			
-			try {
-				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
-				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
-				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
-				System.out.println("찍혀라");
-			} catch(NullPointerException e) {
-				request.getSession().setAttribute("prevPage", "/");
-			}
-			return "login";
-		}
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+//	  //로그인 ajax
+//	  @ResponseBody
+//	  @GetMapping("/login")
+//		public String Login(HttpServletRequest request, HttpServletResponse response) {
+//			RequestCache requestCache = new HttpSessionRequestCache();
+//			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+//			
+//			try {
+//				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+//				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+//				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+//				System.out.println("찍혀라");
+//			} catch(NullPointerException e) {
+//				request.getSession().setAttribute("prevPage", "/");
+//			}
+//			return "login";
+//		}
 	  /*@PostMapping("/login1")
 	  public String Login(@RequestBody UserVO userVO, HttpServletRequest request, HttpServletResponse response) throws SQLException {
 			RequestCache requestCache = new HttpSessionRequestCache();
@@ -108,10 +111,10 @@ public class LoginController {
 	  //비밀번호 찾기 ajax
 	  @ResponseBody
 	  @PostMapping("findPwd")
-	  public String findPwd(@RequestBody UserVO userVO) throws SQLException {
-		 //System.out.println(userVO);
-		  String result = userService.findPwd(userVO); 
-		  return result;
+	  public UserVO findPwd(@RequestBody UserVO userVO) throws SQLException {
+		  System.out.println(userVO);
+		  UserVO result = userService.findPwd(userVO); 
+		  return result; 
 	  }
 	  //등록된 이메일로 임시비밀번호를 발송, 발송된 임시비번으로 사용자 pw 변경 
 	  @ResponseBody
@@ -126,6 +129,8 @@ public class LoginController {
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+		  String userpwd = bCryptPasswordEncoder.encode(userVO.getUserpwd());
+		  userVO.setUserpwd(userpwd);
 		  userService.insertUser(userVO);
 		  session = request.getSession();
 	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
