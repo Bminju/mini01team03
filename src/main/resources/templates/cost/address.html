@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <div th:replace="/fragments/header.html :: fragment-header(title='Before')"></div>
+  <div th:replace="/fragments/header.html :: fragment-header(title = 'Before')"></div>
     <style>
 .map_wrap, .map_wrap * {margin:0;padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
-.map_wrap a, .map_wrap a:hover, .map_wrap                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   a:active{color:#000;text-decoration: none;}
-.map_wrap {position:relative;width:100%;height:500px;}
-#menu_wrap {position:relative;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
+.map_wrap a, .map_wrap a:hover, .map_wrap a:active{color:#000;text-decoration: none;}
+.map_wrap {position:relative;width:100%;height:500px;margin-left:150px;}
+#menu_wrap {position:absolute;top:0;left:0;bottom:0;width:250px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;background:rgba(255, 255, 255, 0.7);z-index: 1;font-size:12px;border-radius: 10px;}
+.title {font-weight:bold;display:block;}
+.hAddr {position:absolute;right:10px;top:10px;border-radius: 2px;background:#fff;background:rgba(255,255,255,0.8);z-index:1;padding:5px;}
+#centerAddr {display:block;margin-top:2px;font-weight: normal;}
+.bAddr {padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
 .bg_white {background:#fff;}
-#menu_wrap hr {display: inline; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
+#menu_wrap hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
 #menu_wrap .option{text-align: center;}
 #menu_wrap .option p {margin:10px 0;}  
 #menu_wrap .option button {margin-left:5px;}
@@ -38,7 +42,7 @@
 #placesList .item .marker_15 {background-position: 0 -654px;}
 #pagination {margin:10px auto;text-align: center;}
 #pagination a {display:inline-block;margin-right:10px;}
-#pagination .on {font-weight: bold; cursor: default;color:#777;} 
+#pagination .on {font-weight: bold; cursor: default;color:#777;}
 
 </style>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bde99f6e382853ee73bb86c84a7a2c06&libraries=services"></script>
@@ -56,20 +60,10 @@
 			markerAddress.la = value.la;
 			markerAddress.ma = value.ma;
 			markerAddress.cate = value.category;
-			/*var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
-	         var con = confirm("Are you sure?"); //confirm으로 취소할 수도 있게하기
-	         while(con == false) {
-	            var test = prompt(value.title + "에서 사용한 금액을 입력하세요");
-	               if (test != null) {
-	                 // markerAddress.price = test;
-	                  //array.push(markerAddress);   
-	                  break;
-	                  
-	               }
-	               
-	         }*/
 	         markerAddress.price = value.price;
-	         array.push(markerAddress);   
+             array.push(markerAddress);  
+             //var resultDiv = document.getElementById('result');   이렇게 하니까 오브젝트로 들어가서 정보가 화면에 안보임
+             // resultDiv.innerHTML = markerAddress;
 	      }
 		$.ajax({
 			url:'cost/save',
@@ -94,7 +88,10 @@
     <div th:replace="/fragments/nav.html :: fragment-nav(current = 'Before')"></div>
 
 <div class="map_wrap">
-    <div id="map" style="width:75%;height:100%;position:relative;margin:10px 0 0 10px;overflow:hidden"></div>
+    <!--지도 크기-->
+    <div id="map" style="width:75%;height:100%;position:relative;overflow:hidden;"></div>
+
+    
     <div id="menu_wrap" class="bg_white">
         <div class="option">
             <div>
@@ -108,11 +105,12 @@
         <ul id="placesList"></ul>
         <div id="pagination"></div>
     </div>
-    <form action="index" method="post">
-       <div id="result"></div>
-       <input type="button" value="제출" onclick="saveAddress()"> <br>
+    <form action=index method=post>
+       <!--<div id="result"></div>-->
+       <input type="button" value="제출" onclick="saveAddress()">
     </form>
 </div>
+
 <script>
 // 마커를 담을 배열입니다
 var markers = [];
@@ -141,7 +139,7 @@ function searchPlaces() {
 
     var keyword = document.getElementById('keyword').value;
 
-    if (!keyword.replace(/^\s+|\s+$/g)) {
+    if (!keyword.replace(/^\s+|\s+$/g, '')) {
         alert('키워드를 입력해주세요!');
         return false;
     }
@@ -306,7 +304,20 @@ function displayPlaces(places) {
                if(markerMap.get(la_ma) == undefined) {
             	   marker.setMap(map);
                    markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma, price:0, category:category});
-              
+                //여기에 리스트 클릭 시 일정표에 추가 되는 로직 추가 
+                    for(const [key, value] of markerMap){
+                    var listinfo = value.title+"<br>";
+                    listinfo += value.address+"<br>";
+                    listinfo += value.category;
+                    }
+                    var div = document.createElement('div');
+                    div.innerHTML = document.getElementById('divlist').innerHTML;
+
+                    document.getElementById('newlist').appendChild(div);
+
+                    var listinfoDiv = document.getElementById('result');  //여기의 result값을 일정표리스트로 넘겼음
+                    listinfoDiv.innerHTML = listinfo; 
+                //일정표 추가 로직 끝
               }else {
             	  marker.setMap(null);
                  markerMap.delete(la_ma);
@@ -332,14 +343,14 @@ function displayPlaces(places) {
                 let markerObj = markerMap.get(la_ma);
                 markerObj.price = inPrice;
                 
-        	    var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';
+        	    /*var message = '클릭한 위치의 위도는 ' + marker.getPosition().getLat() + ' 이고, ';
                 message += '경도는 ' + marker.getPosition().getLng() + ' 입니다.<br>';
-                message +=  title + '<br>';
+                var message =  title + '<br>';
                 message += address + '<br>';
                 message += category;
               
-                var resultDiv = document.getElementById('result'); 
-                resultDiv.innerHTML = message; 
+                var resultDiv = document.getElementById('result');  //여기의 result값을 일정표리스트로 넘겼음
+                resultDiv.innerHTML = message; */ 
             }); //kakao.map 끝  
         })(marker, places[i].place_name, places[i].address_name, places[i].category_group_code);  //fuction(marker,title) 끝
         
@@ -452,102 +463,8 @@ function removeAllChildNods(el) {
 }
  
 </script>
+<br>
+<div th:replace="/fragments/timetable.html :: fragment-timetable"></div>
 <div th:replace="/fragments/footer.html :: fragment-footer"></div>
-
-
-<section class="ftco-section">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-6 text-center mb-5">
-					<h2 class="heading-section">Table #02</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="table-wrap">
-						<table class="table">
-						  <thead class="thead-dark">
-						    <tr>
-						      <th>ID no.</th>
-						      <th>First Name</th>
-						      <th>Last Name</th>
-						      <th>Email</th>
-						      <th>&nbsp;</th>
-						    </tr>
-						  </thead>
-						  <tbody>
-						    <tr class="alert" role="alert">
-						      <th scope="row">001</th>
-						      <td>Mark</td>
-						      <td>Otto</td>
-						      <td>markotto@email.com</td>
-						      <td>
-						      	<a href="#" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</a>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <th scope="row">002</th>
-						      <td>Jacob</td>
-						      <td>Thornton</td>
-						      <td>jacobthornton@email.com</td>
-						      <td>
-						      	<a href="#" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</a>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <th scope="row">003</th>
-						      <td>Larry</td>
-						      <td>the Bird</td>
-						      <td>larrybird@email.com</td>
-						      <td>
-						      	<a href="#" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</a>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <th scope="row">004</th>
-						      <td>John</td>
-						      <td>Doe</td>
-						      <td>johndoe@email.com</td>
-						      <td>
-						      	<a href="#" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</a>
-				        	</td>
-						    </tr>
-						    <tr class="alert" role="alert">
-						      <th scope="row">005</th>
-						      <td>Gary</td>
-						      <td>Bird</td>
-						      <td>garybird@email.com</td>
-						      <td>
-						      	<a href="#" class="close" data-dismiss="alert" aria-label="Close">
-				            	<span aria-hidden="true"><i class="fa fa-close"></i></span>
-				          	</a>
-				        	</td>
-						    </tr>
-						  </tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-
-	<script src="js/jquery.min.js"></script>
-  <script src="js/popper.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/main.js"></script>
-
-
-
-
-
-
 </body>
 </html>
