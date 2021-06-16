@@ -26,7 +26,7 @@
    </insert>
 
    <insert id="insertBeforeList" parameterType="ListVO">
-   	  insert into beforeinfo(title, start, end) values (#{title}, #{start}, #{end})
+   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime})
    </insert>
    
 </mapper>

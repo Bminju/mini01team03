@@ -55,11 +55,22 @@ public class SpotController {
 	@PostMapping("beforelist")
 	public Map beforelist(@RequestBody ListVO listVO[]) throws SQLException {
 		for(int i = 0; i <listVO.length; i++) {
-			//getTitle을 \n 기준으로 잘라서 3부분을 만들어야해
-			//새로운 변수에 넣어서 list vo에 set 하기
-			System.out.println(listVO[i].getTitle());
-			System.out.println(listVO[i].getStart());
-			System.out.println(listVO[i].getEnd());
+			//getTitle을 \n 기준으로 잘라서 3부분을 만들기
+			String[] array = listVO[i].getTitle().split("\n");
+		    //getStart와 getEnd를 T기준으로 잘라서 날짜와 시간 추출
+			String[] array2 = listVO[i].getStart().split("T");	
+			String[] array3 = listVO[i].getEnd().split("T");	
+			//array[0]에는 장소명, [1]에는 주소 [2]에는 카테고리 
+			listVO[i].setStore(array[0]);  //각각 set으로 추가 해주기
+			listVO[i].setAddress(array[1]);
+			listVO[i].setCate(array[2]);
+			//array2 시작 [0]에는 날짜 [1]에는 시간
+			listVO[i].setStartDay(array2[0]);
+			listVO[i].setStartTime(array2[1]);
+			//array2 끝 [0]에는 날짜 [1]에는 시간
+			listVO[i].setEndDay(array3[0]);
+			listVO[i].setEndTime(array3[1]);
+					
 			spotService.insertBeforeList(listVO[i]);
 		}
 		Map before = new HashMap();
