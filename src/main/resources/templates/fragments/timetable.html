@@ -25,6 +25,7 @@
     
     <script>
 
+      var calendar = null; //calender변수를 전역으로 쓰기 위함.
 
 		$(document).ready(function(){ //제이쿼리 방식
       //document.addEventListener('DOMContentLoaded', function() { //순수자바스크립트 방식
@@ -44,7 +45,7 @@
       }
     });
        
-        var calendar = new Calendar(calendarEl, {
+          calendar = new Calendar(calendarEl, { //var를 제거하여 전역변수로 할당한다.
 		      initialDate: '2021-07-01',	
 		      initialView: 'timeGridWeek',  //시간,주별 일정 그리드
 		      headerToolbar: {
@@ -67,6 +68,43 @@
           });
         calendar.render(); 
       });
+ 
+      function fn_submit(){
+        //step1 정보 가져오기 
+        //이벤트 명칭, 시간, 날짜가 필요함.
+        var allEvent = calendar.getEvents()
+        console.log(allEvent);
+
+        var events = new Array();
+        for(var i=0; i < allEvent.length; i++){
+
+          var obj = new Object();
+
+          obj.title = allEvent[i]._def.title; //이벤트 명칭 가져오기
+          obj.start = allEvent[i]._instance.range.start; //시작 날짜 및 시간
+          obj.end = allEvent[i]._instance.range.end; //끝 날짜 및 시
+          
+          events.push(obj);
+        }
+        //step2. 이제 에이작스로 넘기면 됨 
+        $.ajax({
+			    url:'beforelist',
+			    type:'post',
+			    dataType:'json',
+			    contentType:'application/json; charset=UTF-8',
+			    data: JSON.stringify(events),
+			    success: function(data){
+            alert("저장되었습니다! 야호!");
+            console.log("success");
+           // location.reload();
+			    },
+			    error: function(e){
+				    console.log(e);
+			    }
+		
+		    });
+
+      }
 
     </script>
 <body>
@@ -119,12 +157,14 @@
     </p>
   </div>
 
-  <div id="calendar-container">
+  <!--<div id="calendar-container">
     <div id="calendar"></div>
+  </div> -->
+  <div>
+    <button onclick="fn_submit()">일정확정 !</button>
   </div>
-
  
-  <div style="float: left; width:80%;" >
+  <div id="calendar-container" style="float: left; width:80%;" >
     <div id="calendar"></div>
   </div>
   </body>

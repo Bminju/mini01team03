@@ -12,5 +12,6 @@ import mini01team03.cost.model.MarkerVO;
 public interface SpotDAO {
 
 	public int insertSpot(MarkerVO markerVO) throws SQLException;
-	 
+	//before 일정 정보 추가 
+	public int insertBeforeList(ListVO listVO) throws SQLException;
 }

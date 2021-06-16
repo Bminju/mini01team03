@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import mini01team03.cost.model.CostVO;
 import mini01team03.cost.model.MarkerVO;
+import mini01team03.spot.model.ListVO;
 
 @Controller
 @RequestMapping("")
@@ -49,6 +50,23 @@ public class SpotController {
 		Map map = new HashMap();
 		map.put("msg", "success");
 		return map; 
-}
+	}
+	@ResponseBody
+	@PostMapping("beforelist")
+	public Map beforelist(@RequestBody ListVO listVO[]) throws SQLException {
+		for(int i = 0; i <listVO.length; i++) {
+			//getTitle을 \n 기준으로 잘라서 3부분을 만들어야해
+			//새로운 변수에 넣어서 list vo에 set 하기
+			System.out.println(listVO[i].getTitle());
+			System.out.println(listVO[i].getStart());
+			System.out.println(listVO[i].getEnd());
+			spotService.insertBeforeList(listVO[i]);
+		}
+		Map before = new HashMap();
+		before.put("msg", "success");
+		
+		return before ;
 
+	}
+	
 }

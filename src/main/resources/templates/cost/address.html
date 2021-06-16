@@ -305,15 +305,15 @@ function displayPlaces(places) {
             	   marker.setMap(map);
                    markerMap.set(la_ma,{address:address, title:title, la:marker.n.La, ma:marker.n.Ma, price:0, category:category});
                 //여기에 리스트 클릭 시 일정표에 추가 되는 로직 추가 
-                    for(const [key, value] of markerMap){
+                    for(const [key, value] of markerMap){ //markerMap에 있는 정보를 listinfo에 담는다.
                     var listinfo = value.title+"<br>";
                     listinfo += value.address+"<br>";
                     listinfo += value.category;
                     }
-                    var div = document.createElement('div');
-                    div.innerHTML = document.getElementById('divlist').innerHTML;
+                    var div = document.createElement('div');  //새로운 div 생성
+                    div.innerHTML = document.getElementById('divlist').innerHTML; //timetable에 있는 divlist라는 아이디값에 접근
 
-                    document.getElementById('newlist').appendChild(div);
+                    document.getElementById('newlist').appendChild(div); //리스트를 클릭할 시 newlist에 divlist값을 추가 
 
                     var listinfoDiv = document.getElementById('result');  //여기의 result값을 일정표리스트로 넘겼음
                     listinfoDiv.innerHTML = listinfo; 

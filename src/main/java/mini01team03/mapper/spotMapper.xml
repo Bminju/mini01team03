@@ -14,10 +14,19 @@
       <result property="cate" column="Cate"/>
    </resultMap>
    
+    <resultMap type="ListVO" id="beforelist">
+      <id property="id" column="id"/>
+      <result property="title" column="title"/>
+      <result property="start" column="start"/>
+      <result property="end" column="end"/>
+   </resultMap>
+   
    <insert id="insertSpot" parameterType="MarkerVO">
       insert into spot(Lo_name, Address, Lat, Lon, Price, Cate) values (#{title}, #{address}, #{la}, #{ma}, #{price}, #{cate})
    </insert>
 
-   
+   <insert id="insertBeforeList" parameterType="ListVO">
+   	  insert into beforeinfo(title, start, end) values (#{title}, #{start}, #{end})
+   </insert>
    
 </mapper>
