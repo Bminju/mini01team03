@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import mini01team03.cost.model.CostVO;
 import mini01team03.cost.model.MarkerVO;
 import mini01team03.spot.model.ListVO;
+import mini01team03.spot.model.TotalVO;
 import mini01team03.user.model.UserVO;
 
 @Controller
@@ -56,6 +57,7 @@ public class SpotController {
 		map.put("msg", "success");
 		return map; 
 	}
+	//before페이지에서 일정 추가 /슬기추가
 	@ResponseBody
 	@PostMapping("beforelist")
 	public Map beforelist(@RequestBody ListVO listVO[],HttpServletRequest request, HttpSession session) throws SQLException {
@@ -76,7 +78,7 @@ public class SpotController {
 			listVO[i].setEndDay(array3[0]);
 			listVO[i].setEndTime(array3[1]);
 			
-			//세션에서 userid 뽑은거 listvo 에 넣어
+			//세션에서 userid 뽑은거 listVO 에 넣기
 			Object my_info = session.getAttribute("email"); //세션에 저장 된 아이디 값을 얻기 위함
 			String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
 			System.out.println(ma_info);  //세션에 저장된 아이디임
@@ -87,13 +89,16 @@ public class SpotController {
 			
 			
 			spotService.insertBeforeList(listVO[i]);
+			//경비 여행제목
+			
+			
 		}
 		Map before = new HashMap();
 		before.put("msg", "success");
 		
 		return before ;
-
 	}
+	
 	//db에서 저장된 주소 정보 가져오기. 혜지추가
 	@ResponseBody
 	@PostMapping("getAddress")
@@ -107,6 +112,22 @@ public class SpotController {
 		System.out.println("spotList"+spotList);
 		
 		return spotList;
+	}
+	
+	//여행제목, 총경비 db에 넘기기 .슬기추가
+	@ResponseBody
+	@PostMapping("cost")
+	public int insertPrice(@RequestBody TotalVO totalVO ,HttpServletRequest request, HttpSession session) throws SQLException {
+		Object my_info = session.getAttribute("email"); //세션에 저장 된 아이디 값을 얻기 위함
+		String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
+		//System.out.println("여긴 잘 뽑히니?" +ma_info);
+		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+		userid.setUserid(ma_info);//userid에 세션아이디 값 넣기
+		totalVO.setUserid(userid); // 세션 아이디 값이 들어있는 userid 를 listVO에 넣기
+		//System.out.println("타이틀 뽑혀야해" +totalVO.getTravel_title());
+		//System.out.println("금액은?" +totalVO.getTotal());
+		int cnt = spotService.insertTotalPrice(totalVO);
+		return cnt;
 	}
 	
 }

@@ -69,6 +69,7 @@
         calendar.render(); 
       });
  
+      //최종 제출 버튼 클릭시 function
       function fn_submit(){
         //step1 정보 가져오기 
         //이벤트 명칭, 시간, 날짜가 필요함.
@@ -89,13 +90,14 @@
         //step2. 이제 에이작스로 넘기면 됨 
         $.ajax({
 			    url:'beforelist',
-			    type:'post',
+          type:'post',
+         // async    : false,  //ajax를 순차적으로 실행시키기 위함(동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
 			    dataType:'json',
 			    contentType:'application/json; charset=UTF-8',
 			    data: JSON.stringify(events),
 			    success: function(data){
             alert("저장되었습니다! 야호!");
-            console.log("success");
+            //console.log("success");
            // location.reload();
 			    },
 			    error: function(e){
@@ -103,6 +105,37 @@
 			    }
 		
         });
+
+
+        //1.여행제목과 총 경비 불러와 변수에 담기 
+        var travel_title = $("#travelTitle").val();
+        var total = $("#totalPrice").val();
+        var totalObj = new Object();
+        totalObj.travel_title = travel_title;
+        totalObj.total = total;
+        alert(totalObj.travel_title); //작동됨 ok
+        //2.에이작스로 넘기기
+        $.ajax({
+			    url:'cost',
+          type:'post',
+         // async    : false,  //ajax를 순차적으로 실행시키기 위함(동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
+			    dataType:'json',
+			    contentType:'application/json; charset=UTF-8',
+			    data: JSON.stringify(totalObj),
+			    success: function(data){
+           console.log("성공");
+			    },
+			    error: function(e){
+				   
+			    }
+		
+        });
+
+
+
+
+
+
 
       }
 
@@ -165,10 +198,10 @@
 <form>
   <div class="row">
     <div class="col">
-      <input type="text" class="form-control" placeholder="여행 제목">
+      <input type="text" id="travelTitle" class="form-control" placeholder="여행 제목">
     </div><br>
     <div class="col">
-      <input type="text" class="form-control" placeholder="총 경비">
+      <input type="text" id="totalPrice" class="form-control" placeholder="총 경비">
     </div>
   </div>
 </form>

@@ -37,4 +37,8 @@
    	</select>
   <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
    
+   <insert id="insertTotalPrice" parameterType="TotalVO">
+   	  insert into cost(travel_title, total, Userid) values (#{travel_title}, #{total}, #{Userid.userid})
+   </insert>
+   
 </mapper>

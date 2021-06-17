@@ -3,7 +3,7 @@ package mini01team03.spot.model;
 import mini01team03.user.model.UserVO;
 
 public class ListVO {
-	private String no; //db에서 값을 가져오기 위해서 필요했음
+	//private String no; //db에서 값을 가져오기 위해서 필요했음
 	private String title;
 	private String start;
 	private String end;

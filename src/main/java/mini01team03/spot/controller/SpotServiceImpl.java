@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import mini01team03.cost.model.MarkerVO;
 import mini01team03.spot.model.ListVO;
 import mini01team03.spot.model.SpotDAO;
+import mini01team03.spot.model.TotalVO;
 
 @Service
 public class SpotServiceImpl implements SpotService {
@@ -32,6 +33,11 @@ public class SpotServiceImpl implements SpotService {
 	public List<ListVO> getAddress(String userid) throws SQLException {
 		List<ListVO> spotList = spotDAO.getAddress(userid);
 		return spotList;
+	}
+	@Override
+	public int insertTotalPrice(TotalVO totalVO) throws SQLException {
+		int cnt = spotDAO.insertTotalPrice(totalVO);
+		return cnt;
 	}
 	
 }
