@@ -185,7 +185,7 @@ public class LoginController {
 	  @ResponseBody
 	  @GetMapping("modify")
 	  public UserVO modify(UserVO userVO,HttpServletRequest request,HttpSession session)throws Exception  {
-		  System.out.println("되니?");
+		  //System.out.println("되니?");
 		  Object my_info = session.getAttribute("email"); //세션에 저장 된 이메일 값을 얻기 위함
 		  System.out.println(my_info);
 		  String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.

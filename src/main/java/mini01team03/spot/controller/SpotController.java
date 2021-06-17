@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import mini01team03.cost.model.CostVO;
 import mini01team03.cost.model.MarkerVO;
 import mini01team03.spot.model.ListVO;
+import mini01team03.user.model.UserVO;
 
 @Controller
 @RequestMapping("")
@@ -57,7 +58,7 @@ public class SpotController {
 	}
 	@ResponseBody
 	@PostMapping("beforelist")
-	public Map beforelist(@RequestBody ListVO listVO[]) throws SQLException {
+	public Map beforelist(@RequestBody ListVO listVO[],HttpServletRequest request, HttpSession session) throws SQLException {
 		for(int i = 0; i <listVO.length; i++) {
 			//getTitle을 \n 기준으로 잘라서 3부분을 만들기
 			String[] array = listVO[i].getTitle().split("\n");
@@ -74,7 +75,17 @@ public class SpotController {
 			//array2 끝 [0]에는 날짜 [1]에는 시간
 			listVO[i].setEndDay(array3[0]);
 			listVO[i].setEndTime(array3[1]);
-					
+			
+			//세션에서 userid 뽑은거 listvo 에 넣어
+			Object my_info = session.getAttribute("email"); //세션에 저장 된 아이디 값을 얻기 위함
+			String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
+			System.out.println(ma_info);  //세션에 저장된 아이디임
+			
+			UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+			userid.setUserid(ma_info);//userid에 세션아이디 값 넣기
+			listVO[i].setUserid(userid); // 세션 아이디 값이 들어있는 userid 를 listVO에 넣기
+			
+			
 			spotService.insertBeforeList(listVO[i]);
 		}
 		Map before = new HashMap();

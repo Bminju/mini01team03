@@ -27,7 +27,7 @@
    </insert>
 
    <insert id="insertBeforeList" parameterType="ListVO">
-   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime})
+   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime, Userid) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime}, #{Userid.userid})
    </insert>
    
    <select id="getAddress" resultType="ListVO" parameterType="string">
