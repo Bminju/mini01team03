@@ -15,10 +15,11 @@
    </resultMap>
    
     <resultMap type="ListVO" id="beforelist">
-      <id property="id" column="id"/>
-      <result property="title" column="title"/>
-      <result property="start" column="start"/>
-      <result property="end" column="end"/>
+      <id property="id" column="no"/>
+      <result property="title" column="store"/>
+      <result property="address" column="address"/>
+      <result property="start" column="startDay"/>
+      <result property="end" column="endDay"/>
    </resultMap>
    
    <insert id="insertSpot" parameterType="MarkerVO">
@@ -28,5 +29,9 @@
    <insert id="insertBeforeList" parameterType="ListVO">
    	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime})
    </insert>
+   
+   <select id="getAddress" resultType="ListVO">
+   	select no, store, address, cate, concat(startDay, ' ', startTime) as start, concat(endDay, ' ',endTime) as end from beforeinfo
+  </select>
    
 </mapper>

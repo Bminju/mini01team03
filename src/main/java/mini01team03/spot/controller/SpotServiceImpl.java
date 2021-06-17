@@ -1,6 +1,7 @@
 package mini01team03.spot.controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,12 @@ public class SpotServiceImpl implements SpotService {
 	public int insertBeforeList(ListVO listVO) throws SQLException {
 		int cnt = spotDAO.insertBeforeList(listVO);  
 		return cnt;
+	}
+	//before 페이지에서 저장한 정보 db에서 가져오기
+	@Override
+	public List<ListVO> getAddress() throws SQLException {
+		List<ListVO> spotList = spotDAO.getAddress();
+		return spotList;
 	}
 	
 }

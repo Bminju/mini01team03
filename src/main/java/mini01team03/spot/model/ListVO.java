@@ -1,6 +1,7 @@
 package mini01team03.spot.model;
 
 public class ListVO {
+	private String no; //db에서 값을 가져오기 위해서 필요했음
 	private String title;
 	private String start;
 	private String end;
@@ -73,6 +74,12 @@ public class ListVO {
 	}
 	public void setEndTime(String endTime) {
 		this.endTime = endTime;
+	}
+	public String getNo() {
+		return no;
+	}
+	public void setNo(String no) {
+		this.no = no;
 	}
 	
 	}

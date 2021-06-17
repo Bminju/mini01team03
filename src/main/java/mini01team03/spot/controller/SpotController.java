@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -78,6 +79,16 @@ public class SpotController {
 		
 		return before ;
 
+	}
+	//db에서 저장된 주소 정보 가져오기. 혜지추가
+	@ResponseBody
+	@PostMapping("getAddress")
+	public List<ListVO> getAddress(Model model) throws SQLException {
+		List<ListVO> spotList = spotService.getAddress();
+		model.addAttribute("spotList", spotList);
+		System.out.println("spotList"+spotList);
+		
+		return spotList;
 	}
 	
 }
