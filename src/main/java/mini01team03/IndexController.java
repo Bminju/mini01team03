@@ -35,7 +35,7 @@ public class IndexController {
 	         System.out.println(principalDetails.getUsername());
 	         
 	         session = request.getSession();
-	         session.setAttribute("email", principalDetails.getGuserVO().getEmail().toString());
+	         session.setAttribute("email", principalDetails.getGuserVO().getUserid().toString());
 
 	         
 	         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();

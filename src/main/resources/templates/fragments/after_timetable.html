@@ -25,10 +25,10 @@
     
     <script>
 
-      var calendar = null; //calenderº¯¼ö¸¦ Àü¿ªÀ¸·Î ¾²±â À§ÇÔ.
-
-		$(document).ready(function(){ //Á¦ÀÌÄõ¸® ¹æ½Ä
-      //document.addEventListener('DOMContentLoaded', function() { //¼ø¼öÀÚ¹Ù½ºÅ©¸³Æ® ¹æ½Ä
+      var calendar = null; //calenderë³€ìˆ˜ë¥¼ ì „ì—­ìœ¼ë¡œ ì“°ê¸° ìœ„í•¨.
+                    
+		$(document).ready(function(){ //ì œì´ì¿¼ë¦¬ ë°©ì‹
+      //document.addEventListener('DOMContentLoaded', function() { //ìˆœìˆ˜ìë°”ìŠ¤í¬ë¦½íŠ¸ ë°©ì‹
         var Calendar = FullCalendar.Calendar;
         var Draggable = FullCalendar.Draggable;
         
@@ -36,9 +36,6 @@
         var calendarEl = document.getElementById('calendar');
         var checkbox = document.getElementById('drop-remove');
        
-        var all_events = null;
-        all_events = loadingEvents();
-
        new Draggable(containerEl, {
         itemSelector: '.fc-event',
         eventData: function(eventEl) {
@@ -47,73 +44,51 @@
         };
       }
     });
-       
-          calendar = new Calendar(calendarEl, { //var¸¦ Á¦°ÅÇÏ¿© Àü¿ªº¯¼ö·Î ÇÒ´çÇÑ´Ù.
-		      initialDate: '2021-07-01',	
-		      initialView: 'timeGridWeek',  //½Ã°£,ÁÖº° ÀÏÁ¤ ±×¸®µå
-		      headerToolbar: {
-			    left: 'prev,next today',
-			    center: 'title',
-			    right:  'dayGridMonth,timeGridWeek,timeGridDay' 
-		            },
-		      height:'auto',
-		      navLinks: true,
-		      editable: true,  //¼öÁ¤°¡´É ¿©ºÎ
-     	    selectable: true,
-      	  selectMirror: true,
-          nowIndicator: true,
-          droppable: true,
-          events: all_events,
-          drop: function(info) {  //dropÀ» ¼öÇàÇÒ ¶§ ÀÌ·ç¾îÁö´Â fuction
-          if (checkbox.checked) {  //µå·¡±×¸¦ ÇÏ¸é µå·¡±×¹Ú½º¿¡¼­ »èÁ¦ µÊ
-          info.draggedEl.parentNode.removeChild(info.draggedEl);
-              }
-           }
-          });
-        calendar.render(); 
+ //dbì—ì„œ ì •ë³´ë¥¼ ê°€ì ¸ì™€ì„œ succesí•  ì‹œ ìº˜ë¦°ë” ë³´ì—¬ì£¼ê¸°. ìº˜ë¦°ë” í•¨ìˆ˜ì™€ db ì •ë³´ ê°€ì ¸ì˜¤ëŠ” í•¨ìˆ˜ë¥¼ ë¶„ë¦¬í•˜ë©´ ì—°ê²°ì´ ì˜ ì•ˆë¨.
+        $.ajax({
+			      url:'getAddress',
+			      type:'post',
+			      dataType:'json',
+			      contentType:'application/json; charset=UTF-8',
+			      data: {},
+			      success: function(data){
+              calendar = new Calendar(calendarEl, {//varë¥¼ ì œê±°í•˜ì—¬ ì „ì—­ë³€ìˆ˜ë¡œ í• ë‹¹í•œë‹¤.
+		            initialDate: '2021-07-01',	
+		            initialView: 'timeGridWeek',  //ì‹œê°„,ì£¼ë³„ ì¼ì • ê·¸ë¦¬ë“œ
+                headerToolbar: {
+			            left: 'prev,next today',
+			            center: 'title',
+			            right:  'dayGridMonth,timeGridWeek,timeGridDay' 
+		                  },
+		            height:'auto',
+		            navLinks: true,
+		            editable: false,  //ìˆ˜ì •ê°€ëŠ¥ ì—¬ë¶€
+      	        selectable: true,
+        	      selectMirror: true,
+                nowIndicator: true,
+                droppable: true,
+                events: data, //ì´ê²ƒì´ dbì— ê°’ ë¿Œë ¤ì§€ëŠ” ê²ƒ.
+                drop: function(info) {  //dropì„ ìˆ˜í–‰í•  ë•Œ ì´ë£¨ì–´ì§€ëŠ” fuction
+                if (checkbox.checked) {  //ë“œë˜ê·¸ë¥¼ í•˜ë©´ ë“œë˜ê·¸ë°•ìŠ¤ì—ì„œ ì‚­ì œ ë¨
+                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    }
+                 }
+                });
+              calendar.render();
+          },
+          error: function(e){
+          console.log(e);
+        }
       });
- 
-      function loadingEvents() {
-          var return_value = null;
-          $.ajax({
-			  url:'getAddress',
-			  type:'post',
-			  dataType:'json',
-			  contentType:'application/json; charset=UTF-8',
-			  data: {},
-			  success: function(data){
-				 console.log(data); //object
-				return_value = JSON.stringify(data); //jsonÇüÅÂ·Î º¯È¯
-				console.log(return_value);
-			  },
-			  error: function(e){
-			  	console.log(e);
-			}
-		
-        });
-        return return_value;
-		}
+    });
 	
     </script>
+
 <body>
  <div id="external-events" >
     <p>    
-  <strong>µå·¡±×ÇÏ¿©¼­ ÀÏÁ¤Ç¥¿¡ Ãß°¡ÇØº¸¼¼¿ä !</strong>
+  <strong>ë“œë˜ê·¸í•˜ì—¬ì„œ ì¼ì •í‘œì— ì¶”ê°€í•´ë³´ì„¸ìš” !</strong>
     </p>
-   <!--ÀÌÁ¦ ¿©±â´Ù°¡ for¹®À» µ¹·Á¼­ ¸¶Ä¿ÀÇ °¹¼ö¸¸Å­ »ı¼ºÇÒ²¨¾ß....¾îÄ«Áö? Å¸ÀÓ¸®ÇÁ? or ÀÚ¹Ù½ºÅ©¸³Æ®?¤¾¤¾¤¾ ´äÀº ÀÚ¹Ù½ºÅ©¸³Æ®¿´´Ù !-->
-    <!--<div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-       <div th:each ="obj: ${id='result'}"}> </div>
-    </div>-->
-   <script>
-   // function listadd (result) {
-     // for(var i; i < result.length; i++) {
-    //    var list = document.createElement('div');
-    //    var listid = document.createAttribute('id=result');
-    //    list.appendChild(listid);
-     //   documnet.body.appendChild(list);
-     // }
-   // }
-   </script>
    <div id = "divlist">
     <div id = "divlist" class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
       <div id="result" class="fc-event-main"></div></div>
@@ -121,35 +96,14 @@
 
     <div id="newlist"></div>
 
-
-   <!--<div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div id="result" class="fc-event-main">My Event 1</div>
-    </div>
-
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div id="result" class="fc-event-main">My Event 2</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 3</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 4</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 5</div>
-    </div>
-  -->
     <p>
       <input type="checkbox" id="drop-remove" checked/>
       <label for="drop-remove">remove after drop</label>
     </p>
   </div>
 
-  <!--<div id="calendar-container">
-    <div id="calendar"></div>
-  </div> -->
   <div>
-    <button onclick="fn_submit()">ÀÏÁ¤È®Á¤ !</button>
+    <button onclick="fn_submit()">afterì¼ì • !</button>
   </div>
  
   <div id="calendar-container" style="float: left; width:80%;" >

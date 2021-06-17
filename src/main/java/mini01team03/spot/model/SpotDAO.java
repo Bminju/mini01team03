@@ -16,5 +16,5 @@ public interface SpotDAO {
 	//before 일정 정보 추가 
 	public int insertBeforeList(ListVO listVO) throws SQLException;
 	//before 페이지에서 저장한 정보 db에서 가져오기
-	public List<ListVO> getAddress() throws SQLException;
+	public List<ListVO> getAddress(String userid) throws SQLException;
 }

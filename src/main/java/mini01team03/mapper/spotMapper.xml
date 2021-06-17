@@ -30,8 +30,11 @@
    	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime})
    </insert>
    
-   <select id="getAddress" resultType="ListVO">
-   	select no, store, address, cate, concat(startDay, ' ', startTime) as start, concat(endDay, ' ',endTime) as end from beforeinfo
-  </select>
+   <select id="getAddress" resultType="ListVO" parameterType="string">
+   	select A.no, A.store as title, A.address, A.cate, concat(A.startDay, 'T', substr(A.startTime,1,8)) as start, 
+   	concat(A.endDay, 'T', substr(A.endTime,1,8)) as end 
+   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid where B.Userid = #{userid}
+   	</select>
+  <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
    
 </mapper>

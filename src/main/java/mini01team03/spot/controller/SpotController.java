@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -83,8 +86,12 @@ public class SpotController {
 	//db에서 저장된 주소 정보 가져오기. 혜지추가
 	@ResponseBody
 	@PostMapping("getAddress")
-	public List<ListVO> getAddress(Model model) throws SQLException {
-		List<ListVO> spotList = spotService.getAddress();
+	public List<ListVO> getAddress(Model model, HttpServletRequest request, HttpSession session) throws SQLException {
+		//세션에 저장된 userid값 가져오고 이 값을 기준으로 정보 가져오기 
+		Object ob_userid=session.getAttribute("email");
+		String userid = (String)ob_userid;
+		System.out.println(userid);
+		List<ListVO> spotList = spotService.getAddress(userid);
 		model.addAttribute("spotList", spotList);
 		System.out.println("spotList"+spotList);
 		
