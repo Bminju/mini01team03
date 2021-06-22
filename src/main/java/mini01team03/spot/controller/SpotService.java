@@ -20,4 +20,6 @@ public interface SpotService {
 	public int beforeinfoDelete(ListVO listVO[]) throws SQLException;
 	//before title과 cost 중복 입력 방지를 위한 delete
 	public int costDelete(TotalVO totalVO) throws SQLException;
+	//price 입력받은 값 db에 입력하기
+	public int updatePrice(ListVO listVO) throws SQLException;
 }

@@ -32,12 +32,16 @@
    
    <select id="getAddress" resultType="ListVO" parameterType="ListVO">
    	select A.id, concat(A.store,'\n', A.address,'\n', A.cate)as title, concat(A.startDay, 'T', substr(A.startTime,1,8)) as start, 
-   	concat(A.endDay, 'T', substr(A.endTime,1,8)) as end 
+   	concat(A.endDay, 'T', substr(A.endTime,1,8)) as end, A.price 
    	from beforeinfo AS A left join user AS B on A.Userid = B.Userid 
    	where B.Userid = #{Userid.userid} and A.travel_title = #{travel}
-   
    	</select>
-  <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
+   	 <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
+    
+    <!-- 블록 클릭시 price 값을 입력받아 update 한다. -->
+   <update id="updatePrice" parameterType="ListVO">
+    update beforeinfo set price = #{price} where Userid=#{Userid.userid} and id=#{id}
+   </update>
    
    <insert id="insertTotalPrice" parameterType="TotalVO">
    	  insert into cost(travel_title, total, Userid) values (#{travel}, #{total}, #{Userid.userid})

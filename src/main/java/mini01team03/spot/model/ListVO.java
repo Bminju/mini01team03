@@ -5,7 +5,7 @@ import mini01team03.user.model.UserVO;
 
 
 public class ListVO {
-	//private String no; //db에서 값을 가져오기 위해서 필요했음
+	private String id; //db에서 값을 가져오기 위해서 필요했음
 	private String title;
 	private String start;
 	private String end;
@@ -18,7 +18,7 @@ public class ListVO {
 	private String endTime;
 	private UserVO Userid;
 	private String travel;
-	
+	private String price;
 	
 	
 	public String getTitle() {
@@ -93,5 +93,18 @@ public class ListVO {
 	public void setTravel(String travel) {
 		this.travel = travel;
 	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	
 	}

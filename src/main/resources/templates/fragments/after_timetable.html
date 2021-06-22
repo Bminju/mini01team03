@@ -22,7 +22,8 @@
   }
 
 </style>
-    
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <script>
 
       var calendar = null; //calender변수를 전역으로 쓰기 위함.
@@ -45,6 +46,7 @@
       }
     });
  //db에서 정보를 가져와서 succes할 시 캘린더 보여주기. 캘린더 함수와 db 정보 가져오는 함수를 분리하면 연결이 잘 안됨.
+ //before에서 저장한 값을 캘린더에 뿌리기
         $.ajax({
 			      url:'getAddress',
 			      type:'post',
@@ -52,7 +54,7 @@
 			      contentType:'application/json; charset=UTF-8',
 			      data: {},
 			      success: function(data){
-               
+              console.log(data);
               calendar = new Calendar(calendarEl, {//var를 제거하여 전역변수로 할당한다.
 		            initialDate: '2021-07-01',	
 		            initialView: 'timeGridWeek',  //시간,주별 일정 그리드
@@ -69,6 +71,29 @@
                 nowIndicator: true,
                 droppable: true,
                 events: data, //이것이 db에 값 뿌려지는 것.
+                 eventClick: function(info) {
+                  var result = prompt(info.event.title+"에서 사용한 금액을 입력하세요");
+                  info.event.setExtendedProp('price', result); //result 값을 price에 넣어주려고 함.
+                  console.log("info:"+info.event.extendedProps.price); //잘 넣어졌는지 확인
+                  //이벤트를 클릭할 시 입력한 price 값을 ajax를 통해 db로 update하기
+                    $.ajax({
+                      type:"POST",
+                      url:"setPrice",
+                      dataType:"json",
+                      data:JSON.stringify({price:info.event.extendedProps.price,id:info.event.id}), 
+                      contentType:'application/json; charset=UTF-8',
+                      success: function(data){
+                        console.log("업데이트 성공");
+                        location.reload();
+                      }
+                    })
+                    },
+                    //이벤트에 마우스 오버하면 가격 뜨게 하는 함수
+                eventDidMount: function(info) {
+                  tippy(info.el, {
+                  content:  info.event.extendedProps.price,//info.event.extendedProps.description,//가격을 툴팁으로 가져옵니다. 
+                      });
+                 },
                 drop: function(info) {  //drop을 수행할 때 이루어지는 fuction
                 if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
                 info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -87,20 +112,10 @@
 
 <body>
  <div id="external-events" >
-    <p>    
-  <strong>드래그하여서 일정표에 추가해보세요 !</strong>
-    </p>
+
    <div id = "divlist">
-    <div id = "divlist" class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div id="result" class="fc-event-main"></div></div>
+      <div id="result" class="fc-event-main"></div>
     </div>
-
-    <div id="newlist"></div>
-
-    <p>
-      <input type="checkbox" id="drop-remove" checked/>
-      <label for="drop-remove">remove after drop</label>
-    </p>
   </div>
 
   <div>

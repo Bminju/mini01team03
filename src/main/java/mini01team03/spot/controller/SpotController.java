@@ -129,6 +129,21 @@ public class SpotController {
 		
 		return spotList;
 	}
+	//price 입력받은 값 db에 입력하기. 혜지추가
+	@ResponseBody
+	@PostMapping("setPrice")
+	public int setPrice(@RequestBody ListVO listVO,HttpServletRequest request, HttpSession session) throws SQLException {
+		//listVO에 price 값과 id 값이 저장되어 있음
+		Object ob_userid=session.getAttribute("email");
+	    String userid1 = (String)ob_userid;
+	    //System.out.println(userid);
+	    UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+	    userid.setUserid(userid1);//userid에 세션아이디 값 넣기
+	    listVO.setUserid(userid); // 세션 아이디 값이 들어있는 userid 를 listVO에 넣기
+		int result = spotService.updatePrice(listVO);
+		return result;
+	}
+	
 	
 	//여행제목, 총경비 db에 넘기기 .슬기추가
 	@ResponseBody

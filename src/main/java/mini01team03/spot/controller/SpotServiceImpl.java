@@ -49,5 +49,9 @@ public class SpotServiceImpl implements SpotService {
 		int cnt = spotDAO.costDelete(totalVO);
 		return cnt;
 	}
-	
+	@Override
+	public int updatePrice(ListVO listVO) throws SQLException {
+		int cnt = spotDAO.updatePrice(listVO);
+		return cnt;
+	}
 }
