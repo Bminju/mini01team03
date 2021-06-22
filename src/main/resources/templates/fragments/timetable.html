@@ -26,12 +26,10 @@
     <script>
 
       var calendar = null; //calender변수를 전역으로 쓰기 위함.
-
 		$(document).ready(function(){ //제이쿼리 방식
       //document.addEventListener('DOMContentLoaded', function() { //순수자바스크립트 방식
         var Calendar = FullCalendar.Calendar;
-        var Draggable = FullCalendar.Draggable;
-        
+        var Draggable = FullCalendar.Draggable;   
         var containerEl = document.getElementById('external-events');
         var calendarEl = document.getElementById('calendar');
         var checkbox = document.getElementById('drop-remove');
@@ -44,7 +42,8 @@
         };
       }
     });
-       
+
+          //페이지 로딩 후 보여지는 캘린더
           calendar = new Calendar(calendarEl, { //var를 제거하여 전역변수로 할당한다.
 		      initialDate: '2021-07-01',	
 		      initialView: 'timeGridWeek',  //시간,주별 일정 그리드
@@ -60,6 +59,7 @@
       	  selectMirror: true,
           nowIndicator: true,
           droppable: true,
+          ///events: all_events,
           drop: function(info) {  //drop을 수행할 때 이루어지는 fuction
           if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
           info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -67,26 +67,118 @@
            }
           });
         calendar.render(); 
+
+
+       //traveltitle입력 후 plan버튼 누를 보여지는 캘린더
+        $("#fnplan").on("click",function(){
+          var travel_title = $("#travelTitle").val();
+        //새로고침시 db에 있는 정보 불러오기 위한 ajax
+         $.ajax({
+			    url:'getAddress',
+          type:'post',
+          async : false,  //ajax를 순차적으로 실행시키기 위함(false라면 동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
+			    dataType:'json',
+			    contentType:'application/json; charset=UTF-8',
+			    data:JSON.stringify({travel : travel_title}),
+			    success: function(data){
+              console.log(data);  
+             calendar = new Calendar(calendarEl, {//var를 제거하여 전역변수로 할당한다.
+		            initialDate: '2021-07-01',	
+		            initialView: 'timeGridWeek',  //시간,주별 일정 그리드
+                headerToolbar: {
+			            left: 'prev,next today',
+			            center: 'title',
+			            right:  'dayGridMonth,timeGridWeek,timeGridDay' 
+		                  },
+		            height:'auto',
+		            navLinks: true,
+		            editable: true,  //수정가능 여부
+      	        selectable: true,
+        	      selectMirror: true,
+                nowIndicator: true,
+                droppable: true,
+                events: data, //이것이 db에 값 뿌려지는 것.
+                drop: function(info) {  //drop을 수행할 때 이루어지는 fuction        
+                if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
+                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    }
+                 }
+                });
+              calendar.render();
+			    },
+			    error: function(e){
+				    
+			    }
+		
+        });
+
+      }); 
+  
       });
  
       //최종 제출 버튼 클릭시 function
       function fn_submit(){
+         var travel_title = $("#travelTitle").val();
+         $.ajax({
+			    url:'getAddress',
+          type:'post',
+          async : false,  //ajax를 순차적으로 실행시키기 위함(false라면 동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
+			    dataType:'json',
+			    contentType:'application/json; charset=UTF-8',
+			    data:JSON.stringify({travel : travel_title}),
+			    success: function(data){
+              console.log(data);  
+             calendar = new Calendar(calendarEl, {//var를 제거하여 전역변수로 할당한다.
+		            initialDate: '2021-07-01',	
+		            initialView: 'timeGridWeek',  //시간,주별 일정 그리드
+                headerToolbar: {
+			            left: 'prev,next today',
+			            center: 'title',
+			            right:  'dayGridMonth,timeGridWeek,timeGridDay' 
+		                  },
+		            height:'auto',
+		            navLinks: true,
+		            editable: true,  //수정가능 여부
+      	        selectable: true,
+        	      selectMirror: true,
+                nowIndicator: true,
+                droppable: true,
+                events: data, //이것이 db에 값 뿌려지는 것.
+                drop: function(info) {  //drop을 수행할 때 이루어지는 fuction 
+                if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
+                info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    }
+                 }
+                });
+              calendar.render();
+			    },
+			    error: function(e){
+				    
+			    }
+		
+        });
+        //캘린더에 있는 정보 db에 넣기
         //step1 정보 가져오기 
         //이벤트 명칭, 시간, 날짜가 필요함.
         var allEvent = calendar.getEvents()
         console.log(allEvent);
 
+        var travel_title = $("#travelTitle").val();
         var events = new Array();
         for(var i=0; i < allEvent.length; i++){
 
           var obj = new Object();
 
+          obj.travel = travel_title; 
+
           obj.title = allEvent[i]._def.title; //이벤트 명칭 가져오기
+          //alert("obj.title:"+allEvent[i]._def.title);
           obj.start = allEvent[i]._instance.range.start; //시작 날짜 및 시간
           obj.end = allEvent[i]._instance.range.end; //끝 날짜 및 시
           
           events.push(obj);
         }
+
         //step2. 이제 에이작스로 넘기면 됨 
         $.ajax({
 			    url:'beforelist',
@@ -98,7 +190,7 @@
 			    success: function(data){
             alert("저장되었습니다! 야호!");
             //console.log("success");
-           // location.reload();
+            location.reload();
 			    },
 			    error: function(e){
 				    console.log(e);
@@ -106,14 +198,13 @@
 		
         });
 
-
+        //여행 제목과 총 경비 넘기는 ajax 로직
         //1.여행제목과 총 경비 불러와 변수에 담기 
         var travel_title = $("#travelTitle").val();
         var total = $("#totalPrice").val();
         var totalObj = new Object();
-        totalObj.travel_title = travel_title;
+        totalObj.travel = travel_title;
         totalObj.total = total;
-        alert(totalObj.travel_title); //작동됨 ok
         //2.에이작스로 넘기기
         $.ajax({
 			    url:'cost',
@@ -123,7 +214,7 @@
 			    contentType:'application/json; charset=UTF-8',
 			    data: JSON.stringify(totalObj),
 			    success: function(data){
-           console.log("성공");
+          console.log("성공");
 			    },
 			    error: function(e){
 				   
@@ -131,15 +222,10 @@
 		
         });
 
-
-
-
-
-
-
       }
 
     </script>
+    
 <body>
  <div id="external-events" >
     <p>    
@@ -207,6 +293,9 @@
 </form>
 <br>
 
+  <div class="text-center">
+    <button type="button" id="fnplan" class="btn btn-secondary">일정을 선택할꺼야</button>
+  </div>
 
   <div class="text-center">
     <button type="button" class="btn btn-secondary" onclick="fn_submit()">일정확정 !</button>

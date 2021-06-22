@@ -30,13 +30,23 @@ public class SpotServiceImpl implements SpotService {
 	}
 	//before 페이지에서 저장한 정보 db에서 가져오기
 	@Override
-	public List<ListVO> getAddress(String userid) throws SQLException {
-		List<ListVO> spotList = spotDAO.getAddress(userid);
+	public List<ListVO> getAddress(ListVO listVO) throws SQLException {
+		List<ListVO> spotList = spotDAO.getAddress(listVO);
 		return spotList;
 	}
 	@Override
 	public int insertTotalPrice(TotalVO totalVO) throws SQLException {
 		int cnt = spotDAO.insertTotalPrice(totalVO);
+		return cnt;
+	}
+	@Override
+	public int beforeinfoDelete(ListVO listVO[]) throws SQLException {
+		int cnt = spotDAO.beforeinfoDelete(listVO[0]);
+		return cnt;
+	}
+	@Override
+	public int costDelete(TotalVO totalVO) throws SQLException {
+		int cnt = spotDAO.costDelete(totalVO);
 		return cnt;
 	}
 	

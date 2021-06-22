@@ -5,15 +5,15 @@ import mini01team03.user.model.UserVO;
 //슬기 추가
 public class TotalVO {
 	
-	private String travel_title;
+	private String travel;
 	private int total;
 	private UserVO Userid;
 	
-	public String getTravel_title() {
-		return travel_title;
+	public String getTravel() {
+		return travel;
 	}
-	public void setTravel_title(String travel_title) {
-		this.travel_title = travel_title;
+	public void setTravel(String travel) {
+		this.travel = travel;
 	}
 	public int getTotal() {
 		return total;

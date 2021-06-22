@@ -25,20 +25,33 @@
    <insert id="insertSpot" parameterType="MarkerVO">
       insert into spot(Lo_name, Address, Lat, Lon, Price, Cate) values (#{title}, #{address}, #{la}, #{ma}, #{price}, #{cate})
    </insert>
-
+	
    <insert id="insertBeforeList" parameterType="ListVO">
-   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime, Userid) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime}, #{Userid.userid})
+   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime, Userid, travel_title) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime}, #{Userid.userid}, #{travel})
    </insert>
    
-   <select id="getAddress" resultType="ListVO" parameterType="string">
-   	select A.no, A.store as title, A.address, A.cate, concat(A.startDay, 'T', substr(A.startTime,1,8)) as start, 
+   <select id="getAddress" resultType="ListVO" parameterType="ListVO">
+   	select A.id, concat(A.store,'\n', A.address,'\n', A.cate)as title, concat(A.startDay, 'T', substr(A.startTime,1,8)) as start, 
    	concat(A.endDay, 'T', substr(A.endTime,1,8)) as end 
-   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid where B.Userid = #{userid}
+   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid 
+   	where B.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   
    	</select>
   <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
    
    <insert id="insertTotalPrice" parameterType="TotalVO">
-   	  insert into cost(travel_title, total, Userid) values (#{travel_title}, #{total}, #{Userid.userid})
+   	  insert into cost(travel_title, total, Userid) values (#{travel}, #{total}, #{Userid.userid})
    </insert>
+   <!-- beforeinfo의 중복 방지를 위한 delete -->
+   <delete id="beforeinfoDelete" parameterType="ListVO">
+		DELETE FROM beforeinfo 
+		WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+	</delete>
+   <!-- cost의 중복 방지를 위한 delete -->
+   <delete id="costDelete" parameterType="TotalVO">
+		DELETE FROM cost 
+		WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+	</delete>
+   
    
 </mapper>

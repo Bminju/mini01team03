@@ -13,7 +13,11 @@ public interface SpotService {
 	//before 페이지 일정 정보 추가
 	public int insertBeforeList(ListVO listVO) throws SQLException;
 	//before 페이지에서 저장한 정보 db에서 가져오기
-	public List<ListVO> getAddress(String userid) throws SQLException;
+	public List<ListVO> getAddress(ListVO listVO) throws SQLException;
 	//before 페이지의 여행 제목, 총 경비 db에 추가
 	public int insertTotalPrice(TotalVO totalVO) throws SQLException;
+	//before db중복 입력을 방지하기 위한 delete
+	public int beforeinfoDelete(ListVO listVO[]) throws SQLException;
+	//before title과 cost 중복 입력 방지를 위한 delete
+	public int costDelete(TotalVO totalVO) throws SQLException;
 }
