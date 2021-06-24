@@ -54,4 +54,9 @@ public class SpotServiceImpl implements SpotService {
 		int cnt = spotDAO.updatePrice(listVO);
 		return cnt;
 	}
+	@Override
+	public List<TotalVO> travelList(String userid) throws SQLException {
+		List<TotalVO>travel_list = spotDAO.travelList(userid);
+		return travel_list;
+	}
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,16 @@ public class SpotController {
 	SpotService spotService;
 	
 	@GetMapping("address")
-	public String address() throws Exception {
+	public String address(Model model, TotalVO totalVO, HttpServletRequest request, HttpSession session) throws Exception {
+		//userid를 파라미터로 넣어서 
+		Object ob_userid=session.getAttribute("email");
+		String userid = (String)ob_userid;
+		//UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+		//userid.setUserid(userid1);//userid에 세션아이디 값 넣기
+		List<TotalVO> travel_list = spotService.travelList(userid);
+		System.out.println("travel_list.size():"+travel_list.size());
+		System.out.println(userid);
+		model.addAttribute("travel_list", travel_list);
 		return "cost/address";
 	}
 	
@@ -161,5 +171,6 @@ public class SpotController {
 		int cnt = spotService.insertTotalPrice(totalVO);
 		return cnt;
 	}
+	
 	
 }

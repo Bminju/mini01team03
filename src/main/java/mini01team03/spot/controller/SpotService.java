@@ -22,4 +22,6 @@ public interface SpotService {
 	public int costDelete(TotalVO totalVO) throws SQLException;
 	//price 입력받은 값 db에 입력하기
 	public int updatePrice(ListVO listVO) throws SQLException;
+	//before페이지에 travel list 뿌리기
+	public List<TotalVO> travelList(String userid) throws SQLException;
 }

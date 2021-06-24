@@ -37,12 +37,13 @@
        new Draggable(containerEl, {
         itemSelector: '.fc-event',
         eventData: function(eventEl) {
-          return {
+        	return {
             title: eventEl.innerText
-        };
-      }
-    });
-
+        			};
+      		},	
+    	});
+      	
+      
           //페이지 로딩 후 보여지는 캘린더
           calendar = new Calendar(calendarEl, { //var를 제거하여 전역변수로 할당한다.
 		      initialDate: '2021-07-01',	
@@ -60,6 +61,7 @@
           nowIndicator: true,
           droppable: true,
           ///events: all_events,
+          
           drop: function(info) {  //drop을 수행할 때 이루어지는 fuction
           if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
           info.draggedEl.parentNode.removeChild(info.draggedEl);
@@ -68,24 +70,25 @@
           });
         calendar.render(); 
 
+     
 
        //traveltitle입력 후 plan버튼 누를 보여지는 캘린더
         $("#fnplan").on("click",function(){
           var travel_title = $("#travelTitle").val();
-        //새로고침시 db에 있는 정보 불러오기 위한 ajax
+        //db에 있는 정보 불러오기 위한 ajax
          $.ajax({
 			    url:'getAddress',
-          type:'post',
-          async : false,  //ajax를 순차적으로 실행시키기 위함(false라면 동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
+          		type:'post',
+          		async : false,  //ajax를 순차적으로 실행시키기 위함(false라면 동기적 방식) success값을 받아야 다음 ajax가 실행 됨.
 			    dataType:'json',
 			    contentType:'application/json; charset=UTF-8',
 			    data:JSON.stringify({travel : travel_title}),
 			    success: function(data){
-              console.log(data);  
-             calendar = new Calendar(calendarEl, {//var를 제거하여 전역변수로 할당한다.
+              	console.log(data);  
+             	calendar = new Calendar(calendarEl, {//var를 제거하여 전역변수로 할당한다.
 		            initialDate: '2021-07-01',	
 		            initialView: 'timeGridWeek',  //시간,주별 일정 그리드
-                headerToolbar: {
+               		headerToolbar: {
 			            left: 'prev,next today',
 			            center: 'title',
 			            right:  'dayGridMonth,timeGridWeek,timeGridDay' 
@@ -93,16 +96,26 @@
 		            height:'auto',
 		            navLinks: true,
 		            editable: true,  //수정가능 여부
-      	        selectable: true,
-        	      selectMirror: true,
-                nowIndicator: true,
-                droppable: true,
-                events: data, //이것이 db에 값 뿌려지는 것.
-                drop: function(info) {  //drop을 수행할 때 이루어지는 fuction        
-                if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
-                info.draggedEl.parentNode.removeChild(info.draggedEl);
-                    }
-                 }
+      	        	selectable: true,
+        	      	selectMirror: true,
+                	nowIndicator: true,
+                	droppable: true,
+               		events: data, //이것이 db에 값 뿌려지는 것.
+               		//일단 클릭시 이벤트 삭제로 만들었는데, 더 좋은 방법 없을까?
+               	 	eventClick: function(info) {
+                     info.jsEvent.preventDefault();
+
+                     if (info.event.id) {
+                         var event = calendar.getEventById(info.event.id);
+                         event.remove();
+                     		}
+                  		 },
+                  		 
+                	drop: function(info) {  //drop을 수행할 때 이루어지는 fuction        
+                	if (checkbox.checked) {  //드래그를 하면 드래그박스에서 삭제 됨
+                		info.draggedEl.parentNode.removeChild(info.draggedEl);
+                    	}
+                 		}
                 });
               calendar.render();
 			    },
@@ -118,7 +131,8 @@
  
       //최종 제출 버튼 클릭시 function
       function fn_submit(){
-         var travel_title = $("#travelTitle").val();
+        /* var travel_title = $("#travelTitle").val();
+        
          $.ajax({
 			    url:'getAddress',
           type:'post',
@@ -156,7 +170,7 @@
 				    
 			    }
 		
-        });
+        }); */
         //캘린더에 있는 정보 db에 넣기
         //step1 정보 가져오기 
         //이벤트 명칭, 시간, 날짜가 필요함.
@@ -227,24 +241,12 @@
     </script>
     
 <body>
+<!-- 캘린더 리스트 -->
  <div id="external-events" >
     <p>    
   <strong>드래그하여서 일정표에 추가해보세요 !</strong>
     </p>
-   <!--이제 여기다가 for문을 돌려서 마커의 갯수만큼 생성할꺼야....어카지? 타임리프? or 자바스크립트?ㅎㅎㅎ 답은 자바스크립트였다 !-->
-    <!--<div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-       <div th:each ="obj: ${id='result'}"}> </div>
-    </div>-->
-   <script>
-   // function listadd (result) {
-     // for(var i; i < result.length; i++) {
-    //    var list = document.createElement('div');
-    //    var listid = document.createAttribute('id=result');
-    //    list.appendChild(listid);
-     //   documnet.body.appendChild(list);
-     // }
-   // }
-   </script>
+
    <div id = "divlist">
     <div id = "divlist" class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
       <div id="result" class="fc-event-main"></div></div>
@@ -252,51 +254,16 @@
 
     <div id="newlist"></div>
 
-
-   <!--<div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div id="result" class="fc-event-main">My Event 1</div>
-    </div>
-
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div id="result" class="fc-event-main">My Event 2</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 3</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 4</div>
-    </div>
-    <div class="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event">
-      <div class="fc-event-main">My Event 5</div>
-    </div>
-  -->
     <p>
       <input type="checkbox" id="drop-remove" checked/>
       <label for="drop-remove">remove after drop</label>
     </p>
   </div>
 
-  <!--<div id="calendar-container">
-    <div id="calendar"></div>
-  </div> -->
 
-  <!-- 총 금액과 여행제목 입력 받는 공간 -->
-<form>
-  <div class="row">
-    <div class="col">
-      <input type="text" id="travelTitle" class="form-control" placeholder="여행 제목">
-    </div><br>
-    <div class="col">
-      <input type="text" id="totalPrice" class="form-control" placeholder="총 경비">
-    </div>
-  </div>
-</form>
 <br>
 
-  <div class="text-center">
-    <button type="button" id="fnplan" class="btn btn-secondary">일정을 선택할꺼야</button>
-  </div>
-
+<!-- 캘린더 -->
   <div class="text-center">
     <button type="button" class="btn btn-secondary" onclick="fn_submit()">일정확정 !</button>
   </div>

@@ -56,6 +56,10 @@
 		DELETE FROM cost 
 		WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
 	</delete>
+	<!-- drop box에 입력 될 travel_title 가져오는 맵핑 -->
+	<select id="travelList" resultType="TotalVO" parameterType="String">
+			select travel_title as travel from cost where userid = #{userid}
+	</select>
    
    
 </mapper>
