@@ -172,5 +172,17 @@ public class SpotController {
 		return cnt;
 	}
 	
+	//일정 선택 누를 시 cost 값 불러오는 로직
+	@ResponseBody
+	@PostMapping("findcost")
+	public String findcost (@RequestBody TotalVO totalVO, HttpServletRequest request, HttpSession session) throws SQLException {
+		Object ob_userid=session.getAttribute("email");
+		String userid1 = (String)ob_userid;
+		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+		userid.setUserid(userid1);//userid에 세션아이디 값 넣기
+		totalVO.setUserid(userid);  		
+		String result = spotService.findCost(totalVO); 
+		return result; //result에 담긴 값은 조건에 맞는 total금액임
+	  }
 	
 }

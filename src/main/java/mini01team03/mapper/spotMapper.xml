@@ -60,6 +60,11 @@
 	<select id="travelList" resultType="TotalVO" parameterType="String">
 			select travel_title as travel from cost where userid = #{userid}
 	</select>
+    <!-- total cost 가져오는 맵핑 -->
+    <select id="findCost" resultType="String" parameterType="TotalVO">
+    	select total from cost WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+    </select>
+   
    
    
 </mapper>

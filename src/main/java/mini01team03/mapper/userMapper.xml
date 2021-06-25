@@ -75,7 +75,7 @@
 	<!-- 회원정보 삭제 -->
 	<delete id="userinfoDelete" parameterType="UserVO">
 		DELETE FROM user 
-		WHERE Id = #{id}
+		WHERE Userid = #{userid}
 	</delete>
 	
    <!-- 이메일 중복체크 -->

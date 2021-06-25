@@ -75,7 +75,7 @@
        //traveltitle입력 후 plan버튼 누를 보여지는 캘린더
         $("#fnplan").on("click",function(){
           var travel_title = $("#travelTitle").val();
-        //db에 있는 정보 불러오기 위한 ajax
+        //db에 있는 여행 일정 정보 불러오기 위한 ajax
          $.ajax({
 			    url:'getAddress',
           		type:'post',
@@ -124,7 +124,23 @@
 			    }
 		
         });
-
+	//cost값 불러오는 로직
+			$.ajax({
+				type:"POST",
+				url:"/findcost",
+				data:JSON.stringify({travel : travel_title}),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data) {
+					if (data) {
+						$('input[id=totalPrice]').attr('value',data);		
+					}else {
+						console.log("error");
+					}		
+					} 	
+				})
+	
+	
+      //  
       }); 
   
       });

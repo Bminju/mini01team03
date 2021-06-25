@@ -27,5 +27,7 @@ public interface SpotDAO {
 	public int updatePrice(ListVO listVO) throws SQLException;
 	//before페이지에 travel list 뿌리기
 	public List<TotalVO> travelList(String userid) throws SQLException;
+	//before페이지에서 total_cost값 가져오기
+	public String findCost(TotalVO totalVO)throws SQLException;	
 }	
 

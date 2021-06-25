@@ -59,4 +59,9 @@ public class SpotServiceImpl implements SpotService {
 		List<TotalVO>travel_list = spotDAO.travelList(userid);
 		return travel_list;
 	}
+	@Override
+	public String findCost(TotalVO totalVO) throws SQLException {
+		String result = spotDAO.findCost(totalVO);
+		return result;
+	}
 }
