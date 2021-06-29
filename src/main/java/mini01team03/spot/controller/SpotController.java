@@ -163,6 +163,7 @@ public class SpotController {
 		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
 		userid.setUserid(userid1);//userid에 세션아이디 값 넣기
 		totalVO.setUserid(userid);
+		//select한 후에
 		//if문 사용해서 정보 있으면 update 없으면 insert로 바꾸기.........^^..
 		
 		spotService.costDelete(totalVO);
