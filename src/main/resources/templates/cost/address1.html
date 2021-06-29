@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="/fragments/header.html :: fragment-header(title = 'After')"></div>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=bde99f6e382853ee73bb86c84a7a2c06&libraries=services"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div th:replace="/fragments/modal.html :: fragment-modal"></div>
+<div th:replace="/fragments/nav.html :: fragment-nav(current = 'After')"></div>
+ <form action="/address2/" method="post">
+		<select name="travel">
+			<option value="">선택</option>
+			<option th:each ="travel : ${travel_list}" th:text ="${travel.travel}"></option>
+		</select>
+<br>
+  <div class="text-center">
+    <button type="submit" id="fnplan" class="btn btn-secondary">일정을 선택할꺼야</button>
+  </div>
+</form>
+	<div th:replace="/fragments/footer.html :: fragment-footer"></div>
+
+</body>
+</html>
+<!-- th:field="*{travelTitle}" -->

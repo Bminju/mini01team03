@@ -43,11 +43,28 @@ public class SpotController {
 		model.addAttribute("travel_list", travel_list);
 		return "cost/address";
 	}
+	//travel_title 리스트 받는 곳
+		@GetMapping("address1")
+		public String address1(Model model, TotalVO totalVO, HttpServletRequest request, HttpSession session) throws Exception {
+				//userid를 파라미터로 넣어서 
+		      Object ob_userid=session.getAttribute("email");
+		      String userid = (String)ob_userid;
+		      List<TotalVO> travel_list = spotService.travelList(userid);
+		      System.out.println("travel_list.size():"+travel_list.size());
+		      System.out.println(userid);
+		      model.addAttribute("travel_list", travel_list);
+
+			return "cost/address1";
+		}
 	
-	@GetMapping("address2")
-	public String address2() throws Exception {
-		return "cost/address2";
-	}
+		//travel_title 받고 난 후에 캘린더 값 보여주기
+		@PostMapping("address2/")
+		public String address2(@RequestParam("travel") String travel,Model model) throws Exception {
+			 model.addAttribute("travel", travel); //뷰에 보내기
+			 System.out.println("travel:"+travel);
+			return "cost/address2";
+		}
+		
 	
 	@ResponseBody
 	@PostMapping("cost/save")
@@ -122,7 +139,7 @@ public class SpotController {
 	
 	//db에서 저장된 주소 정보 가져오기. 혜지추가
 	@ResponseBody
-	@PostMapping("getAddress")
+	@PostMapping("/getAddress")
 	public List<ListVO> getAddress(@RequestBody ListVO listVO, Model model, HttpServletRequest request, HttpSession session) throws SQLException {
 		//세션에 저장된 userid값 가져오고 이 값을 기준으로 정보 가져오기 
 		Object ob_userid=session.getAttribute("email");
@@ -139,7 +156,7 @@ public class SpotController {
 	}
 	//price 입력받은 값 db에 입력하기. 혜지추가
 	@ResponseBody
-	@PostMapping("setPrice")
+	@PostMapping("/setPrice")
 	public int setPrice(@RequestBody ListVO listVO,HttpServletRequest request, HttpSession session) throws SQLException {
 		//listVO에 price 값과 id 값이 저장되어 있음
 		Object ob_userid=session.getAttribute("email");

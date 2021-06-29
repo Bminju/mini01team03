@@ -308,7 +308,7 @@ public class LoginController {
 	      
 	      //HttpHeader와 HttpBody를 하나의 오브젝트에 담기 -> why? exchange 함수를 보면 HttpEntity 오브젝트를 넣어야 하기 때문에 
 	      HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2 = new HttpEntity<>(headers2); 
-	      
+	      //사용자 정보 가져오기
 	      //Http 요청하기 - POST방식으로 - 그리고 response 변수에 응답 받기
 	      ResponseEntity<String> response2 = rt2.exchange(
 	         "https://kapi.kakao.com/v2/user/me",
