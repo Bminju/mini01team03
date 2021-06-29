@@ -104,7 +104,6 @@
                		//일단 클릭시 이벤트 삭제로 만들었는데, 더 좋은 방법 없을까?
                	 	eventClick: function(info) {
                      info.jsEvent.preventDefault();
-
                      if (info.event.id) {
                          var event = calendar.getEventById(info.event.id);
                          event.remove();

@@ -64,7 +64,12 @@
     <select id="findCost" resultType="String" parameterType="TotalVO">
     	select total from cost WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
     </select>
-   
-   
+    <!-- beforeinfo의 cost_id에 cost의 Id 집어 넣기  -->
+   <update id="cost_id_Update">
+   		update beforeinfo as b, cost as a
+   		set b.cost_id = a.Id
+   		where b.travel_title = a.travel_title
+   		and b.Userid = a.Userid;
+   </update>
    
 </mapper>

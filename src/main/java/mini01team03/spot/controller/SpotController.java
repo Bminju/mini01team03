@@ -37,8 +37,6 @@ public class SpotController {
 		//userid를 파라미터로 넣어서 
 		Object ob_userid=session.getAttribute("email");
 		String userid = (String)ob_userid;
-		//UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
-		//userid.setUserid(userid1);//userid에 세션아이디 값 넣기
 		List<TotalVO> travel_list = spotService.travelList(userid);
 		System.out.println("travel_list.size():"+travel_list.size());
 		System.out.println(userid);
@@ -113,9 +111,9 @@ public class SpotController {
 			
 			spotService.insertBeforeList(listVO[i]);
 			
-			
-			
 		}
+		//cost_id를 update하는 구문 추가.......
+		spotService.cost_id_Update();
 		Map before = new HashMap();
 		before.put("msg", "success");
 		
@@ -165,6 +163,8 @@ public class SpotController {
 		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
 		userid.setUserid(userid1);//userid에 세션아이디 값 넣기
 		totalVO.setUserid(userid);
+		//if문 사용해서 정보 있으면 update 없으면 insert로 바꾸기.........^^..
+		
 		spotService.costDelete(totalVO);
 		
 		//db에 여행제목, 총 경비 insert

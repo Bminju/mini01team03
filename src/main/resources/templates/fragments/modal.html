@@ -3,50 +3,25 @@
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-modal">
 	<script>
-		var csrfParameter = $('meta[name="_csrf_parameter"]').attr('content')
-    	var csrfHeader = $('meta[name="_csrf_header"]').attr('content')
-    	var csrfToken = $('meta[name="_csrf"]').attr('content')
-
 		//로그인
 		//로그인시 세션유지하기
 		function fnLoginsubmit() {	
 		
 				var userid = $("#userid").val();
 				var userpwd = $("#userpwd").val();
-				//alert('성공'+email);
-				/*var dataObj = new Object();
-				dataObj.userid = userid;
-				dataObj.userpwd = userpwd;*/
 				console.log("아이디 :"+userid);
-
 
 				$.ajax({
 				type:"POST",
 				url:"/login",
 				data:{userid : userid, userpwd:userpwd},
-				//JSON.stringify(dataObj),
 				contentType:'application/x-www-form-urlencoded; charset=utf-8',
-				
 				success:function(response){
 					alert(response);
 					$("#loginModal").modal("hide");
-					location.reload(); //윈도우 내에서 자동으로 새로고침
-					/*if (
-						response.code == "200") { // 로그인 성공시 
-						$("#loginModal").modal("hide");
-					location.reload(); //윈도우 내에서 자동으로 새로고침 
-					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
-				  }else {
-					 alert(response);
-					console.log("아이디--------"+userid)  };
-					
-					}*/
-					
+					location.reload(); //윈도우 내에서 자동으로 새로고침	
 				}
-				
-			})
-			//location.reload();
-				
+			})	
 		};
 
 		//로그아웃
@@ -164,15 +139,6 @@
 					document.joinform.userpwd2.focus();
 					return;
 				}
-			
-				//if ((document.getElementsByName("userpwd").value) != (document.getElementsByName('userpwd2').value)){
-				//	alert('비밀번호가 일치하지 않습니다.');
-				//	return;
-				//}
-				
- 			//비밀번호 불일치일시 회원가입 불가하게 로직 짜기
-
-
 			    var userid = $("#joinuserid").val();
 				var userpwd = $("#joinuserpwd").val();
 				var username = $("#joinusername").val();
@@ -362,7 +328,6 @@
 		}
 
 	</script>
-	<a href="http://localhost:8080">Home</a>
 	
 	  <div class="container">
 		  <!--로그인시, id 보여줌-->

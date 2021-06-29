@@ -64,4 +64,9 @@ public class SpotServiceImpl implements SpotService {
 		String result = spotDAO.findCost(totalVO);
 		return result;
 	}
+	@Override
+	public int cost_id_Update() throws SQLException {
+		int cnt = spotDAO.cost_id_Update();
+		return cnt;
+	}
 }

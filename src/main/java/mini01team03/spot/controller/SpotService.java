@@ -26,4 +26,6 @@ public interface SpotService {
 	public List<TotalVO> travelList(String userid) throws SQLException;
 	//before페이지에서 total_cost값 가져오기
 	public String findCost(TotalVO totalVO)throws SQLException;
+	//beforeinfo에 cost_id update하기
+	public int cost_id_Update() throws SQLException;
 }

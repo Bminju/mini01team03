@@ -209,8 +209,6 @@ public class LoginController {
 		  System.out.println(dbpwd); 
 		 
 		  //세션에 존재하는 아이디 값의 비번과 입력받은 비번이 일치하면 리턴 OK
-		  //Assert.assertTrue(passwordEncoder.matches(inputpwd, dbpwd));
-		 // boolean matches(CharSequence inputpwd, String dbpwd);
 		if(!bCryptPasswordEncoder.matches(inputpwd, passVO.getUserpwd())) {
 			return "false";
 		}else {
