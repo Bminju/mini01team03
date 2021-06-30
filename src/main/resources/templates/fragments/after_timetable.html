@@ -144,8 +144,249 @@
 <br>
 
  
-  <div id="calendar-container" style="float: left; width:80%;" >
+  <span id="calendar-container" style="float: left; width:80%;" >
 	<div id="calendar"></div>
-  </div>
+  </span>
+   <!-- chart.js 시작 -->
+  <span style="float: left; width:50%;">
+  <canvas id="myChart"></canvas>
+  <canvas id="myBar"></canvas>
+  <canvas id="myPie"></canvas>
+</span>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.0/chart.js"></script>
+   <canvas id="myChart" width="400" height="400"></canvas>
+   <canvas id="myBar" width="400" height="400"></canvas>
+   <canvas id="myPie" width="400" height="400"></canvas>
+   <script>
+   var ctx = document.getElementById('myChart').getContext('2d');
+   var ctx1 = document.getElementById('myBar').getContext('2d');
+   var ctx2 = document.getElementById('myPie').getContext('2d');
+   
+   var travel = document.getElementById("travelTitle").value;
+   
+   //날짜별 금액 가져오기
+   function getPrice() {
+	    var data =[];
+	   $.ajax({
+           url:'/getAddress1',
+           type:'post',
+           dataType:'json',
+           data : JSON.stringify({travel : travel}),
+           contentType:'application/json; charset=UTF-8',
+           async:false, //동기화주는 것. 더 찾아보기.
+           success: function(result){
+        	   for(i=0;i<result.length;i++){
+           		//console.log("이거는 차트"+result);
+        		//console.log(result[i].price);
+        		price=parseInt(result[i].price);
+        	   	data.push(price);
+        	   	console.log(data);
+        	   }
+           }
+   });
+	   return data;
+   }
+   
+   //날짜 가져오기
+   function getDate() {
+	    var labels =[];
+	   $.ajax({
+          url:'/getAddress1',
+          type:'post',
+          dataType:'json',
+          data : JSON.stringify({travel : travel}),
+          contentType:'application/json; charset=UTF-8',
+          async:false, //동기화주는 것. 더 찾아보기.
+          success: function(result){
+       	   for(i=0;i<result.length;i++){
+       		//console.log(result[i].startDay);
+          	startDay = JSON.stringify(result[i].startDay);
+       		//console.log("startDay:"+startDay)
+       	   	labels.push(startDay);
+       	   	//console.log(labels);
+       	   }
+          }
+  });
+	   return labels;
+  }
+  //before에 있는 총 금액과 after에 있는 모든 금액 가져오기. 
+   function getPrice1() {
+	    var data =[];
+	    var price = 0;
+	   $.ajax({
+          url:'/getAddress1',
+          type:'post',
+          dataType:'json',
+          data : JSON.stringify({travel : travel}),
+          contentType:'application/json; charset=UTF-8',
+          async:false, //동기화주는 것. 더 찾아보기.
+          success: function(result){
+       	   for(i=0;i<result.length;i++){
+       		console.log(result[i].price);
+       		price = price + parseInt(result[i].price);
+       		total = parseInt(result[i].total);
+       		//parseInt(price);
+       		//price=parseInt(result[i].price);
+          	//price += price;
+          
+       	   	console.log("총금액"+price);
+       	   	console.log("before"+total);
+       	   }
+          }
+  });
+	   data.push(total);
+	   data.push(price);
+	   return data;
+  }
+      
+ //카테고리별 금액 가져오기
+   function getPrice2() {
+	    var data =[];
+	   $.ajax({
+           url:'/getAddress2',
+           type:'post',
+           dataType:'json',
+           data : JSON.stringify({travel : travel}),
+           contentType:'application/json; charset=UTF-8',
+           async:false, //동기화주는 것. 더 찾아보기.
+           success: function(result){
+        	   for(i=0;i<result.length;i++){
+           		//console.log("이거는 차트"+result);
+        		//console.log(result[i].price);
+        		price=parseInt(result[i].price);
+        	   	data.push(price);
+        	   	console.log(data);
+        	   }
+           }
+   });
+	   return data;
+   } 
+	//카테고리 값 가져오기
+   function getCategory() {
+	    var labels =[];
+	   $.ajax({
+          url:'/getAddress2',
+          type:'post',
+          dataType:'json',
+          data : JSON.stringify({travel : travel}),
+          contentType:'application/json; charset=UTF-8',
+          async:false, //동기화주는 것. 더 찾아보기.
+          success: function(result){
+       	   for(i=0;i<result.length;i++){
+       		category = JSON.stringify(result[i].cate);
+       	   	labels.push(category);
+       	   	console.log(labels);
+       	   }
+          }
+  });
+	   return labels;
+  }
+  
+   var myChart = new Chart(ctx, {
+       type: 'line',
+       data: {
+           labels:getDate(), //날짜
+           datasets: [{
+               label: '일자별 사용금액',
+               data: getPrice(), //금액
+               backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+               ],
+               borderColor: [
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 235, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(153, 102, 255, 1)',
+                   'rgba(255, 159, 64, 1)'
+               ],
+               borderWidth: 1
+           }]
+       },
+       options: {
+           scales: {
+               y: {
+                   beginAtZero: true
+               }
+           }
+       }
+   });
+   
+   var myChart = new Chart(ctx1, {
+       type: 'bar',
+       data: {
+           labels:['before', 'after'], //before, after 기준
+           datasets: [{
+               label: '총 사용금액',
+               data: getPrice1(), //before, after 총금액
+               backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+               ],
+               borderColor: [
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 235, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(153, 102, 255, 1)',
+                   'rgba(255, 159, 64, 1)'
+               ],
+               borderWidth: 1
+           }]
+       },
+       options: {
+           scales: {
+               y: {
+                   beginAtZero: true
+               }
+           }
+       }
+   });
+   
+   var myChart = new Chart(ctx2, {
+       type: 'pie',
+       data: {
+           labels:getCategory(), //카테고리 기준
+           datasets: [{
+               label: '카테고리별 사용금액',
+               data: getPrice2(), //비용
+               backgroundColor: [
+                   'rgba(255, 99, 132, 0.2)',
+                   'rgba(54, 162, 235, 0.2)',
+                   'rgba(255, 206, 86, 0.2)',
+                   'rgba(75, 192, 192, 0.2)',
+                   'rgba(153, 102, 255, 0.2)',
+                   'rgba(255, 159, 64, 0.2)'
+               ],
+               borderColor: [
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 235, 1)',
+                   'rgba(255, 206, 86, 1)',
+                   'rgba(75, 192, 192, 1)',
+                   'rgba(153, 102, 255, 1)',
+                   'rgba(255, 159, 64, 1)'
+               ],
+               borderWidth: 1
+           }]
+       },
+       options: {
+           scales: {
+               y: {
+                   beginAtZero: true
+               }
+           }
+       }
+   });
+ 
+   </script>
   </body>
 </html>

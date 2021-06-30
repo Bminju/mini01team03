@@ -71,5 +71,20 @@
    		where b.travel_title = a.travel_title
    		and b.Userid = a.Userid;
    </update>
+   <!-- 차트에 날자별 금액 뿌리기 -->
+   <select id="getAddress1" resultType="ListVO" parameterType="ListVO">
+   	select sum(A.price) as price, A.startDay, B.total
+   	from beforeinfo AS A left join cost AS B on A.cost_id = B.Id 
+   	where A.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   	group by A.startDay
+   	ORDER BY A.startDay asc
+   	</select>
+   	<!-- 카테고리별 금액 뿌리기 -->
+   	<select id="getAddress2" resultType="ListVO" parameterType="ListVO">
+   	select sum(A.price) as price, A.cate
+   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid 
+   	where A.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   	group by A.cate
+   	</select>
    
 </mapper>

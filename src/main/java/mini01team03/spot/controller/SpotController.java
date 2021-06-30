@@ -202,5 +202,39 @@ public class SpotController {
 		String result = spotService.findCost(totalVO); 
 		return result; //result에 담긴 값은 조건에 맞는 total금액임
 	  }
+	//차트에 날자별 금액 뿌리기
+	@ResponseBody
+	@PostMapping("/getAddress1")
+	public List<ListVO> getAddress1(@RequestBody ListVO listVO, Model model, HttpServletRequest request, HttpSession session) throws SQLException {
+		//세션에 저장된 userid값 가져오고 이 값을 기준으로 정보 가져오기 
+		Object ob_userid=session.getAttribute("email");
+		String userid1 = (String)ob_userid;
+		//System.out.println(userid);
+		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+		userid.setUserid(userid1);//userid에 세션아이디 값 넣기
+		listVO.setUserid(userid); // 세션 아이디 값이 들어있는 userid 를 listVO에 넣기
+		List<ListVO> spotList = spotService.getAddress1(listVO);
+		model.addAttribute("spotList", spotList);
+		System.out.println("spotList"+spotList);
+		
+		return spotList;
+	}
 	
+	//카테고리별 금액 뿌리기
+	@ResponseBody
+	@PostMapping("/getAddress2")
+	public List<ListVO> getAddress2(@RequestBody ListVO listVO, Model model, HttpServletRequest request, HttpSession session) throws SQLException {
+		//세션에 저장된 userid값 가져오고 이 값을 기준으로 정보 가져오기 
+		Object ob_userid=session.getAttribute("email");
+		String userid1 = (String)ob_userid;
+		//System.out.println(userid);
+		UserVO userid = new UserVO(); //UserVO 타입의 userid객체 생성
+		userid.setUserid(userid1);//userid에 세션아이디 값 넣기
+		listVO.setUserid(userid); // 세션 아이디 값이 들어있는 userid 를 listVO에 넣기
+		List<ListVO> spotList = spotService.getAddress2(listVO);
+		model.addAttribute("spotList", spotList);
+		System.out.println("spotList"+spotList);
+		
+		return spotList;
+	}
 }

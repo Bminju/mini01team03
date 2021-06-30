@@ -70,7 +70,15 @@ public class SpotServiceImpl implements SpotService {
 		int cnt = spotDAO.cost_id_Update();
 		return cnt;
 	}
-
-
-
+	//차트에 날자별 금액 뿌리기
+	@Override
+	public List<ListVO> getAddress1(ListVO listVO) throws SQLException {
+		List<ListVO> spotList = spotDAO.getAddress1(listVO);
+		return spotList;
+	}
+	@Override
+	public List<ListVO> getAddress2(ListVO listVO) throws SQLException {
+		List<ListVO> spotList = spotDAO.getAddress2(listVO);
+		return spotList;
+	}
 }

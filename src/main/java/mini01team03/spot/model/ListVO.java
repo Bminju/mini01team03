@@ -19,6 +19,7 @@ public class ListVO {
 	private UserVO Userid;
 	private String travel;
 	private String price;
+	private String total;
 	
 	
 	public String getTitle() {
@@ -105,6 +106,13 @@ public class ListVO {
 	public void setId(String id) {
 		this.id = id;
 	}
+	public String getTotal() {
+		return total;
+	}
+	public void setTotal(String total) {
+		this.total = total;
+	}
+
 
 	
 	}

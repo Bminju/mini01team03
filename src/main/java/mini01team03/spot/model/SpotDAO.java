@@ -31,5 +31,9 @@ public interface SpotDAO {
 	public String findCost(TotalVO totalVO)throws SQLException;	
 	//beforeinfo에 cost_id update하기
 	public int cost_id_Update() throws SQLException;	
+	//차트에 날자별 금액 뿌리기
+	public List<ListVO> getAddress1(ListVO listVO) throws SQLException;
+	//카테고리별 금액 뿌리기
+	public List<ListVO> getAddress2(ListVO listVO) throws SQLException;
 }	
 
