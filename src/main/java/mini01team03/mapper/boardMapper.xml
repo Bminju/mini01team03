@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mini01team03.board.model.BoardDAO">
+	<resultMap type="BoardVO" id="boardMap">
+		<id property="bnum" column="bnum"/>
+		<result property="title" column="title"/>
+		<result property="content" column="content"/>
+		<result property="regdt" column="regdt"/>
+		<result property="hit" column="hit"/>		
+	<association property="userid" column="Userid" javaType="UserVO" resultMap="userMap"/>
+	</resultMap>
+	
+	<resultMap type="UserVO" id="userMap">
+	<id property="id" column="Id"/>
+	 <result property="userid" column="Userid"/>
+      <result property="userpwd" column="Userpwd"/>
+      <result property="username" column="Username"/>
+      <result property="email" column="Email"/>	
+	</resultMap>
+	
+	<insert id="insertBoard" parameterType="BoardVO">
+		insert into board(title, content, Userid, regdt) values(#{title}, #{content}, #{userid.userid}, NOW())
+	</insert>
+	
+	<select id="getBoardList" parameterType="BoardVO" resultMap="boardMap"> 
+		select b.bnum, b.title, b.Userid, b.hit, b.regdt from board b left join user u on b.Userid = u.Userid 
+		where b.Userid = #{userid.userid} and
+		<include refid="search" />
+		order by b.bnum desc
+	</select>
+	
+	<select id="getBoardListPaging" parameterType="BoardVO" resultMap="boardMap"> 
+		select b.bnum, b.title, b.Userid, b.hit, b.regdt from board b left join user u on b.Userid = u.Userid 
+		<include refid="search" />
+		order by b.bnum desc
+		limit #{paginationInfo.firstRecordIndex}, #{dataSize}
+	</select>
+	
+	<select id="selectBoardTotal" parameterType="BoardVO" resultType="int">
+		select COUNT(*)
+		from board
+		<include refid="search" />
+	</select>
+	
+	<select id="getBoard" parameterType="integer" resultMap="boardMap">
+		select bnum, title, content, Userid, regdt, hit
+			from board
+		where bnum = #{bnum}
+	</select>
+	
+	<update id="hitIncrease" parameterType="int">
+		update board set hit = hit+1
+		where bnum =#{bnum}
+	</update>
+	
+	<update id="updateBoard" parameterType="BoardVO">
+		update board set title = #{title}, content = #{content}
+		where bnum = #{bnum}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from board where bnum=#{bnum}
+	</delete>
+	
+	
+	<sql id="search">
+		<if test="findKeyword != null and findKeyword != ''">
+		<choose>
+		<!-- 검색 유형이 있을 때 -->
+		<when test="findType != null and findType != ''">
+		<choose>
+			<when test="'title'.equals(findType)">
+			where title LIKE CONCAT('%',#{findKeyword},'%')
+			</when>
+			<when test="'content'.equals(findType)">		
+			 where content LIKE CONCAT('%',#{findKeyword},'%')
+			</when>
+		</choose>
+		</when>
+				<!-- 검색 유형이 없을 때 -->
+		<otherwise>
+				where
+				 (
+				 title LIKE CONCAT('%',#{findKeyword},'%')
+				OR content LIKE CONCAT('%',#{findKeyword},'%')
+				)
+		</otherwise>
+		</choose>
+		</if>
+	</sql>
+</mapper>
+        

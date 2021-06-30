@@ -36,7 +36,7 @@ public class IndexController {
 	         
 	         session = request.getSession(); //(슬기)세션에 넣어 놓을 값을 userid로 변경함.
 	         session.setAttribute("email", principalDetails.getGuserVO().getUserid().toString());
-
+	  
 	         
 	         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 	         if(oauth2User.getAttributes() != null) {

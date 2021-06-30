@@ -48,8 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			//.antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
 			.anyRequest().permitAll() //위에 특정한 세 개 주소 이외에는 권한이 다 허용됩니다.
 			.and()
-			.formLogin()
-			.loginPage("/login") //위에 특정 3개 주소에 들어갈 때 인증을 거치지 않으면 자동적으로 login 페이지로 매핑된다.
+			.formLogin()  //login페이지가 없으므로 메인으로 돌아가도록 일단 해둠.
+			.loginPage("/index") //위에 특정 3개 주소에 들어갈 때 인증을 거치지 않으면 자동적으로 login 페이지로 매핑된다.
 			.successHandler(customAuthenticationSuccessHandler)
 			.failureHandler(customAuthenticationFailureHandler)
 			.usernameParameter("userid") //로그인 html에서 쓰는 name이 username이 아닐 시 적어줘야지 principalDetailsService에서 값이 잘 매칭됨.

@@ -70,4 +70,7 @@ public class SpotServiceImpl implements SpotService {
 		int cnt = spotDAO.cost_id_Update();
 		return cnt;
 	}
+
+
+
 }

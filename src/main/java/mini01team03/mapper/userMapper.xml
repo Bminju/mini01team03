@@ -79,7 +79,6 @@
 	</delete>
 	
    <!-- 이메일 중복체크 -->
-   
    <insert id="insertGaProfile" parameterType="GuserVO">
    insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>

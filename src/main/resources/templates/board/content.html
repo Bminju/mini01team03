@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><!--//th를 사용한다는 의미-->
+<head>
+	<div th:replace="/fragments/header.html :: fragment-header(title = 'Community')"></div>
+	<div th:replace="/fragments/modal.html :: fragment-modal"></div>
+</head>
+<body>
+
+	<div th:replace="/fragments/nav.html :: fragment-nav(current='Community')"></div>
+	<div th:replace="/fragments/footer.html :: fragment-footer"></div>
+
+	<!--게시글 작성 -->
+  <div class="container">
+    
+        <form th:action="@{/user/content}" th:object="${boardVO}">
+            <input type="hidden" th:field="*{bnum}">
+            <div class="form-group" th:class="${#fields.hasErrors('title')} ? 'is-invalid' : ''">
+                <label for="title" class="form-label" >TITLE</label>
+                <input  class="form-control" th:errorclass="is-invalid"
+                 id="title" name="title" th:field="*{title}" disabled/>
+             <input th:field="*{userid.userid}"/>
+            </div>
+            <div class="form-group">
+            <label for="content" class="form-label">CONTENT</label>
+            <textarea class="form-control" id="content" rows="10" name="content"  
+                 th:classappend="${#fields.hasErrors('content')} ? 'is-invalid':''" th:field="*{content}" disabled/></textarea>
+            
+            </div>
+           
+            <div class="text-right">  <!--text오른쪽 정렬-->
+                <a type="button" class="btn btn-secondary" th:href="@{/community}">list</a>
+            
+
+            <!--로그인된 사용자와 게시글 작성자 비교해서 버튼-->
+            <span id="modifybtn" th:style="${session.email == boardVO.userid.userid ? ' ' : 'display:none'}">
+		        <a type="button" class="btn btn-secondary" th:href="@{/user/update(bnum=${boardVO.bnum})}">
+		    	수정
+                </a> 
+                <a type="button"  class="btn btn-secondary" th:href="@{/user/delete(bnum=${boardVO.bnum})}">
+		    	삭제
+  	            </a> 
+	        </span>
+	        </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -21,13 +21,13 @@ public class SendEmailServiceImpl implements SendEmailService{
 	UserDAO userDAO;
 
 	@Autowired
-	private JavaMailSender mailSender;
-	private static final String FROM_ADDRESS = "03.team.travle@gmail.com";
+	JavaMailSender mailSender;
+	String FROM_ADDRESS = "tavel.cashbook@gmail.com";
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
-	//전송할 메일 내용
+	//임시 비밀번호 전송할 메일 내용
 	@Override
 	public MailVO createMailAndChangePassword(UserVO userVO) throws SQLException {
 		 String str = getTempPassword();  
@@ -37,6 +37,20 @@ public class SendEmailServiceImpl implements SendEmailService{
 	     dto.setMessage("안녕하세요. 임시비밀번호 안내 관련 이메일 입니다." + "[" + userVO.getUsername() + "]" +"님의 임시 비밀번호는 "
 	        + str + " 입니다.");
 	     updatePassword(str, userVO.getEmail());
+		return dto;
+	}
+	
+	@Override
+	public MailVO AuthKeySend(String email) throws SQLException {
+		 String key = getAuthKey();
+	     MailVO dto = new MailVO();
+	     dto.setAddress(email); //userEmail 받아옴.
+	     dto.setTitle("여행가계부 이메일 인증 안내 이메일 입니다.");
+	     dto.setMessage("안녕하세요. 이메일 인증 안내 관련 이메일 입니다." + "이메일 인증 번호는 [ " 
+	     + key + " ] 입니다. "
+	     		+ "해당 번호를 입력창에 입력하여 인증을 완료해주세요.");
+	     //updatePassword(Key, userVO.getEmail());
+	     dto.setAuthkey(key);
 		return dto;
 	}
 
@@ -70,11 +84,26 @@ public class SendEmailServiceImpl implements SendEmailService{
         String str = "";
 
         int idx = 0;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             idx = (int) (charSet.length * Math.random());
             str += charSet[idx];
         }
+        
 		return str;
+	}
+	
+	@Override
+	public String getAuthKey() throws SQLException {
+		char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+        String key = "";
+
+        int num = 0;
+        for (int i = 0; i < 5; i++) {
+            num = (int) (charSet.length * Math.random());
+            key += charSet[num];
+        }
+		return key;
 	}
 	
 	//이메일 전송 

@@ -14,4 +14,10 @@ public void updatePassword(String str, String email) throws SQLException;
 public String getTempPassword() throws SQLException;
 	
 public void mailSend(MailVO mailVO) throws SQLException;
+
+public MailVO AuthKeySend(String email) throws SQLException;
+
+
+public String getAuthKey() throws SQLException;
+
 }

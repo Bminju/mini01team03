@@ -2,6 +2,7 @@ package mini01team03.user.controller;
 
 
 import java.sql.SQLException;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -173,6 +174,17 @@ public class LoginController {
 		   return result;
 	  }
 	  
+	  //이메일 인증 메일 발송
+	  @GetMapping("/CheckEmail")
+	  @ResponseBody
+	  public String mailcheck(String email) throws SQLException {
+		  System.out.println("이메일" + email);
+		  MailVO dto = sendEmailService.AuthKeySend(email);
+		  String Authkey = dto.getAuthkey();
+		  System.out.println("인증번호" + Authkey);
+	      sendEmailService.mailSend(dto);
+	      return Authkey; 
+	  }
 	  //로그아웃시 세션 해제   ok
 	  @GetMapping("logout")
 	  @ResponseBody
@@ -187,10 +199,10 @@ public class LoginController {
 	  public UserVO modify(UserVO userVO,HttpServletRequest request,HttpSession session)throws Exception  {
 		  //System.out.println("되니?");
 		  Object my_info = session.getAttribute("email"); //세션에 저장 된 이메일 값을 얻기 위함
-		  System.out.println(my_info);
+		 // System.out.println(my_info);
 		  String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
 		  UserVO modiVO = userService.getLoginInfo(ma_info); 	 
-		  System.out.println(modiVO.getUserpwd());
+		 // System.out.println(modiVO.getUserpwd());
 		  return modiVO;
 	  }
 	  
@@ -209,6 +221,8 @@ public class LoginController {
 		  System.out.println(dbpwd); 
 		 
 		  //세션에 존재하는 아이디 값의 비번과 입력받은 비번이 일치하면 리턴 OK
+		  //Assert.assertTrue(passwordEncoder.matches(inputpwd, dbpwd));
+		 // boolean matches(CharSequence inputpwd, String dbpwd);
 		if(!bCryptPasswordEncoder.matches(inputpwd, passVO.getUserpwd())) {
 			return "false";
 		}else {

@@ -3,6 +3,7 @@
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-modal">
 	<script>
+		var code = "";  //이메일로 전송된 인증버호를 저장하기 위해서
 		//로그인
 		//로그인시 세션유지하기
 		function fnLoginsubmit() {	
@@ -131,6 +132,11 @@
 					document.joinform.email.focus();
 					return;
 					}
+				if (!document.joinform.authKey.value) {
+					alert("이메일 인증을 진행하세요!");
+					document.joinform.authKey.focus();
+					return;
+					}
 
 				var pwd1 = document.getElementById("joinuserpwd").value
 				var pwd2 = document.getElementById("joinuserpwd2").value
@@ -197,11 +203,24 @@
         		}
 
 			});
+    		
+    			//이메일 인증번호 일치 확인
+      			$('#authKey').keyup(function(){
+        		$('#chkAuth').html('');
+        		});
+    		
+    			$('#authKey').keyup(function(){
+
+        		if($('#authKey').val() != code ) {
+          		$('#chkAuth').html('인증번호 불일치<br>');
+          		$('#chkAuth').attr('color', '#f82a2aa3');
+        		} else{
+          		$('#chkAuth').html('이메일 인증 완료<br>');
+          		$('#chkAuth').attr('color', '#199894b3');
+        		}
+    		});
+    		
 			
-
-
-
-
 		});
 
 		//아이디 중복 확인
@@ -276,9 +295,8 @@
 				
            		}
 			});
-
-
 		}
+		
 		//마이페이지 회원정보 수정
 		function fn_modify() {
 			let mypagepwd =$('#mypagepwd2').val();
@@ -326,7 +344,26 @@
 		  return false;
 		
 		}
-
+		
+		// 이메일 인증 - 인증번호
+		function fnCheckMail() {
+				let email= $("#joinemail").val();  //사용자가 입력한 이메일
+				if(email == "") {
+					alert("이메일을 입력해주세요.")
+				}else {
+					alert("메일 전송 완료!");
+					$.ajax({
+					type:"GET",
+					url:"CheckEmail?email=" + email,
+					success:function(data){
+						console.log("data:" + data);
+						$('#authKey').attr("disabled",false); //막아뒀던 인증키 input 속성 변경
+						code = data; 
+					}
+				}); 
+				}
+			}
+		
 	</script>
 	
 	  <div class="container">
@@ -358,9 +395,6 @@
   	</button> 
 	</span> 
 	<!--로그인 모달-->
-
-	</span>
-
   <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -459,7 +493,7 @@
 		  <h4>Forgot your password?</h4>
         </div>
         <div class="d-flex flex-column text-center">
-			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비번이 전송~ </p>
+			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비밀번호가 전송됩니다. </p>
           <form method="post" action="index" name="findPwd">
             <div class="form-group">
               <input type="id" class="form-control" id="pwdname" name="username" placeholder="Enter your Name">
@@ -490,11 +524,11 @@
         </div>
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="joinform">
-            <div class="form-group">
-			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
-			  <font id="chkid" size="2"></font>
-			</div>
+            <div class="input-group mb-3">
+  				<input type="text" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
+    			<button class="btn btn-outline-info" type="button" onclick="id_check()">check!</button>
+ 			</div>
+    			 <font id="chkid" size="2"></font><br>
 			<div class="form-group">
               <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
 			</div>
@@ -505,21 +539,29 @@
 			<hr>
 			<div class="form-group">
               <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
-			</div>
-			<div class="form-group">
+			</div>		
 			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
-			</div>
-  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+			  <div class="input-group mb-3">
+  				<input type="text" class="form-control" placeholder="Enter AuthKey" id="authKey" disabled="disabled">
+    			<button class="btn btn-outline-info" type="button" id="CheckMail" onclick="fnCheckMail()">인증번호 전송</button>
+ 				</div>
+ 				 <font id="chkAuth" size="2"></font><br>
+				</form>
+				</div>
+				<div class="text-center">
+				<input class="form-check-input text-center" type="checkbox" value="" id="flexCheckChecked" checked/>
   			I accept the Terms of Use & Privacy Policy. 
+				</div>
 			<hr>
 			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
-		  </form>
+			 
+			 </div>
+			</div>
 		</div>
-	</div>
-	</div>
-</div>
-</div> <!--회원가입 모달 끝-->
+	</div> <!--회원가입 모달 끝-->
+
+
+
 
 <!--회원정보 수정 모달-->
    <div class="modal fade" id="mypageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
