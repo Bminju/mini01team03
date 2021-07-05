@@ -11,7 +11,7 @@
 	<!--게시글 작성 -->
   <div class="container">
      <h3>Write Board</h3>
-        <form th:action="@{/user/write}" th:object="${boardVO}" method="Post">
+        <form id="postForm" th:object="${boardVO}" method="Post" th:action="@{/user/write}" >
             <input type="hidden" th:field="*{bnum}">
             <div class="form-group">
                 <label for="title" class="form-label" >TITLE</label>
@@ -23,13 +23,14 @@
                 <div class="form-group">
             <label for="content" class="form-label">CONTENT</label>
             <textarea class="form-control" id="content" rows="10" name="content"  
-                 th:classappend="${#fields.hasErrors('content')} ? 'is-invalid':''" th:field="*{content}" ></textarea>
+                 th:classappend="${#fields.hasErrors('content')} ? 'is-invalid':''" th:field="*{content}"> </textarea>
+               
             <div class="invalid-feedback" th:if="${#fields.hasErrors('content')}" th:errors="*{content}">
                     내용 에러 메시지
             </div>
            
             <div class="text-right">  <!--text오른쪽 정렬-->
-                <button type="submit" class="btn btn-secondary" >write</button>
+                <button type="submit" class="btn btn-secondary">write</button>
                 <a type="button" class="btn btn-secondary" th:href="@{/community}">list</a>
             </div>
             </div>

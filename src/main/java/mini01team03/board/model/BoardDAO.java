@@ -15,7 +15,7 @@ public interface BoardDAO {
 	public int insertBoard(BoardVO boardVO) throws SQLException;
 	
 	//게시글 List
-	public List<BoardVO> getBoardList() throws SQLException;
+	//public List<BoardVO> getBoardList() throws SQLException;
 	public BoardVO getBoard(Integer bnum) throws SQLException;
 	//페이징
 	public List<BoardVO> getBoardListPaging(BoardVO boardVO) throws SQLException;

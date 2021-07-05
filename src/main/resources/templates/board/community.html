@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"><!--//th를 사용한다는 의미-->
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<div th:replace="/fragments/header.html :: fragment-header(title = 'Community')"></div>
 	<div th:replace="/fragments/modal.html :: fragment-modal"></div>
@@ -10,28 +10,24 @@
 
 	<!--게시판 리스트-->
 	<div class="container">
-		<h3>Q & A</h3> 
+		<h3>Free Board</h3> 
 	
 <!-- 검색 form -->
-
-    
-  
-	
+	<div class="float-right form-inline">
 	<form id="searchForm" th:action="@{/community}" method="get" th:onsubmit="return searchBoard(this)" class="form-horizontal" role="form">
-     <div class="col-sm-2" >
+    
     <select class="custom-select" name="findType">
     	<option value="" th:selected="${not #strings.isEmpty( boardVO.findType )}">전체</option>
     	<option value="title" th:selected="${#strings.equals( boardVO.findType, 'title' )}">제목</option>
 		<option value="content" th:selected="${#strings.equals( boardVO.findType, 'content' )}">내용</option>
     </select>
      <input class="form-control" id="findKeyword" name="findKeyword" type="text" th:value="${boardVO.findKeyword}" placeholder="검색어를 입력해주세요">
-    <div class="col-sm-3" >
         <button class="btn btn-secondary" onclick="searchBoard(null)">search</button>
-    </div>
-	</div>
 	</form>
+	 </div>
+	<br>
+	<br>
 	
-		<div align="right">총 건수 : <span th:text="${#lists.size(board)}"></span></div>
 	<table class="table table-hover">
   <thead>
     <tr>
@@ -46,7 +42,8 @@
 	  <!-- boardlist 출력 -->
     <tr th:each="board : ${board}">
       <td width="10%" th:text="${board.bnum}" name="bnum" class="text-muted"></td>
-      <td width="flex"><a th:text="${board.title}" th:href="@{/user/content(bnum=${board.bnum})}" name="title"></a></td>
+      <td width="flex">
+      <a th:text="${board.title}" th:href="@{/user/content(bnum=${board.bnum})}" name="title"></a></td>
 	  <td width="10%" th:text="${board.userid.userid}"></td>
     <td width="10%" th:text="${board.hit}"></td>
     <td width="15%" th:text="${#temporals.format(board.regdt, 'yyyy-MM-dd HH:mm')}"></td>
@@ -84,11 +81,11 @@
 	</nav>
 </div>
 		<script th:inline="javascript">
-			/*<![CDATA[*/
+	 
 			function movePage(uri, queryString) {
 				location.href = uri + queryString;
 			}
-			
+		
 			function searchBoard(form) {
 				if (isEmpty(form) == false) {  
 					let findKeyword = document.getElementById("#findKeyword");
@@ -97,15 +94,13 @@
 						findKeyword.focus();
 						return false;
 					}
-
 					form = document.getElementById("searchForm");
 					form.findKeyword.value = findKeyword.value;
 					form.submit();
 				}
-				
 			}
-			/*]]>*/
 		</script>
+	
 </div>
 </body>
 </html>

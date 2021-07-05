@@ -9,7 +9,7 @@ public interface BoardService {
 	//글쓰기
 	public int insertBoard(BoardVO boardVO) throws SQLException;
 	//게시글 List
-	public List<BoardVO> getBoardList() throws SQLException;
+	//public List<BoardVO> getBoardList() throws SQLException;
 	public List<BoardVO> getBoardListPaging(BoardVO boardVO) throws SQLException;
 	public BoardVO getBoard(Integer bnum) throws SQLException;
 	//조회수 

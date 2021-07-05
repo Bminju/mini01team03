@@ -15,8 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import mini01team03.board.model.BoardDAO;
 import mini01team03.board.model.BoardVO;
@@ -41,24 +43,17 @@ public class BoardController {
 	@GetMapping("user/content")
 	//특정 게시글 조회에 필요한 bnum값을 파라미터로 전달 받음
 	public String write(Model model, @RequestParam(value="bnum", required = false) Integer bnum)throws Exception{
-		
-	
-			BoardVO board = boardService.getBoard(bnum);
+
+		BoardVO board = boardService.getBoard(bnum);
 			boardService.hitIncrease(bnum); //조회수 증가
-			//String userid = board.getUserid().getUserid();
-			//System.out.println("타입확인:" + userid.getClass().getName());
-			//UserVO user = userService.getLoginInfo(userid);
 			model.addAttribute("boardVO", board); //글조회
 	
 		return "board/content";
 	}
 	//글쓰기 - DB 저장 
-	@PostMapping("user/write")
+	@PostMapping("/user/write")
 	public String writePost(@Valid BoardVO boardVO, BindingResult bindingResult, Model model, @RequestParam(required = false) Integer bnum, HttpServletRequest request,HttpSession session) throws Exception {
 		
-		//if(boardVO == null) boardVO = new BoardVO();					
-		//model.addAttribute("boardVO", boardVO); //글쓰기 타임리프 
-	
 		 Object writer = session.getAttribute("email"); //세션에서 userid 가져오기
 		 String user = (String)writer; //object타입을 string으로 변환 
 		 UserVO userid = new UserVO(); // boardVO에 userid가 UserVO를 가져오므로
@@ -73,15 +68,10 @@ public class BoardController {
 			}else {
 				boardService.updateBoard(boardVO);
 			}
-			
-		
 		//로그인한 ID 작성자로 db 저장
-		
 		return "redirect:/community"; //redirect로 list조회가 새로 작동하면서 화면 이동.
 }
 
-
-	
 	@GetMapping("user/write")
 	public String write(BoardVO boardVO, Model model,  @RequestParam(required = false) Integer bnum) throws Exception {
 		if(bnum == null) {
@@ -97,28 +87,14 @@ public class BoardController {
 	@GetMapping("community")
 	public String BoardList( Model model,@ModelAttribute("boardVO") BoardVO boardVO) throws SQLException {
 		List<BoardVO> boardList = boardService.getBoardListPaging(boardVO);
-		//BoardVO board = boardService.getBoard(bnum);
 		System.out.println("리스트ID " + boardList.get(0).getUserid());
 		model.addAttribute("board", boardList); //리스트 타임리프 
-		
-		
-		//Object writer = boardList.getClass(Uerid);
-		//String user =  String.valueOf(writer);
-		
-		//System.out.println("리스트 유저 " + user);
-		//System.out.println("리스트 유저타입 " + user.getClass()); //스트링 타입인데 엉망으로 나옴..
-		//model.addAttribute("user",user); 
-		//BoardVO board = boardService.getBoard(bnum);
-		
-		//System.out.println("boardList: " + userid);
-	
-
 		return "board/community";
 	}
 	
 	//게시글 수정
 	@GetMapping("user/update")
-	//특정 게시글 조회에 필요한 bnum값을 파라미터로 전달 받음
+	//특정 게시글 조회에 필요한 bnum값을 파라미터로 전달 받음, null이 넘어올 경우를 대비해 required = false 로 설정
 	public String update(@RequestParam(required = false) Integer bnum, Model model)throws Exception{
 		
 		if(bnum != null) {

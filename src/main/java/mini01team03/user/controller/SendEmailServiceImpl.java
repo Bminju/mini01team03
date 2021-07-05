@@ -49,7 +49,6 @@ public class SendEmailServiceImpl implements SendEmailService{
 	     dto.setMessage("안녕하세요. 이메일 인증 안내 관련 이메일 입니다." + "이메일 인증 번호는 [ " 
 	     + key + " ] 입니다. "
 	     		+ "해당 번호를 입력창에 입력하여 인증을 완료해주세요.");
-	     //updatePassword(Key, userVO.getEmail());
 	     dto.setAuthkey(key);
 		return dto;
 	}
@@ -97,7 +96,6 @@ public class SendEmailServiceImpl implements SendEmailService{
 		char[] charSet = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
         String key = "";
-
         int num = 0;
         for (int i = 0; i < 5; i++) {
             num = (int) (charSet.length * Math.random());

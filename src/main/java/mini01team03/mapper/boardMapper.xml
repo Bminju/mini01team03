@@ -22,14 +22,7 @@
 	<insert id="insertBoard" parameterType="BoardVO">
 		insert into board(title, content, Userid, regdt) values(#{title}, #{content}, #{userid.userid}, NOW())
 	</insert>
-	
-	<select id="getBoardList" parameterType="BoardVO" resultMap="boardMap"> 
-		select b.bnum, b.title, b.Userid, b.hit, b.regdt from board b left join user u on b.Userid = u.Userid 
-		where b.Userid = #{userid.userid} and
-		<include refid="search" />
-		order by b.bnum desc
-	</select>
-	
+
 	<select id="getBoardListPaging" parameterType="BoardVO" resultMap="boardMap"> 
 		select b.bnum, b.title, b.Userid, b.hit, b.regdt from board b left join user u on b.Userid = u.Userid 
 		<include refid="search" />

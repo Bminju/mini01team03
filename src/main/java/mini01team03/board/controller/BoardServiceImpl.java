@@ -27,28 +27,25 @@ public class BoardServiceImpl implements BoardService{
 	}
 
 	//게시글 List
-	@Override
-	public List<BoardVO> getBoardList() throws SQLException {
-		List<BoardVO> boardList = boardDAO.getBoardList();
-		return boardList;
-	}
+//	@Override
+//	public List<BoardVO> getBoardList() throws SQLException {
+//		List<BoardVO> boardList = boardDAO.getBoardList();
+//		return boardList;
+//	}
 
-	// 검색처리할 때 사용
+	// 게시글 List, Paging, 검색
 	@Override
 	public List<BoardVO> getBoardListPaging(BoardVO boardVO) throws SQLException {
 		List<BoardVO> boardList = Collections.emptyList();
 		
 		int boardTotal = boardDAO.selectBoardTotal(boardVO);
-		
 		PaginationInfo paginationInfo = new PaginationInfo(boardVO);
 		paginationInfo.setTotalRecord(boardTotal);
-		
 		boardVO.setPaginationInfo(paginationInfo);
 		
 		if (boardTotal > 0) {  //검색 결과가 있을 경우
 			boardList = boardDAO.getBoardListPaging(boardVO);
 		}
-		
 		return boardList; 
 	}
 	
