@@ -2,11 +2,18 @@ package mini01team03.user.model;
 
 
 public class UserVO {
+	private int id;
 	private String userid;
 	private String userpwd;
 	private String username;
 	private String email;
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	public String getUserid() {
 		return userid;

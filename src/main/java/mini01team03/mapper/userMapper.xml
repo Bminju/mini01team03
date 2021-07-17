@@ -44,6 +44,27 @@
 	</where>
 	</select>
 	
+	<!-- 비밀번호 변경 >  -->
+	<select id="findPwd" parameterType="UserVO" resultType="UserVO">
+		SELECT Userid,Userpwd,Email,Username FROM user
+		<where> 
+			<if test="username != null">AND Username = #{username}</if>
+			<if test="email != null">AND Email = #{email}</if>
+		</where>
+	</select>
+	
+	<select id="findUserByUserId" parameterType="string" resultType="UserVO">
+	SELECT Userid,Userpwd,Email,Username,Id
+	FROM user
+	WHERE Email = #{email}
+	</select>
+	<!-- 회원정보 수정 -->
+	<update id="updateUserpwd" parameterType="UserVO">
+		UPDATE user
+		SET Userpwd = #{userpwd}
+		WHERE Id = #{id}
+	</update>
 	
    <!-- 이메일 중복체크 -->
+   <!-- gkgkgkgk -->
 </mapper>

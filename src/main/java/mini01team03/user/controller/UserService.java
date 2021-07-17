@@ -15,4 +15,8 @@ public interface UserService {
 	public int userIdchk(UserVO userid) throws SQLException;
 	//아이디 찾기
 	public String findid(UserVO userVO) throws SQLException;
+	
+	//비밀번호 찾기 
+	public String findPwd(UserVO userVO)  throws SQLException;
+
 }
