@@ -14,10 +14,77 @@
       <result property="cate" column="Cate"/>
    </resultMap>
    
+    <resultMap type="ListVO" id="beforelist">
+      <id property="id" column="no"/>
+      <result property="title" column="store"/>
+      <result property="address" column="address"/>
+      <result property="start" column="startDay"/>
+      <result property="end" column="endDay"/>
+   </resultMap>
+   
    <insert id="insertSpot" parameterType="MarkerVO">
       insert into spot(Lo_name, Address, Lat, Lon, Price, Cate) values (#{title}, #{address}, #{la}, #{ma}, #{price}, #{cate})
    </insert>
-
+	
+   <insert id="insertBeforeList" parameterType="ListVO">
+   	  insert into beforeinfo(store, address, cate, startDay, startTime, endDay, endTime, Userid, travel_title) values (#{store}, #{address}, #{cate}, #{startDay}, #{startTime}, #{endDay}, #{endTime}, #{Userid.userid}, #{travel})
+   </insert>
    
+   <select id="getAddress" resultType="ListVO" parameterType="ListVO">
+   	select A.id, concat(A.store,'\n', A.address,'\n', A.cate)as title, concat(A.startDay, 'T', substr(A.startTime,1,8)) as start, 
+   	concat(A.endDay, 'T', substr(A.endTime,1,8)) as end, A.price 
+   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid 
+   	where B.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   	</select>
+   	 <!-- concat은 두 값을 합치는것이고, substr한 이유는 8번째 이후 값이 있으면 오작동해서 이후값 버림. -->
+    
+    <!-- 블록 클릭시 price 값을 입력받아 update 한다. -->
+   <update id="updatePrice" parameterType="ListVO">
+    update beforeinfo set price = #{price} where Userid=#{Userid.userid} and id=#{id}
+   </update>
+   
+   <insert id="insertTotalPrice" parameterType="TotalVO">
+   	  insert into cost(travel_title, total, Userid) values (#{travel}, #{total}, #{Userid.userid})
+   </insert>
+   <!-- beforeinfo의 중복 방지를 위한 delete -->
+   <delete id="beforeinfoDelete" parameterType="ListVO">
+		DELETE FROM beforeinfo 
+		WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+	</delete>
+   <!-- cost의 중복 방지를 위한 delete -->
+   <delete id="costDelete" parameterType="TotalVO">
+		DELETE FROM cost 
+		WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+	</delete>
+	<!-- drop box에 입력 될 travel_title 가져오는 맵핑 -->
+	<select id="travelList" resultType="TotalVO" parameterType="String">
+			select travel_title as travel from cost where userid = #{userid}
+	</select>
+    <!-- total cost 가져오는 맵핑 -->
+    <select id="findCost" resultType="String" parameterType="TotalVO">
+    	select total from cost WHERE Userid = #{Userid.userid} AND travel_title = #{travel}
+    </select>
+    <!-- beforeinfo의 cost_id에 cost의 Id 집어 넣기  -->
+   <update id="cost_id_Update">
+   		update beforeinfo as b, cost as a
+   		set b.cost_id = a.Id
+   		where b.travel_title = a.travel_title
+   		and b.Userid = a.Userid;
+   </update>
+   <!-- 차트에 날자별 금액 뿌리기 -->
+   <select id="getAddress1" resultType="ListVO" parameterType="ListVO">
+   	select sum(A.price) as price, A.startDay, B.total
+   	from beforeinfo AS A left join cost AS B on A.cost_id = B.Id 
+   	where A.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   	group by A.startDay
+   	ORDER BY A.startDay asc
+   	</select>
+   	<!-- 카테고리별 금액 뿌리기 -->
+   	<select id="getAddress2" resultType="ListVO" parameterType="ListVO">
+   	select sum(A.price) as price, A.cate
+   	from beforeinfo AS A left join user AS B on A.Userid = B.Userid 
+   	where A.Userid = #{Userid.userid} and A.travel_title = #{travel}
+   	group by A.cate
+   	</select>
    
 </mapper>

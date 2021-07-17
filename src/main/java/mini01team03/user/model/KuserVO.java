@@ -9,6 +9,7 @@ public class KuserVO {
 	private String userpwd;
 	private String username;
 	private String email;
+	private String role;
 	
 	
 	public String getUserid() {
@@ -34,6 +35,12 @@ public class KuserVO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	} 
 
 	

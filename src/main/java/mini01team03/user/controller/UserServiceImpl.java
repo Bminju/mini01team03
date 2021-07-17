@@ -2,12 +2,11 @@ package mini01team03.user.controller;
 
 import java.sql.SQLException;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import mini01team03.user.model.GuserVO;
 import mini01team03.user.model.KuserVO;
 import mini01team03.user.model.UserDAO;
 import mini01team03.user.model.UserVO;
@@ -43,6 +42,7 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 
+
 	@Override
 	public String findid(UserVO userVO) throws SQLException {
 		String result = userDAO.findid(userVO);
@@ -50,12 +50,27 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String findPwd(UserVO userVO) throws SQLException {
+	public UserVO findPwd(UserVO userVO) throws SQLException {
 		UserVO dbUserVO = userDAO.findPwd(userVO);
-		String result = userVO.getEmail();
-		return result;
+		return dbUserVO;
 		
 	}
-	
-	
+
+	@Override
+	public void updateUserpwd(UserVO uptUserVO) throws SQLException {
+		userDAO.updateUserpwd(uptUserVO);
+		
+	}
+
+	@Override
+	public int userinfoDelete(UserVO userVO) throws SQLException {
+		int cnt = userDAO.userinfoDelete(userVO);
+		return cnt;
+	}
+
+	@Override
+	public int insertGaProfile(GuserVO googleUser) throws SQLException {
+		int cnt = userDAO.insertGaProfile(googleUser);
+		return cnt;
+	}
 }

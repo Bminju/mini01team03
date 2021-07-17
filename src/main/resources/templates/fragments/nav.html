@@ -2,12 +2,51 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="fragment-nav">
 	
-<div class="container">
+<!-- <div class="container">
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="navbar-brand" href="http://localhost:8080/">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
 	  <a class="navbar-brand" href="http://localhost:8080/address">Before</a>
-	  <a class="navbar-brand" href="http://localhost:8080/address">After</a>
-	  <a class="navbar-brand" href="#">Community</a>
+      </li>
+    <li class="nav-item active">
+    <a class="navbar-brand" href="http://localhost:8080/address">After</a>
+      </li>
+      <li class="nav-item active">
+    <a class="navbar-brand" href="#">Community</a>
+      </li>
+    </ul>
+    </div>
+    </div>
+  </nav>
+</div> -->
+<div class="container">
+  <div th:fragment="fragment-nav(current)">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+    <a class="navbar-brand" href="#">Menu</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample10" aria-controls="navbarsExample10" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample10">
+      <ul class="navbar-nav">
+        <li class="nav-item" th:classappend="${current== 'home' } ? active">
+          <a class="nav-link" th:href="@{/index}">Home</a>
+        </li>
+        <li class="nav-item" th:classappend="${current== 'Before' } ? active">
+          <a class="nav-link" th:href="@{/address}">Before</a>
+        </li>
+        <li class="nav-item" th:classappend="${current== 'After' } ? active">
+          <a class="nav-link" th:href="@{/address1}">After</a>
+        </li>
+        <li class="nav-item" th:classappend="${current== 'Community' } ? active">
+          <a class="nav-link" th:href="@{/community}">Community</a>
+        </li>
+      </ul>
     </div>
   </nav>
 </div>

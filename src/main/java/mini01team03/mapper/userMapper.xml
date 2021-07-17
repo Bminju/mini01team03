@@ -13,19 +13,19 @@
    
 	<!-- 기본 로그인 -->
 	<select id="getLoginInfo" parameterType="string" resultType="UserVO">
-	SELECT Userid,Userpwd,Email,Username
+	SELECT Userid,Userpwd,Email,Username,Id,Role
 	FROM user
 	WHERE Userid = #{userid}
 	</select>
 	
 	<!-- 카카오 로그인 -->
 	<insert id="insertKaProfile" parameterType="KuserVO">
-   insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>
 	
 	<!-- 회원가입 -->
 	<insert id="insertUser" parameterType="UserVO">
-   insert into user(Userid, Userpwd, Username, Email) values (#{userid}, #{userpwd}, #{username}, #{email})
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
    </insert>
    
    <!-- 아이디 중복체크 -->
@@ -46,25 +46,47 @@
 	
 	<!-- 비밀번호 변경 >  -->
 	<select id="findPwd" parameterType="UserVO" resultType="UserVO">
-		SELECT Userid,Userpwd,Email,Username FROM user
+		SELECT Email,Username,Id FROM user
 		<where> 
 			<if test="username != null">AND Username = #{username}</if>
 			<if test="email != null">AND Email = #{email}</if>
 		</where>
 	</select>
 	
-	<select id="findUserByUserId" parameterType="string" resultType="UserVO">
-	SELECT Userid,Userpwd,Email,Username,Id
+	<select id="findUserByUserId" parameterType="String" resultType="UserVO">
+	SELECT Userpwd,Username,Id
 	FROM user
 	WHERE Email = #{email}
 	</select>
 	<!-- 회원정보 수정 -->
 	<update id="updateUserpwd" parameterType="UserVO">
 		UPDATE user
-		SET Userpwd = #{userpwd}
-		WHERE Id = #{id}
+		<set>
+		 <if test="userpwd != null">
+		 	Userpwd = #{userpwd},
+		 </if>
+		 <if test="username != null">
+		 	Username = #{username}
+		 </if>
+		</set>
+		Where
+		Id = #{id}
 	</update>
+	<!-- 회원정보 삭제 -->
+	<delete id="userinfoDelete" parameterType="UserVO">
+		DELETE FROM user 
+		WHERE Userid = #{userid}
+	</delete>
 	
    <!-- 이메일 중복체크 -->
-   <!-- gkgkgkgk -->
+   <insert id="insertGaProfile" parameterType="GuserVO">
+   insert into user(Userid, Userpwd, Username, Email, Role) values (#{userid}, #{userpwd}, #{username}, #{email}, #{role})
+   </insert>
+   
+   <!-- 구글 로그인 -->
+	<select id="findByUserid" parameterType="string" resultType="GuserVO">
+	SELECT Userid,Userpwd,Email,Username,Id,Role
+	FROM user
+	WHERE Userid = #{userid}
+	</select>
 </mapper>

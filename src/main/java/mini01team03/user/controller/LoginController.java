@@ -2,23 +2,36 @@ package mini01team03.user.controller;
 
 
 import java.sql.SQLException;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,17 +47,75 @@ import mini01team03.user.model.UserVO;
 
 @Controller
 public class LoginController {
-	//private final SendEmailService sendEmailService = new SendEmailService();
+	
+	/*@Bean
+	public PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}*/
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Autowired
 	UserService userService; 
 	@Autowired
 	SendEmailService sendEmailService;
+
+//	  //로그인 ajax
+//	  @ResponseBody
+//	  @GetMapping("/login")
+//		public String Login(HttpServletRequest request, HttpServletResponse response) {
+//			RequestCache requestCache = new HttpSessionRequestCache();
+//			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+//			
+//			try {
+//				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+//				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+//				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+//				System.out.println("찍혀라");
+//			} catch(NullPointerException e) {
+//				request.getSession().setAttribute("prevPage", "/");
+//			}
+//			return "login";
+//		}
 	  //로그인 ajax
-	  @ResponseBody
-	  @PostMapping("login")
-	  public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+	 /* @ResponseBody
+	  @GetMapping("/login")
+		public String Login(HttpServletRequest request, HttpServletResponse response) {
+			RequestCache requestCache = new HttpSessionRequestCache();
+			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+			
+			try {
+				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+				request.getSession().setAttribute("prevPage", savedRequest.getRedirectUrl());
+				System.out.println("찍혀라");
+			} catch(NullPointerException e) {
+				request.getSession().setAttribute("prevPage", "/");
+			}
+			return "login"; 
+		}
+	  /*@PostMapping("/login1")
+	  public String Login(@RequestBody UserVO userVO, HttpServletRequest request, HttpServletResponse response) throws SQLException {
+			RequestCache requestCache = new HttpSessionRequestCache();
+			SavedRequest savedRequest = requestCache.getRequest(request, response); 
+			System.out.println(userVO.getUserid());
+			String userid = userVO.getUserid();
+			UserVO dbUserVO = userService.getLoginInfo(userid);
+			try {
+				//여러가지 이유로 이전페이지 정보가 없는 경우가 있음.
+				//https://stackoverflow.com/questions/6880659/in-what-cases-will-http-referer-be-empty
+				if(userVO.getUserpwd().equals(dbUserVO.getUserpwd())) {
+				request.getSession().setAttribute("email", dbUserVO.getUserid());
+				}
+			} catch(NullPointerException e) {
+				request.getSession().setAttribute("prevPage", "/");
+			}
+			return "login";
+		}*/
+	  /*public String loginPost(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
 		  //System.out.println(userVO.getEmail());
 		  String userid = userVO.getUserid();
 		  UserVO dbUserVO = userService.getLoginInfo(userid); //이렇게 해버리면 아이디가 맞는지 틀리는지 체크가 안되지 않나?
@@ -56,8 +127,8 @@ public class LoginController {
 		  }else {
 			  return "fail";
 		  }
-	  }
-	  //아이디 찾기 ajax
+	  }*/
+	  //아이디 찾기 ajax    ok
 	  @ResponseBody
 	  @PostMapping("findid")
 	  public String findid (@RequestBody UserVO userVO) throws SQLException {
@@ -69,10 +140,10 @@ public class LoginController {
 	  //비밀번호 찾기 ajax
 	  @ResponseBody
 	  @PostMapping("findPwd")
-	  public String findPwd(@RequestBody UserVO userVO) throws SQLException {
-		 //System.out.println(userVO);
-		  String result = userService.findPwd(userVO); 
-		  return result;
+	  public UserVO findPwd(@RequestBody UserVO userVO) throws SQLException {
+		  System.out.println(userVO);
+		  UserVO result = userService.findPwd(userVO); 
+		  return result; 
 	  }
 	  //등록된 이메일로 임시비밀번호를 발송, 발송된 임시비번으로 사용자 pw 변경 
 	  @ResponseBody
@@ -83,17 +154,19 @@ public class LoginController {
 	      sendEmailService.mailSend(dto);
 	  }
 	  
-	  //회원가입 ajax
+	  //회원가입 ajax    ok
 	  @ResponseBody
 	  @PostMapping("join")
 	  public String joinUser(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
-		  //userService.insertUser(userVO);
+		  String userpwd = bCryptPasswordEncoder.encode(userVO.getUserpwd());
+		  userVO.setUserpwd(userpwd);
+		  userService.insertUser(userVO);
 		  session = request.getSession();
 	      session.setAttribute("email", userVO.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 	      return "redirect:/index";
 	  }
 	  
-	  //아이디 중복체크 
+	  //아이디 중복체크   ok
 	  @ResponseBody
 	  @PostMapping("chkid")
 	  public int userIdchk(@RequestBody UserVO userid) throws SQLException {
@@ -101,7 +174,18 @@ public class LoginController {
 		   return result;
 	  }
 	  
-	  //로그아웃시 세션 해제
+	  //이메일 인증 메일 발송
+	  @GetMapping("/CheckEmail")
+	  @ResponseBody
+	  public String mailcheck(String email) throws SQLException {
+		  System.out.println("이메일" + email);
+		  MailVO dto = sendEmailService.AuthKeySend(email);
+		  String Authkey = dto.getAuthkey();
+		  System.out.println("인증번호" + Authkey);
+	      sendEmailService.mailSend(dto);
+	      return Authkey; 
+	  }
+	  //로그아웃시 세션 해제   ok
 	  @GetMapping("logout")
 	  @ResponseBody
 	  public String logout(HttpSession session) throws Exception {
@@ -109,9 +193,81 @@ public class LoginController {
 		  return "logout";
 	  }
 	  
+	  //마이페이지에 회원정보 뿌리기  ok
+	  @ResponseBody
+	  @GetMapping("modify")
+	  public UserVO modify(UserVO userVO,HttpServletRequest request,HttpSession session)throws Exception  {
+		  //System.out.println("되니?");
+		  Object my_info = session.getAttribute("email"); //세션에 저장 된 이메일 값을 얻기 위함
+		 // System.out.println(my_info);
+		  String ma_info = (String)my_info; //cast연산자로 String 형태로 형 변환을 한다.
+		  UserVO modiVO = userService.getLoginInfo(ma_info); 	 
+		 // System.out.println(modiVO.getUserpwd());
+		  return modiVO;
+	  }
+	  
+	  //회원정보 수정 시 비밀번호 확인  ok
+	  @ResponseBody
+	  @PostMapping("chkoriPwd")
+	  public String oriPwdchk(@RequestBody UserVO userVO, HttpServletRequest request,HttpSession session) throws SQLException {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  System.out.println(userinfo2); //세션에 존재하는 아이디 값을 불러왔음
+		  
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  String inputpwd = userVO.getUserpwd();
+		  String dbpwd = passVO.getUserpwd();
+		  System.out.println(inputpwd); 
+		  System.out.println(dbpwd); 
+		 
+		  //세션에 존재하는 아이디 값의 비번과 입력받은 비번이 일치하면 리턴 OK
+		  //Assert.assertTrue(passwordEncoder.matches(inputpwd, dbpwd));
+		 // boolean matches(CharSequence inputpwd, String dbpwd);
+		if(!bCryptPasswordEncoder.matches(inputpwd, passVO.getUserpwd())) {
+			return "false";
+		}else {
+			return "true";
+		}
+		    
+	  }
+	  //마이페이지에서 회원정보 수정하기
+	  @ResponseBody
+	  @PostMapping("modify/update")
+	   public String modiUpdate(@RequestBody UserVO userVO, HttpServletRequest request, HttpSession session) throws SQLException {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  int id = passVO.getId(); //세션에 맞는 DB의 id값을 따로 뽑아
+		  String pwd = bCryptPasswordEncoder.encode(userVO.getUserpwd());
+		  userVO.setUserpwd(pwd);
+		  userVO.setId(id); //그 id값을 userVO(입력받은 값)에 넣어
+		  userService.updateUserpwd(userVO); //update쿼리 실행
+		  System.out.println(userVO.getUserpwd());
+		  return "ok";
+	  }
+	  //마이페이지 회원정보 삭제 ok
+	  @GetMapping("delete")
+	  @ResponseBody
+	  public int infoDelete(HttpSession session) throws Exception {
+		  Object userinfo = session.getAttribute("email"); //세션에 저장 된 아이디 값을 불러온다.
+		  String userinfo2 = (String)userinfo; //cast연산자로 String 형태로 형 변환을 한다.
+		  UserVO passVO = userService.getLoginInfo(userinfo2); //세션과 일치하는 유저의 모든 정보 불러옴
+		  //passVO.getId(); //세션의 id값을 따로 뽑아
+		  int cnt = userService.userinfoDelete(passVO);
+		  System.out.println(cnt);
+		  session.invalidate();
+		  return cnt;
+	  }
+	  
+	  
+	  
+	  
+	  
+	  
 	  //카카오 로그인
 	  @GetMapping("auth/kakao/callback")
-	   public String kakaoCallback(String code, HttpServletRequest request, HttpSession session) throws SQLException { // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
+	   public String kakaoCallback(String code, HttpServletRequest request, HttpSession session) throws SQLException { 
+		  // responseboy는 data를 리턴해주는 컨트롤러 함수, code는 카카오에서 주는 인가코드임
 	    
 	      //post 방식으로 key=value 데이터를 요청(카카오톡으로)
 	      //예전에는 HttpsURLConnection, Retrofit2(안드로이드에서 자주 사용), OkHttp 이런 라이브러리도 있음 
@@ -119,7 +275,8 @@ public class LoginController {
 	      
 	      //HttpHeader 오브젝트 생성
 	      HttpHeaders headers = new HttpHeaders();
-	      headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8"); //내가 전송할 body http 데이터가 key value 형태의 데이터라고 알려주는 것임
+	      headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8"); 
+	      //내가 전송할 body http 데이터가 key value 형태의 데이터라고 알려주는 것임
 	      
 	      //HttpBody 오브젝트 생성
 	      MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -165,7 +322,7 @@ public class LoginController {
 	      
 	      //HttpHeader와 HttpBody를 하나의 오브젝트에 담기 -> why? exchange 함수를 보면 HttpEntity 오브젝트를 넣어야 하기 때문에 
 	      HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest2 = new HttpEntity<>(headers2); 
-	      
+	      //사용자 정보 가져오기
 	      //Http 요청하기 - POST방식으로 - 그리고 response 변수에 응답 받기
 	      ResponseEntity<String> response2 = rt2.exchange(
 	         "https://kapi.kakao.com/v2/user/me",
@@ -202,12 +359,13 @@ public class LoginController {
 	            .userpwd("123")  //비밀번호 임시로 하기
 	            .email(kakaoProfile.getKakao_account().getEmail())
 	            .username(kakaoProfile.getProperties().getNickname())
-	            //.oauth("kakao")
+	            .role("kakao")
 	            .build();
+	      //System.out.println(kakaoUser.getEmail());
 	      
-	      String email = kakaoUser.getEmail();
-	      UserVO originUser = userService.getLoginInfo(email);
-	      if(originUser == null || originUser.getEmail() == null) {
+	      String userid = kakaoUser.getUserid();
+	      UserVO originUser = userService.getLoginInfo(userid);
+	      if(originUser == null || originUser.getUserid() == null) {
 	    	  System.out.println("기존 회원이 아니기에 자동 회원가입을 진행합니다");
 	    	  userService.insertKaProfile(kakaoUser);
 	      }
@@ -215,12 +373,14 @@ public class LoginController {
 	      System.out.println("자동 로그인을 진행합니다.");
 			// 로그인 처리 코드 작성하기
 	      	session = request.getSession();
-			session.setAttribute("email", kakaoUser.getEmail());//setAttribute는 name, value쌍으로 객체를 저장
+			session.setAttribute("email", kakaoUser.getUserid());//setAttribute는 name, value쌍으로 객체를 저장
 					
 			return "redirect:/index";
 	      
 	      
 	   }
+	  
+	  
 	}
 
 		

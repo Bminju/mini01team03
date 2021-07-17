@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <meta charset="utf-8">
-<head th:fragment="fragment-header">
+<head th:fragment="fragment-header(title)">
 	<meta name="viewport"  content="width=device-width, user-scalable=no,  initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
     <meta http-equiv="X-UA-Compatible" content="IE=edge"><!--화면 랜더링 엔진을 최신으로 써라-->
 	<!-- jQuery -->
@@ -12,6 +12,8 @@
 	<!-- Font Awesome CSS -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
 	<link rel="stylesheet" href="/css/style.css"/>
-	<title>여행가계부 룰루</title>
+	<link href="/css/main.css" rel="stylesheet" />
+    <script src="/js/main.js"></script>
+	<title th:text="${title}">여행가계부 룰루</title>
 </head>
 </html>
