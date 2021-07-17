@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<div th:replace="/fragments/header.html :: fragment-header(title = 'Community')"></div>
+	<div th:replace="/fragments/modal.html :: fragment-modal"></div>
+</head>
+<body>
+	<div th:replace="/fragments/nav.html :: fragment-nav(current='Community')"></div>
+	<div th:replace="/fragments/footer.html :: fragment-footer"></div>
+
+	<!--게시판 리스트-->
+	<div class="container">
+		<h3>Free Board</h3> 
+	
+<!-- 검색 form -->
+	<div class="float-right form-inline">
+	<form id="searchForm" th:action="@{/community}" method="get" th:onsubmit="return searchBoard(this)" class="form-horizontal" role="form">
+    
+    <select class="custom-select" name="findType">
+    	<option value="" th:selected="${not #strings.isEmpty( boardVO.findType )}">전체</option>
+    	<option value="title" th:selected="${#strings.equals( boardVO.findType, 'title' )}">제목</option>
+		<option value="content" th:selected="${#strings.equals( boardVO.findType, 'content' )}">내용</option>
+    </select>
+     <input class="form-control" id="findKeyword" name="findKeyword" type="text" th:value="${boardVO.findKeyword}" placeholder="검색어를 입력해주세요">
+        <button class="btn btn-secondary" onclick="searchBoard(null)">search</button>
+	</form>
+	 </div>
+	<br>
+	<br>
+	
+	<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Title</th>
+      <th scope="col">Writer</th>
+	  <th scope="col">Hit</th>
+	  <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+	  <!-- boardlist 출력 -->
+    <tr th:each="board : ${board}">
+      <td width="10%" th:text="${board.bnum}" name="bnum" class="text-muted"></td>
+      <td width="flex">
+      <a th:text="${board.title}" th:href="@{/user/content(bnum=${board.bnum})}" name="title"></a></td>
+	  <td width="10%" th:text="${board.userid.userid}"></td>
+    <td width="10%" th:text="${board.hit}"></td>
+    <td width="15%" th:text="${#temporals.format(board.regdt, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+  </tbody>
+</table>
+ <div class="text-right">  <!--text오른쪽 정렬-->
+	<a type="button" class="btn btn-secondary" th:href="@{/user/write}">write</a>
+</div>
+
+<!--paging-->
+<div id="pagingbar">
+	<nav aria-label="Page navigation example" th:if="${boardVO != null and boardVO.paginationInfo.totalRecord > 0}" th:object="${boardVO.paginationInfo}" th:with="info=${boardVO.paginationInfo}" class="text-center">
+		<ul class="pagination pagination-sm justify-content-center">
+			<li class="page-item" th:if="*{PreviousPage == true}" th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${boardVO.makeQueryString(1)} ]])">
+				<a class="page-link" href="javascript:void(0)" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span></a>
+			</li>
+			<li class="page-item" th:if="*{PreviousPage == true}" th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${boardVO.makeQueryString(info.firstPage - 1)} ]])">
+				<a class="page-link" href="javascript:void(0)" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span></a>
+			</li>
+			<li th:each="pageNo : *{#numbers.sequence( firstPage, lastPage )}" th:class=" ${pageNo == boardVO.currentPnum} ? 'page-item active'">
+				<a class="page-link" href="javascript:void(0)" th:text="${pageNo}" th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${boardVO.makeQueryString(pageNo)} ]])"></a>
+			</li>
+			<li class="page-item" th:if="*{NextPage == true}" th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${boardVO.makeQueryString(info.lastPage + 1)} ]])">
+				<a class="page-link" href="javascript:void(0)" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span></a>
+			</li>
+			<li class="page-item" th:if="*{NextPage == true}" th:onclick="movePage([[ ${#request.requestURI} ]], [[ ${boardVO.makeQueryString(info.totalPage)} ]])">
+				<a class="page-link" href="javascript:void(0)" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span></a>
+			</li>
+		</ul>
+	</nav>
+</div>
+		<script th:inline="javascript">
+	 
+			function movePage(uri, queryString) {
+				location.href = uri + queryString;
+			}
+		
+			function searchBoard(form) {
+				if (isEmpty(form) == false) {  
+					let findKeyword = document.getElementById("#findKeyword");
+					if (isEmpty(searchKeyword.value) == true) {
+						alert("키워드를 입력해 주세요.");
+						findKeyword.focus();
+						return false;
+					}
+					form = document.getElementById("searchForm");
+					form.findKeyword.value = findKeyword.value;
+					form.submit();
+				}
+			}
+		</script>
+	
+</div>
+</body>
+</html>

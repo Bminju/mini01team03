@@ -1,36 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="fragment-modal">
 	<script>
-
+		var code = "";  //이메일로 전송된 인증버호를 저장하기 위해서
 		//로그인
 		//로그인시 세션유지하기
 		function fnLoginsubmit() {	
 		
 				var userid = $("#userid").val();
 				var userpwd = $("#userpwd").val();
-				//alert('성공'+email);
-				var dataObj = new Object();
-				dataObj.userid = userid;
-				dataObj.userpwd = userpwd;
-	
+				console.log("아이디 :"+userid);
+
 				$.ajax({
 				type:"POST",
 				url:"/login",
-				data:JSON.stringify(dataObj),
-				contentType:'application/json; charset=UTF-8',
-				success:function(data){
-				    if (data == 'ok') { // 로그인 성공시 
-						$("#loginModal").modal("hide");
-					location.reload(); //윈도우 내에서 자동으로 새로고침 
-					//서버에 있는 세션을 클라이언트(뷰단)에 적용 시키기 위해 새로고침을 한다. 그렇기에 타임리프가 동작 할 수 있음.
-				  }else {
-				  	(data == 'false')
-					 alert("너 비번 틀렸어") }; 
-					}
-					
-				})
-				
+				data:{userid : userid, userpwd:userpwd},
+				contentType:'application/x-www-form-urlencoded; charset=utf-8',
+				success:function(response){
+					alert(response);
+					$("#loginModal").modal("hide");
+					location.reload(); //윈도우 내에서 자동으로 새로고침	
+				}
+			})	
 		};
 
 		//로그아웃
@@ -80,7 +72,6 @@
 		function fnFindpwd() {
 				var username = $("#pwdname").val();
 				var email = $("#pwdemail").val();
-				//alert("값 들어감?");
 				var pwdObj = new Object();
 				pwdObj.username = username;
 				pwdObj.email = email;
@@ -92,8 +83,11 @@
 				data:JSON.stringify(pwdObj),
 				contentType:'application/json; charset=UTF-8',
 				success:function(data) {
-					if(data) {
-						alert("전송완료"); 
+					console.log(data);
+					if(data == "") {
+					alert("일치 정보 없");
+					}else{
+							alert("전송완료"); 
 						$.ajax({
 							type:"POST",
 							url:"/findPwd/sendEmail",
@@ -102,17 +96,12 @@
 								})
 								console.log(email)
 						alert("보냈다");
-						$("#findPwd").modal("hide")					
-					}	else{
-						alert("일치 정보 없");
+						$("#pwdModal").modal("hide");	
 					}		
 					} 	
 				})
 				 
 		};	
-
-
-
 
 		//회원가입 빈 칸 입력 금지
 		//회원가입 
@@ -143,6 +132,11 @@
 					document.joinform.email.focus();
 					return;
 					}
+				if (!document.joinform.authKey.value) {
+					alert("이메일 인증을 진행하세요!");
+					document.joinform.authKey.focus();
+					return;
+					}
 
 				var pwd1 = document.getElementById("joinuserpwd").value
 				var pwd2 = document.getElementById("joinuserpwd2").value
@@ -151,15 +145,6 @@
 					document.joinform.userpwd2.focus();
 					return;
 				}
-			
-				//if ((document.getElementsByName("userpwd").value) != (document.getElementsByName('userpwd2').value)){
-				//	alert('비밀번호가 일치하지 않습니다.');
-				//	return;
-				//}
-				
- 			//비밀번호 불일치일시 회원가입 불가하게 로직 짜기
-
-
 			    var userid = $("#joinuserid").val();
 				var userpwd = $("#joinuserpwd").val();
 				var username = $("#joinusername").val();
@@ -202,11 +187,44 @@
 
 			});
 			
+			//회원정보 수정 시 비밀번호 일치 확인
+			$('#mypagepwd').keyup(function(){
+    		$('#chkmopwd').html('');
+    		});
+
+    		$('#mypagepwd2').keyup(function(){
+
+        		if($('#mypagepwd').val() != $('#mypagepwd2').val()){
+          		$('#chkmopwd').html('비밀번호 일치하지 않음<br>');
+          		$('#chkmopwd').attr('color', '#f82a2aa3');
+        		} else{
+          		$('#chkmopwd').html('비밀번호 일치함<br>');
+          		$('#chkmopwd').attr('color', '#199894b3');
+        		}
+
+			});
+    		
+    			//이메일 인증번호 일치 확인
+      			$('#authKey').keyup(function(){
+        		$('#chkAuth').html('');
+        		});
+    		
+    			$('#authKey').keyup(function(){
+
+        		if($('#authKey').val() != code ) {
+          		$('#chkAuth').html('인증번호 불일치<br>');
+          		$('#chkAuth').attr('color', '#f82a2aa3');
+        		} else{
+          		$('#chkAuth').html('이메일 인증 완료<br>');
+          		$('#chkAuth').attr('color', '#199894b3');
+        		}
+    		});
+    		
+			
 		});
 
 		//아이디 중복 확인
 		function id_check() {
-		//$(document).ready(function() {
 
 				
 				var chkid = $("#joinuserid").val();
@@ -230,15 +248,131 @@
             }
 		});
 	}
+		//슬기 로직 추가
+		//마이페이지로 개인 정보 불러오기
+		function fn_my() {
+			$.ajax({
+			type:"GET",
+			url:"/modify",
+			contentType:'application/json; charset=UTF-8',
+			success:function(data){
+				if (data) {
+					//var strdata = JSON.stringify(data);//object타입을 string타입으로 변환
+					//형 변환을 할 필요가 없었다. 왜냐면 어차피 오브젝트에서 .이거로 각각의 정보를 뽑아오기 때문 ! 
+					$('input[id=mypageid]').attr('value',data.userid);
+					//$('input[id=mypagepwd').attr('value',data.userpwd);
+					$('input[id=mypagename]').attr('value',data.username);
+					$('input[id=mypageemail]').attr('value',data.email);
+				}
+			}
 
+
+			});
+		}
+		//슬기 로직추가 
+		//마이페이지 기존 비밀번호 체크
+		function fn_oripwd() {
+			let oripwd= $("#oripwd").val();
+				//alert(oripwd);
+
+				$.ajax({
+				type:"POST",
+				url:"/chkoriPwd",
+				data:JSON.stringify({userpwd : oripwd}),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data){
+					alert(data);
+					if (data == 'true') { 
+						//alert("일치");
+						$('input[id=mypagepwd]').removeAttr('readonly');
+						$('input[id=mypagepwd2]').removeAttr('readonly');
+						$('input[id=mypagename]').removeAttr('readonly');
+						$('input[id=oripwd]').attr('readonly','');
+					
+				  	}else
+					  alert("비밀번호를 다시 확인하세요");
+					
+				
+           		}
+			});
+		}
+		
+		//마이페이지 회원정보 수정
+		function fn_modify() {
+			let mypagepwd =$('#mypagepwd2').val();
+			let mypagename =$('#mypagename').val();
+			let mypageObj = new Object();
+				mypageObj.userpwd = mypagepwd;
+				mypageObj.username = mypagename;
+			//alert(mypageObj.username); //확인
+
+			$.ajax({
+				type:"POST",
+				url:"/modify/update",
+				data:JSON.stringify(mypageObj),
+				contentType:'application/json; charset=UTF-8',
+				success:function(data) {
+					if (data == "ok"){
+						alert("수정되었습니다.");
+						$("#mypageModal").modal("hide");
+						location.reload();
+					}else 
+					   alert("실패했어요.");
+					
+				   }  
+				})
+		};
+		//마이페이지 정보 삭제
+		function fn_delete(){
+
+		if(confirm("정말로 탈퇴하실 건가요?")) {		
+			$.ajax({
+				type:"GET",
+				url:"/delete",
+				success:function(data){
+					console.log("성공");
+					if (data == 1) {
+						alert("삭제완료");
+						location.reload();
+					}else {
+						alert("뭔가 이상함");
+					}
+				}
+			});
+		  }
+		else 
+		  return false;
+		
+		}
+		
+		// 이메일 인증 - 인증번호
+		function fnCheckMail() {
+				let email= $("#joinemail").val();  //사용자가 입력한 이메일
+				if(email == "") {
+					alert("이메일을 입력해주세요.")
+				}else {
+					alert("메일 전송 완료!");
+					$.ajax({
+					type:"GET",
+					url:"CheckEmail?email=" + email,
+					success:function(data){
+						console.log("data:" + data);
+						$('#authKey').attr("disabled",false); //막아뒀던 인증키 input 속성 변경
+						code = data; 
+					}
+				}); 
+				}
+			}
+		
 	</script>
-	<a href="http://localhost:8080">Home</a>
 	
 	  <div class="container">
 		  <!--로그인시, id 보여줌-->
-		  <span th:text="${session.email}" style="color: cadetblue;"> 
-			</span>
+
 	<!--상단 로그인/ 로그아웃 버튼-->
+
+		  <span th:text="${session.email}" style="color: cadetblue;" > </span>
+		<!--<i class="fa fa-user-circle float-left" aria-hidden="true" style="color: cadetblue;" ></i>-->
 	<span id="joinbtn"  th:style="${session.email == null ? '':'display:none'}">
     <button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#joinModal" >
     SignUp
@@ -247,15 +381,16 @@
 	<span id="loginbtn" th:style="${session.email == null ? '':'display:none'}">
 		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#loginModal" >
     login
-  	</button>
+	  </button>
 	</span>
     <span id="logoutbtn" th:style="${session.email == null ? 'display:none':''}">
 		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" onclick="fn_logout()">
 			Logout
   	</button> 
+
 	</span> 
 	<span id="mypagebtn" th:style="${session.email == null ? 'display:none':''}">
-		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#mypageModal">
+		<button type="button" class="btn btn-info btn-round float-right" data-toggle="modal" data-target="#mypageModal" onclick="fn_my()">
 			Mypage
   	</button> 
 	</span> 
@@ -274,7 +409,7 @@
           <h4>Login</h4>
         </div>
         <div class="d-flex flex-column text-center">
-          <form method="post" action="index" name="loginform">
+          <form method="POST" action="/login" name="loginform">
             <div class="form-group">
               <input type="id" class="form-control" id="userid" name="userid" placeholder="ID">
             </div>
@@ -284,9 +419,8 @@
             <button type="button" class="btn btn-info btn-block btn-round" id="loginsubmit" name="loginsubmit" onclick="fnLoginsubmit()">Login</button>
 		  </form> <br>
 		  <div>
-          <button type="button" data-toggle="modal" data-target="#findid"><i class="far fa-address-book" > I can't remember my ID</i></button>
-		  <br>
-		  <button type="button" data-toggle="modal" data-target="#pwdModal"><i class="fa fa-key text-muted" aria-hidden="true" >I Forgot Password</i></button>
+          <button type="button" class="btn btn-light" data-toggle="modal" data-target="#findid"><i class="fas fa-address-book text-muted" aria-hidden="true"> Find ID</i></button>
+		  <button type="button" class="btn btn-light" data-toggle="modal" data-target="#pwdModal"><i class="fas fa-key text-muted" aria-hidden="true" > Find Password</i></button>
 			<hr>
 		</div> 
 		  
@@ -295,6 +429,10 @@
 		  <div class="kakaologin">
 		  <a href="https://kauth.kakao.com/oauth/authorize?client_id=f4756aac75cb4481cb7c932449df2447&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code&scope=account_email">
 			<img src="https://k.kakaocdn.net/14/dn/btqCn0WEmI3/nijroPfbpCa4at5EIsjyf0/o.jpg" width="80%"/></a>
+		  </div>
+		  <div class="googlelogin">
+		  <a href="/oauth2/authorization/google">
+			<img src="https://pngimage.net/wp-content/uploads/2018/06/google-login-button-png-1.png" width="95%"/></a>
 		  </div>
 		
         </div>
@@ -355,7 +493,7 @@
 		  <h4>Forgot your password?</h4>
         </div>
         <div class="d-flex flex-column text-center">
-			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비번이 전송~ </p>
+			<p style="color: #f82a2aa3; font-size: small;" >가입한 이메일 주소로 임시 비밀번호가 전송됩니다. </p>
           <form method="post" action="index" name="findPwd">
             <div class="form-group">
               <input type="id" class="form-control" id="pwdname" name="username" placeholder="Enter your Name">
@@ -386,11 +524,11 @@
         </div>
         <div class="d-flex flex-column text-center">
           <form method="post" action="index" name="joinform">
-            <div class="form-group">
-			  <input type="id" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button>
-			  <font id="chkid" size="2"></font>
-			</div>
+            <div class="input-group mb-3">
+  				<input type="text" class="form-control" id="joinuserid" name="userid" check_result="fail" placeholder="Enter your id"/>
+    			<button class="btn btn-outline-info" type="button" onclick="id_check()">check!</button>
+ 			</div>
+    			 <font id="chkid" size="2"></font><br>
 			<div class="form-group">
               <input type="password" class="form-control" id="joinuserpwd" name="userpwd" placeholder="Enter your password"/>
 			</div>
@@ -401,21 +539,29 @@
 			<hr>
 			<div class="form-group">
               <input type="text" class="form-control" id="joinusername" name="username" placeholder="Enter your name"/>
-			</div>
-			<div class="form-group">
+			</div>		
 			  <input type="text" class="form-control" id="joinemail" name="email" placeholder="Enter your email"/>
-			  <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button>
-			</div>
-  			<input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+			  <div class="input-group mb-3">
+  				<input type="text" class="form-control" placeholder="Enter AuthKey" id="authKey" disabled="disabled">
+    			<button class="btn btn-outline-info" type="button" id="CheckMail" onclick="fnCheckMail()">인증번호 전송</button>
+ 				</div>
+ 				 <font id="chkAuth" size="2"></font><br>
+				</form>
+				</div>
+				<div class="text-center">
+				<input class="form-check-input text-center" type="checkbox" value="" id="flexCheckChecked" checked/>
   			I accept the Terms of Use & Privacy Policy. 
+				</div>
 			<hr>
 			<button type="button" class="btn btn-info btn-block btn-round" id="joinsubmit" name="joinsubmit" onclick="fnjoinsubmit()">Sign Up</button>
-		  </form>
+			 
+			 </div>
+			</div>
 		</div>
-	</div>
-	</div>
-</div>
-</div> <!--회원가입 모달 끝-->
+	</div> <!--회원가입 모달 끝-->
+
+
+
 
 <!--회원정보 수정 모달-->
    <div class="modal fade" id="mypageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -428,26 +574,33 @@
       </div>
       <div class="modal-body">
         <div class="form-title text-center">
-		  <h4>Sign Up</h4>
+		  <h4>My Page</h4>
         </div>
         <div class="d-flex flex-column text-center">
           <form>
             <div class="form-group">
-			  <input type="id" class="form-control" id="mypageid" name="userid" check_result="fail" placeholder="Enter your id"/>
-			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="id_check()">check!</button> -->
-			  <!-- <font id="chkid" size="2"></font> -->
+			 ID <input type="id" class="form-control" id="mypageid" name="mypageid" readonly/>
 			</div>
 			<div class="form-group">
-              <input type="password" class="form-control" id="mypagepwd" name="mypagepwd" placeholder="Enter your password"/>
+             원래의 비밀번호를 입력하세요. <input type="password" class="form-control" id="oripwd" name="oripwd"/>
+			</div>
+			<button type="button" id="oripwdChk" onclick="fn_oripwd()">check!</button>
+			<div class="form-group">
+             PASSWORD <input type="password" class="form-control" id="mypagepwd" name="mypagepwd" readonly/>
 			</div>
 			<div class="form-group">
-              <input type="text" class="form-control" id="mypagename" name="mypagename" placeholder="Enter your name"/>
+             PASSWORD Check <input type="password" class="form-control" id="mypagepwd2" name="mypagepwd2" readonly/>
+			</div> 
+			<font id="chkmopwd" size="2"></font><br>
+			<div class="form-group">
+             NAME <input type="text" class="form-control" id="mypagename" name="mypagename" readonly/>
 			</div>
 			<div class="form-group">
-			  <input type="text" class="form-control" id="mypageemail" name="mypageemail" placeholder="Enter your email"/>
-			  <!-- <button type="button" class="btn btn-outline-info btn-block btn-round" onclick="email_check()">Email Check!</button> -->
-			</div>
-			<!-- <button type="button" class="btn btn-info btn-block btn-round" id="" name="" onclick="fnupdate()">Sign Up</button> -->
+			 E-MAIL <input type="text" class="form-control" id="mypageemail" name="mypageemail" readonly/>
+			</div>  
+			  <button type="button" class="btn btn-outline-info btn-block btn-round" id="modifybtn" onclick="fn_modify()">Modify</button>
+			<hr>  
+			  <button type="button" size="3" class="btn btn-dark btn-block btn-round" id="deletebtn" onclick="fn_delete()">delete</button> 
 		  </form>
 		</div>
 	</div>

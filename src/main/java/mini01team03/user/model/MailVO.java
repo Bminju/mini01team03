@@ -4,6 +4,7 @@ public class MailVO {
 	private String address;
 	private String title;
     private String message;
+    private String authkey;
     
 	public String getAuthkey() {
 		return authkey;
